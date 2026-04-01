@@ -60,7 +60,7 @@ export default function Login() {
             </label>
             <input
               type="email"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sigizi-light-green focus:border-transparent outline-none transition"
+              className="w-full px-4 py-2 border bg-gray-50 border-gray-300 rounded-lg focus:ring-2 focus:ring-sigizi-light-green focus:border-transparent outline-none transition"
               placeholder="Masukkan email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -74,7 +74,7 @@ export default function Login() {
             </label>
             <input
               type="password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sigizi-light-green focus:border-transparent outline-none transition"
+              className="w-full px-4 py-2 border bg-gray-50 border-gray-300 rounded-lg focus:ring-2 focus:ring-sigizi-light-green focus:border-transparent outline-none transition"
               placeholder="Masukkan password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
