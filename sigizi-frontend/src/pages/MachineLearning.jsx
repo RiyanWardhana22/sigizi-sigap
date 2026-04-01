@@ -39,33 +39,42 @@ export default function MachineLearning() {
     setFile(e.target.files[0]);
   };
 
-  const handleTrainModel = (e) => {
+  const handleTrainModel = async (e) => {
     e.preventDefault();
     if (!file) {
       alert("Silakan upload dataset (CSV) terlebih dahulu!");
       return;
     }
-
     setIsTraining(true);
     setResult(null);
-    setTimeout(() => {
+    const formData = new FormData();
+    formData.append("dataset", file);
+    formData.append("algorithm", algorithm);
+    try {
+      const response = await fetch(
+        "http://localhost/sigizi-sigap/sigizi-backend/train_model.php",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+      const data = await response.json();
+      if (data.status === "success") {
+        setResult({
+          accuracy: data.accuracy,
+          precision: data.precision,
+          recall: data.recall,
+          confusionMatrix: data.confusionMatrix,
+        });
+      } else {
+        alert("Error dari Server: " + data.message);
+      }
+    } catch (error) {
+      console.error("Gagal melatih model:", error);
+      alert("Terjadi kesalahan koneksi atau server gagal merespons.");
+    } finally {
       setIsTraining(false);
-      setResult({
-        accuracy:
-          algorithm === "random_forest"
-            ? "94.5%"
-            : algorithm === "svm"
-              ? "89.2%"
-              : "N/A (Clustering)",
-        precision: "92.1%",
-        recall: "93.8%",
-        confusionMatrix: [
-          [45, 2, 1],
-          [3, 38, 4],
-          [0, 2, 50],
-        ],
-      });
-    }, 3000);
+    }
   };
 
   return (
