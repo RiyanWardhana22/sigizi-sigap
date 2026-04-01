@@ -4,12 +4,34 @@ import { useNavigate } from "react-router-dom";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
-
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Mencoba login dengan:", email, password);
-    navigate("/dashboard");
+    setErrorMsg("");
+    try {
+      const response = await fetch(
+        "http://localhost/sigizi-sigap/sigizi-backend/login.php",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: email, password: password }),
+        },
+      );
+
+      const data = await response.json();
+      if (data.status === "success") {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        navigate("/dashboard");
+      } else {
+        setErrorMsg(data.message);
+      }
+    } catch (error) {
+      console.error("Terjadi kesalahan:", error);
+      setErrorMsg("Tidak dapat terhubung ke server. Pastikan XAMPP menyala.");
+    }
   };
 
   return (
@@ -23,6 +45,13 @@ export default function Login() {
             Masuk ke akun Anda untuk melanjutkan
           </p>
         </div>
+
+        {/* Tampilkan kotak merah jika ada error */}
+        {errorMsg && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+            <span className="block sm:inline">{errorMsg}</span>
+          </div>
+        )}
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
@@ -60,16 +89,6 @@ export default function Login() {
             Masuk
           </button>
         </form>
-
-        <p className="text-center text-sm text-gray-600 mt-6">
-          Belum punya akun?{" "}
-          <a
-            href="#"
-            className="text-sigizi-green font-semibold hover:underline"
-          >
-            Daftar di sini
-          </a>
-        </p>
       </div>
     </div>
   );
