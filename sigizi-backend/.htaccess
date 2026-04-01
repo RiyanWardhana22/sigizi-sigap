@@ -1,0 +1,8 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # Opsi: Jika ingin merouting semua request yang tidak ditemukan ke index.php 
+    # (Berguna nanti jika kamu ingin membuat sistem routing PHP yang lebih kompleks)
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
