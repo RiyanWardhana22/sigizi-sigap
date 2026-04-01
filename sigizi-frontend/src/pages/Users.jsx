@@ -1,19 +1,33 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { FaPlus, FaEdit, FaTrash, FaUserShield } from "react-icons/fa";
+import { FaPlus, FaEdit, FaTrash, FaUserShield, FaTimes } from "react-icons/fa";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // State untuk modal Create dan Edit
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+
   const navigate = useNavigate();
+
+  // State form digunakan bersama untuk Add dan Edit
+  const [formData, setFormData] = useState({
+    id: "", // ID tambahan untuk proses Edit
+    nama_lengkap: "",
+    email: "",
+    password: "",
+    role: "orang_tua",
+  });
+
   const fetchUsers = async () => {
     try {
       const response = await fetch(
-        "http://localhost/sigizi-sigap/sigizi-backend/get_users.php",
+        "http://localhost/sigizi-sigap//sigizi-backend/get_users.php",
       );
       const data = await response.json();
-
       if (data.status === "success") {
         setUsers(data.data);
       }
@@ -31,9 +45,7 @@ export default function Users() {
     } else {
       const parsedUser = JSON.parse(userData);
       if (parsedUser.role !== "super_admin") {
-        alert(
-          "Akses Ditolak! Hanya Super Admin yang bisa mengakses halaman ini.",
-        );
+        alert("Akses Ditolak!");
         navigate("/dashboard");
       } else {
         fetchUsers();
@@ -44,6 +56,120 @@ export default function Users() {
   const handleLogout = () => {
     localStorage.removeItem("user");
     navigate("/");
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // --- FUNGSI CREATE (TAMBAH) ---
+  const handleAddUser = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        "http://localhost/sigizi-sigap/sigizi-backend/add_user.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        },
+      );
+      const data = await response.json();
+
+      if (data.status === "success") {
+        alert(data.message);
+        setShowAddModal(false);
+        setFormData({
+          id: "",
+          nama_lengkap: "",
+          email: "",
+          password: "",
+          role: "orang_tua",
+        });
+        fetchUsers();
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Gagal menambah user:", error);
+    }
+  };
+
+  // --- FUNGSI KLIK TOMBOL EDIT ---
+  const openEditModal = (user) => {
+    // Memasukkan data user yang diklik ke dalam form state
+    setFormData({
+      id: user.id,
+      nama_lengkap: user.nama_lengkap,
+      email: user.email,
+      password: "", // Password dikosongkan agar tidak terubah jika tidak diisi
+      role: user.role,
+    });
+    setShowEditModal(true);
+  };
+
+  // --- FUNGSI UPDATE (EDIT) ---
+  const handleUpdateUser = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        "http://localhost/sigizi-sigap/sigizi-backend/update_user.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        },
+      );
+      const data = await response.json();
+
+      if (data.status === "success") {
+        alert(data.message);
+        setShowEditModal(false);
+        setFormData({
+          id: "",
+          nama_lengkap: "",
+          email: "",
+          password: "",
+          role: "orang_tua",
+        });
+        fetchUsers();
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Gagal mengupdate user:", error);
+    }
+  };
+
+  // --- FUNGSI DELETE (HAPUS) ---
+  const handleDeleteUser = async (id) => {
+    // Munculkan konfirmasi sebelum menghapus
+    if (
+      window.confirm(
+        "Apakah Anda yakin ingin menghapus akun ini? Data yang dihapus tidak dapat dikembalikan.",
+      )
+    ) {
+      try {
+        const response = await fetch(
+          "http://localhost/sigizi-sigap/sigizi-backend/delete_user.php",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: id }),
+          },
+        );
+        const data = await response.json();
+
+        if (data.status === "success") {
+          alert(data.message);
+          fetchUsers(); // Refresh tabel setelah dihapus
+        } else {
+          alert(data.message);
+        }
+      } catch (error) {
+        console.error("Gagal menghapus user:", error);
+      }
+    }
   };
 
   const getRoleBadge = (role) => {
@@ -78,26 +204,37 @@ export default function Users() {
   return (
     <div className="flex min-h-screen bg-sigizi-bg">
       <Sidebar handleLogout={handleLogout} />
-      <div className="flex-1 flex flex-col">
+
+      <div className="flex-1 flex flex-col relative">
         <header className="bg-white shadow px-8 py-4 flex items-center gap-4">
           <h1 className="text-xl font-bold text-gray-800">
-            Manajemen Pengguna
+            MANAJEMEN PENGGUNA
           </h1>
         </header>
 
         <main className="p-8 overflow-y-auto">
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            {/* Header Tabel & Tombol Tambah */}
             <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
               <h2 className="text-lg font-bold text-gray-800">
                 Daftar Akun Terdaftar
               </h2>
-              <button className="bg-sigizi-green hover:bg-sigizi-light-green text-white px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2">
+              <button
+                onClick={() => {
+                  setFormData({
+                    id: "",
+                    nama_lengkap: "",
+                    email: "",
+                    password: "",
+                    role: "orang_tua",
+                  });
+                  setShowAddModal(true);
+                }}
+                className="bg-sigizi-green hover:bg-sigizi-light-green text-white px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2"
+              >
                 <FaPlus /> Tambah Pengguna
               </button>
             </div>
 
-            {/* Tabel Data */}
             <div className="overflow-x-auto">
               {loading ? (
                 <div className="p-8 text-center text-gray-500">
@@ -107,12 +244,10 @@ export default function Users() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-white text-gray-500 text-sm border-b">
-                      <th className="p-4 font-medium text-center">
-                        Nama Lengkap
-                      </th>
-                      <th className="p-4 font-medium text-center">Email</th>
-                      <th className="p-4 font-medium text-center">Role</th>
-                      <th className="p-4 font-medium text-center">Status</th>
+                      <th className="p-4 font-medium">Nama Lengkap</th>
+                      <th className="p-4 font-medium">Email</th>
+                      <th className="p-4 font-medium">Role</th>
+                      <th className="p-4 font-medium">Status</th>
                       <th className="p-4 font-medium text-center">Aksi</th>
                     </tr>
                   </thead>
@@ -126,9 +261,7 @@ export default function Users() {
                           {u.nama_lengkap}
                         </td>
                         <td className="p-4 text-gray-600">{u.email}</td>
-                        <td className="p-4 text-center">
-                          {getRoleBadge(u.role)}
-                        </td>
+                        <td className="p-4">{getRoleBadge(u.role)}</td>
                         <td className="p-4">
                           {u.status_aktif ? (
                             <span className="text-green-600 text-sm font-bold flex items-center gap-1">
@@ -141,13 +274,16 @@ export default function Users() {
                           )}
                         </td>
                         <td className="p-4 flex justify-center gap-3">
+                          {/* Tombol Edit & Delete */}
                           <button
+                            onClick={() => openEditModal(u)}
                             className="text-blue-500 hover:text-blue-700"
-                            title="Edit Role/Data"
+                            title="Edit Data"
                           >
                             <FaEdit />
                           </button>
                           <button
+                            onClick={() => handleDeleteUser(u.id)}
                             className="text-red-500 hover:text-red-700"
                             title="Hapus Akun"
                           >
@@ -156,22 +292,198 @@ export default function Users() {
                         </td>
                       </tr>
                     ))}
-                    {users.length === 0 && (
-                      <tr>
-                        <td
-                          colSpan="5"
-                          className="p-8 text-center text-gray-500"
-                        >
-                          Belum ada data pengguna.
-                        </td>
-                      </tr>
-                    )}
                   </tbody>
                 </table>
               )}
             </div>
           </div>
         </main>
+
+        {/* --- MODAL TAMBAH PENGGUNA --- */}
+        {showAddModal && (
+          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-sigizi-green text-white">
+                <h3 className="font-bold text-lg">Tambah Pengguna Baru</h3>
+                <button
+                  onClick={() => setShowAddModal(false)}
+                  className="hover:text-red-300 transition"
+                >
+                  <FaTimes />
+                </button>
+              </div>
+              <form onSubmit={handleAddUser} className="p-6 space-y-4">
+                {/* (Input field sama seperti sebelumnya) */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Nama Lengkap
+                  </label>
+                  <input
+                    type="text"
+                    name="nama_lengkap"
+                    value={formData.nama_lengkap}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sigizi-light-green outline-none"
+                    placeholder="Masukkan nama"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sigizi-light-green outline-none"
+                    placeholder="Masukkan email"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sigizi-light-green outline-none"
+                    placeholder="Buat password"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Role / Peran
+                  </label>
+                  <select
+                    name="role"
+                    value={formData.role}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sigizi-light-green outline-none bg-white"
+                  >
+                    <option value="orang_tua">Orang Tua</option>
+                    <option value="dinas_kesehatan">Dinas Kesehatan</option>
+                    <option value="pemangku_kepentingan">
+                      Pemangku Kepentingan
+                    </option>
+                    <option value="super_admin">Super Admin</option>
+                  </select>
+                </div>
+                <div className="pt-4 flex gap-3 justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddModal(false)}
+                    className="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-sigizi-green hover:bg-sigizi-light-green text-white rounded-lg font-medium transition"
+                  >
+                    Simpan Pengguna
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* --- MODAL EDIT PENGGUNA --- */}
+        {showEditModal && (
+          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-blue-600 text-white">
+                <h3 className="font-bold text-lg">Edit Pengguna</h3>
+                <button
+                  onClick={() => setShowEditModal(false)}
+                  className="hover:text-red-300 transition"
+                >
+                  <FaTimes />
+                </button>
+              </div>
+              <form onSubmit={handleUpdateUser} className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Nama Lengkap
+                  </label>
+                  <input
+                    type="text"
+                    name="nama_lengkap"
+                    value={formData.nama_lengkap}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Reset Password (Opsional)
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    placeholder="Kosongkan jika tidak ingin mengubah password"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Role / Peran
+                  </label>
+                  <select
+                    name="role"
+                    value={formData.role}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                  >
+                    <option value="orang_tua">Orang Tua</option>
+                    <option value="dinas_kesehatan">Dinas Kesehatan</option>
+                    <option value="pemangku_kepentingan">
+                      Pemangku Kepentingan
+                    </option>
+                    <option value="super_admin">Super Admin</option>
+                  </select>
+                </div>
+                <div className="pt-4 flex gap-3 justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setShowEditModal(false)}
+                    className="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition"
+                  >
+                    Update Data
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
