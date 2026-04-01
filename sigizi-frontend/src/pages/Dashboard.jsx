@@ -7,6 +7,7 @@ import {
   FaCheckCircle,
   FaChartLine,
 } from "react-icons/fa";
+import MapDashboard from "../components/MapDashboard";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -95,12 +96,17 @@ export default function Dashboard() {
             />
           </div>
 
-          {/* Tempat untuk Peta/Grafik nantinya */}
-          <div className="bg-white rounded-xl shadow-sm p-6 min-h-[400px] flex items-center justify-center border border-gray-100">
-            <p className="text-gray-400 font-medium">
-              Area ini nanti akan diisi dengan Grafik Tren Bulanan & Tabel
-              Wilayah Rawan
-            </p>
+          {/* PETA SPASIAL WEB GIS */}
+          <div className="bg-white rounded-xl shadow-sm p-6 mb-8 border border-gray-100">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-bold text-gray-800">
+                Peta Sebaran Kerentanan Gizi Sumatera Utara
+              </h3>
+              <span className="bg-sigizi-light-green text-white text-xs px-3 py-1 rounded-full">
+                Live Data
+              </span>
+            </div>
+            <MapDashboard />
           </div>
         </main>
       </div>
