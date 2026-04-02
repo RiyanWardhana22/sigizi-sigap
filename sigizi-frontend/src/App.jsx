@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
 import MachineLearning from "./pages/MachineLearning";
 import DataAnak from "./pages/DataAnak";
+import VerifikasiData from "./pages/VerifikasiData";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/dashboard/users" element={<Users />} />
         <Route path="/dashboard/ml" element={<MachineLearning />} />
         <Route path="/dashboard/anak" element={<DataAnak />} />
+        <Route path="/dashboard/verifikasi" element={<VerifikasiData />} />
       </Routes>
     </BrowserRouter>
   );
