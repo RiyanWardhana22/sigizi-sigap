@@ -7,6 +7,7 @@ import {
   FaSignOutAlt,
   FaBaby,
   FaClipboardCheck,
+  FaChartPie,
 } from "react-icons/fa";
 
 export default function Sidebar({ handleLogout }) {
@@ -25,6 +26,11 @@ export default function Sidebar({ handleLogout }) {
       name: "Verifikasi Data",
       icon: <FaClipboardCheck />,
       path: "/dashboard/verifikasi",
+    },
+    {
+      name: "Laporan Kebijakan",
+      icon: <FaChartPie />,
+      path: "/dashboard/laporan",
     },
   ];
 
