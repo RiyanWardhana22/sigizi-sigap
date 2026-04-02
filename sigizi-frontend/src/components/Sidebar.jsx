@@ -5,6 +5,7 @@ import {
   FaUsers,
   FaCogs,
   FaSignOutAlt,
+  FaBaby,
 } from "react-icons/fa";
 
 export default function Sidebar({ handleLogout }) {
@@ -18,6 +19,7 @@ export default function Sidebar({ handleLogout }) {
     },
     { name: "Manajemen Pengguna", icon: <FaUsers />, path: "/dashboard/users" },
     { name: "Machine Learning", icon: <FaCogs />, path: "/dashboard/ml" },
+    { name: "Data Anak & Gizi", icon: <FaBaby />, path: "/dashboard/anak" },
   ];
 
   return (
