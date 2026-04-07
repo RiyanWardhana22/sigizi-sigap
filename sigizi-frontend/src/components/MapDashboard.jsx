@@ -58,12 +58,16 @@ export default function MapDashboard() {
   }, []);
 
   const centerPosition = [2.115355, 99.545097];
-  const getMarkerColor = (totalStunting) => {
-    return totalStunting > 0 ? "#ef4444" : "#22c55e";
+  const getMarkerColor = (totalAnak, totalStunting, totalPraStunting) => {
+    if (totalAnak === 0 || totalAnak === "0") return "#9ca3af";
+    if (totalStunting > 0) return "#ef4444";
+    if (totalPraStunting > 0) return "#eab308";
+    return "#22c55e";
   };
   const getMarkerRadius = (totalAnak) => {
     const baseRadius = 8;
-    return baseRadius + totalAnak * 3;
+    const anakCount = parseInt(totalAnak) || 0;
+    return baseRadius + anakCount * 3;
   };
 
   return (
@@ -78,19 +82,23 @@ export default function MapDashboard() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-
-        {/* Melakukan looping pada data laporan dari database */}
         {laporan.map((wilayah, index) => {
           const posisi = koordinatWilayah[wilayah.nama_kabupaten];
           if (posisi) {
+            const warnaLingkaran = getMarkerColor(
+              wilayah.total_anak,
+              wilayah.total_stunting,
+              wilayah.total_prastunting,
+            );
+
             return (
               <CircleMarker
                 key={index}
                 center={posisi}
                 pathOptions={{
-                  color: getMarkerColor(wilayah.total_stunting),
-                  fillColor: getMarkerColor(wilayah.total_stunting),
-                  fillOpacity: 0.6,
+                  color: warnaLingkaran,
+                  fillColor: warnaLingkaran,
+                  fillOpacity: 0.7,
                 }}
                 radius={getMarkerRadius(wilayah.total_anak)}
               >
@@ -99,21 +107,30 @@ export default function MapDashboard() {
                     <h3 className="font-bold text-gray-800 border-b pb-1 mb-2">
                       {wilayah.nama_kabupaten}
                     </h3>
-                    <p className="text-sm text-gray-600 mb-1">
-                      Anak Terdata: <strong>{wilayah.total_anak}</strong>
+                    <p className="text-sm text-gray-600 mb-2 border-b pb-1">
+                      Total Anak Terdata: <strong>{wilayah.total_anak}</strong>
                     </p>
-                    <p className="text-sm text-gray-600 mb-1">
-                      Gizi Normal:{" "}
-                      <span className="text-green-600 font-bold">
-                        {wilayah.total_normal || 0}
-                      </span>
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Stunting:{" "}
-                      <span className="text-red-600 font-bold">
-                        {wilayah.total_stunting || 0}
-                      </span>
-                    </p>
+
+                    <div className="flex flex-col gap-1 text-sm text-left">
+                      <p className="flex justify-between items-center">
+                        <span className="text-green-600">Normal:</span>
+                        <span className="font-bold bg-green-100 px-2 rounded text-green-700">
+                          {wilayah.total_normal || 0}
+                        </span>
+                      </p>
+                      <p className="flex justify-between items-center">
+                        <span className="text-yellow-600">Pra-stunting:</span>
+                        <span className="font-bold bg-yellow-100 px-2 rounded text-yellow-700">
+                          {wilayah.total_prastunting || 0}
+                        </span>
+                      </p>
+                      <p className="flex justify-between items-center">
+                        <span className="text-red-600">Stunting:</span>
+                        <span className="font-bold bg-red-100 px-2 rounded text-red-700">
+                          {wilayah.total_stunting || 0}
+                        </span>
+                      </p>
+                    </div>
                   </div>
                 </Popup>
               </CircleMarker>
