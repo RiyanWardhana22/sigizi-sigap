@@ -15,10 +15,7 @@ import {
 
 export default function Sidebar({ handleLogout }) {
   const location = useLocation();
-  // State untuk mengontrol buka/tutup sidebar di layar kecil
   const [isOpen, setIsOpen] = useState(false);
-
-  // Otomatis menutup sidebar jika pengguna mengeklik menu dan berpindah halaman
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
@@ -47,8 +44,6 @@ export default function Sidebar({ handleLogout }) {
 
   return (
     <>
-      {/* 1. Tombol Hamburger Mengapung untuk Layar Kecil (Mobile & Tablet) */}
-      {/* Menggunakan lg:hidden agar tombol ini hilang saat di laptop/desktop */}
       <button
         onClick={() => setIsOpen(true)}
         className="lg:hidden fixed bottom-6 right-6 z-40 bg-sigizi-green text-white p-4 rounded-full shadow-2xl focus:outline-none hover:bg-sigizi-light-green transition-transform transform hover:scale-105"
@@ -57,8 +52,6 @@ export default function Sidebar({ handleLogout }) {
         <FaBars className="text-xl" />
       </button>
 
-      {/* 2. Overlay Gelap saat Sidebar Terbuka */}
-      {/* Berfungsi agar pengguna bisa menutup sidebar dengan mengeklik area luar */}
       {isOpen && (
         <div
           className="lg:hidden fixed inset-0 bg-black bg-opacity-60 z-40 transition-opacity"
@@ -67,7 +60,6 @@ export default function Sidebar({ handleLogout }) {
       )}
 
       {/* 3. Sidebar Container Utama */}
-      {/* Menggunakan transform -translate-x-full untuk menyembunyikan ke kiri, dan translate-x-0 untuk memunculkan */}
       <div
         className={`fixed inset-y-0 left-0 z-50 w-64 bg-sigizi-green text-white min-h-screen flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out 
         ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:relative lg:translate-x-0`}
@@ -78,7 +70,6 @@ export default function Sidebar({ handleLogout }) {
             <br className="hidden lg:block" />
             SIGAP
           </h2>
-          {/* Tombol Tutup (X) khusus untuk layar kecil */}
           <button
             onClick={() => setIsOpen(false)}
             className="lg:hidden text-white hover:text-red-300 text-2xl focus:outline-none transition"

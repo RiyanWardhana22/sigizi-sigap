@@ -6,6 +6,7 @@ import MachineLearning from "./pages/MachineLearning";
 import DataAnak from "./pages/DataAnak";
 import VerifikasiData from "./pages/VerifikasiData";
 import LaporanPemangku from "./pages/LaporanPemangku";
+import PetaSpasial from "./pages/PetaSpasial";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard/peta" element={<PetaSpasial />} />
         <Route path="/dashboard/users" element={<Users />} />
         <Route path="/dashboard/ml" element={<MachineLearning />} />
         <Route path="/dashboard/anak" element={<DataAnak />} />
