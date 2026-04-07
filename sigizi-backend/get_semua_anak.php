@@ -1,10 +1,9 @@
 <?php
 require_once 'config.php';
-
 try {
-            $query = "
+    $query = "
         SELECT 
-            a.id, a.nama_anak, a.tanggal_lahir, a.jenis_kelamin, 
+            a.id, a.nama_anak, a.tanggal_lahir, a.jenis_kelamin, a.status_verifikasi,
             u.nama_lengkap AS nama_orang_tua,
             (SELECT status_gizi FROM pengukuran p WHERE p.anak_id = a.id ORDER BY tanggal_pengukuran DESC LIMIT 1) AS status_gizi_terakhir,
             (SELECT tinggi_badan FROM pengukuran p WHERE p.anak_id = a.id ORDER BY tanggal_pengukuran DESC LIMIT 1) AS tinggi_terakhir,
@@ -13,10 +12,10 @@ try {
         JOIN users u ON a.orang_tua_id = u.id
         ORDER BY a.created_at DESC
     ";
-            $stmt = $conn->prepare($query);
-            $stmt->execute();
-            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            echo json_encode(["status" => "success", "data" => $data]);
+    $stmt = $conn->prepare($query);
+    $stmt->execute();
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    echo json_encode(["status" => "success", "data" => $data]);
 } catch (PDOException $e) {
-            echo json_encode(["status" => "error", "message" => "Kesalahan Sistem: " . $e->getMessage()]);
+    echo json_encode(["status" => "error", "message" => "Kesalahan Sistem: " . $e->getMessage()]);
 }

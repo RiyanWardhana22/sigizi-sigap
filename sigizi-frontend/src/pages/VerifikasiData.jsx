@@ -5,6 +5,7 @@ import {
   FaClipboardCheck,
   FaCheck,
   FaExclamationTriangle,
+  FaCheckDouble,
 } from "react-icons/fa";
 
 export default function VerifikasiData() {
@@ -22,7 +23,7 @@ export default function VerifikasiData() {
         parsedUser.role !== "dinas_kesehatan" &&
         parsedUser.role !== "super_admin"
       ) {
-        alert("Akses Ditolak! Halaman khusus Dinas Kesehatan.");
+        alert("Akses Ditolak!");
         navigate("/dashboard");
       } else {
         fetchDataAnak();
@@ -51,14 +52,42 @@ export default function VerifikasiData() {
     navigate("/");
   };
 
-  const handleVerifikasi = (nama) => {
-    alert(`Data anak bernama ${nama} berhasil diverifikasi dan disetujui!`);
+  const handleVerifikasi = async (id, nama) => {
+    if (
+      window.confirm(
+        `Apakah Anda yakin data pengukuran atas nama ${nama} sudah valid?`,
+      )
+    ) {
+      try {
+        const response = await fetch(
+          "http://localhost/sigizi-sigap/sigizi-backend/verifikasi_anak.php",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: id }),
+          },
+        );
+        const data = await response.json();
+
+        if (data.status === "success") {
+          alert(data.message);
+          fetchDataAnak();
+        } else {
+          alert(data.message);
+        }
+      } catch (error) {
+        console.error("Gagal verifikasi:", error);
+      }
+    }
   };
+
+  const totalMenunggu = dataAnak.filter(
+    (a) => a.status_verifikasi === "Menunggu",
+  ).length;
 
   return (
     <div className="flex min-h-screen bg-sigizi-bg">
       <Sidebar handleLogout={handleLogout} />
-
       <div className="flex-1 flex flex-col">
         <header className="bg-white shadow px-8 py-4 flex items-center gap-4">
           <FaClipboardCheck className="text-2xl text-sigizi-green" />
@@ -74,7 +103,7 @@ export default function VerifikasiData() {
                 Daftar Input Data Orang Tua
               </h2>
               <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold border border-blue-200">
-                Menunggu Verifikasi: {dataAnak.length} Anak
+                Menunggu Verifikasi: {totalMenunggu} Anak
               </span>
             </div>
 
@@ -89,9 +118,7 @@ export default function VerifikasiData() {
                     <tr className="bg-white text-gray-500 text-sm border-b">
                       <th className="p-4 font-medium">Nama Anak</th>
                       <th className="p-4 font-medium">Nama Orang Tua</th>
-                      <th className="p-4 font-medium">
-                        Pengukuran Terakhir (TB / BB)
-                      </th>
+                      <th className="p-4 font-medium">Pengukuran Terakhir</th>
                       <th className="p-4 font-medium">Status Gizi</th>
                       <th className="p-4 font-medium text-center">Tindakan</th>
                     </tr>
@@ -100,7 +127,7 @@ export default function VerifikasiData() {
                     {dataAnak.map((anak) => (
                       <tr
                         key={anak.id}
-                        className="border-b hover:bg-gray-50 transition"
+                        className={`border-b transition ${anak.status_verifikasi === "Disetujui" ? "bg-gray-50 opacity-70" : "hover:bg-gray-50"}`}
                       >
                         <td className="p-4 font-bold text-gray-800">
                           {anak.nama_anak}
@@ -124,25 +151,25 @@ export default function VerifikasiData() {
                           )}
                         </td>
                         <td className="p-4 flex justify-center gap-2">
-                          <button
-                            onClick={() => handleVerifikasi(anak.nama_anak)}
-                            className="bg-sigizi-green hover:bg-sigizi-light-green text-white px-3 py-1 rounded text-sm flex items-center gap-1 transition"
-                          >
-                            <FaCheck /> Verifikasi
-                          </button>
+                          {/* Logika Perubahan Tombol */}
+                          {anak.status_verifikasi === "Menunggu" ? (
+                            <button
+                              onClick={() =>
+                                handleVerifikasi(anak.id, anak.nama_anak)
+                              }
+                              className="bg-sigizi-green hover:bg-sigizi-light-green text-white px-3 py-1 rounded text-sm flex items-center gap-1 transition shadow-sm"
+                            >
+                              <FaCheck /> Verifikasi
+                            </button>
+                          ) : (
+                            <span className="text-gray-500 font-bold text-sm flex items-center gap-1">
+                              <FaCheckDouble className="text-green-500" />{" "}
+                              Tervalidasi
+                            </span>
+                          )}
                         </td>
                       </tr>
                     ))}
-                    {dataAnak.length === 0 && (
-                      <tr>
-                        <td
-                          colSpan="5"
-                          className="p-8 text-center text-gray-500"
-                        >
-                          Belum ada data anak yang masuk.
-                        </td>
-                      </tr>
-                    )}
                   </tbody>
                 </table>
               )}
