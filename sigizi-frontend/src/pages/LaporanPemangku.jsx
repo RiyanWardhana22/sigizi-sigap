@@ -1,18 +1,14 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { FaFilePdf, FaChartPie, FaPrint, FaBuilding } from "react-icons/fa";
-import { useReactToPrint } from "react-to-print";
-
+import { FaFilePdf, FaChartPie, FaBuilding } from "react-icons/fa";
 export default function LaporanPemangku() {
   const navigate = useNavigate();
   const [laporan, setLaporan] = useState([]);
   const [loading, setLoading] = useState(true);
-  const componentRef = useRef();
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-    documentTitle: "Laporan_Kerentanan_Gizi_Sumatera_Utara",
-  });
+  const handlePrint = () => {
+    window.print();
+  };
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -61,18 +57,19 @@ export default function LaporanPemangku() {
   });
 
   return (
-    <div className="flex min-h-screen bg-sigizi-bg">
-      <Sidebar handleLogout={handleLogout} />
+    <div className="flex min-h-screen bg-sigizi-bg print:bg-white">
+      <div className="print:hidden">
+        <Sidebar handleLogout={handleLogout} />
+      </div>
 
-      <div className="flex-1 flex flex-col relative">
-        <header className="bg-white shadow px-8 py-4 flex items-center justify-between">
+      <div className="flex-1 flex flex-col relative print:block">
+        <header className="bg-white shadow px-8 py-4 flex items-center justify-between print:hidden">
           <div className="flex items-center gap-4">
             <FaChartPie className="text-2xl text-sigizi-green" />
             <h1 className="text-xl font-bold text-gray-800">
               Analitik Kebijakan & Laporan
             </h1>
           </div>
-          {/* Tombol Cetak PDF */}
           <button
             onClick={handlePrint}
             className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md transition flex items-center gap-2"
@@ -81,14 +78,12 @@ export default function LaporanPemangku() {
           </button>
         </header>
 
-        <main className="p-8 overflow-y-auto flex justify-center">
-          {/* KERTAS LAPORAN (Area ini yang akan dicetak/di-export ke PDF) */}
+        {/* Area Utama. Hilangkan padding saat print agar rapi */}
+        <main className="p-8 overflow-y-auto flex justify-center print:p-0 print:overflow-visible">
           <div
-            ref={componentRef}
-            className="bg-white shadow-lg p-10 w-full max-w-4xl min-h-[1056px] border border-gray-200"
+            className="bg-white shadow-lg p-10 w-full max-w-4xl min-h-[1056px] border border-gray-200 print:shadow-none print:border-none print:p-0 print:w-full print:max-w-none"
             style={{ color: "black" }}
           >
-            {/* Kop Surat Laporan */}
             <div className="text-center border-b-4 border-sigizi-green pb-6 mb-6">
               <h1 className="text-3xl font-black text-sigizi-green tracking-wide">
                 SI-GIZI SIGAP
@@ -109,10 +104,11 @@ export default function LaporanPemangku() {
             </div>
 
             {loading ? (
-              <p className="text-center text-gray-500">Menyusun Laporan...</p>
+              <p className="text-center text-gray-500 print:hidden">
+                Menyusun Laporan...
+              </p>
             ) : (
               <>
-                {/* Tabel Rekapitulasi */}
                 <table className="w-full text-left border-collapse border border-gray-300 mb-8">
                   <thead>
                     <tr className="bg-gray-100 text-gray-800 text-sm">
@@ -166,7 +162,7 @@ export default function LaporanPemangku() {
                   </tbody>
                 </table>
 
-                {/* Rekomendasi Kebijakan (Dummy template yang bisa disesuaikan nanti) */}
+                {/* Rekomendasi Kebijakan */}
                 <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
                   <h3 className="font-bold text-blue-800 mb-2">
                     Rekomendasi Kebijakan Berbasis Bukti:
