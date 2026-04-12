@@ -34,7 +34,7 @@ export default function VerifikasiData() {
   const fetchDataAnak = async () => {
     try {
       const response = await fetch(
-        "http://localhost/sigizi-sigap/sigizi-backend/get_semua_anak.php",
+        `${import.meta.env.VITE_API_BASE_URL}/get_semua_anak.php`,
       );
       const data = await response.json();
       if (data.status === "success") {
@@ -60,7 +60,7 @@ export default function VerifikasiData() {
     ) {
       try {
         const response = await fetch(
-          "http://localhost/sigizi-sigap/sigizi-backend/verifikasi_anak.php",
+          `${import.meta.env.VITE_API_BASE_URL}/verifikasi_anak.php`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },

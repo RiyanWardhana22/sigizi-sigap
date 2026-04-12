@@ -44,7 +44,7 @@ export default function MapDashboard() {
     const fetchPeta = async () => {
       try {
         const response = await fetch(
-          "http://localhost/sigizi-sigap/sigizi-backend/get_laporan.php",
+          `${import.meta.env.VITE_API_BASE_URL}/get_laporan.php`,
         );
         const data = await response.json();
         if (data.status === "success") {

@@ -33,7 +33,7 @@ export default function Dashboard() {
   const fetchStats = async () => {
     try {
       const response = await fetch(
-        "http://localhost/sigizi-sigap/sigizi-backend/get_dashboard_stats.php",
+        `${import.meta.env.VITE_API_BASE_URL}/get_dashboard_stats.php`,
       );
       const data = await response.json();
       if (data.status === "success") {

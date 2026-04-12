@@ -6,16 +6,11 @@ import { FaPlus, FaEdit, FaTrash, FaUserShield, FaTimes } from "react-icons/fa";
 export default function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // State untuk modal Create dan Edit
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-
   const navigate = useNavigate();
-
-  // State form digunakan bersama untuk Add dan Edit
   const [formData, setFormData] = useState({
-    id: "", // ID tambahan untuk proses Edit
+    id: "",
     nama_lengkap: "",
     email: "",
     password: "",
@@ -25,7 +20,7 @@ export default function Users() {
   const fetchUsers = async () => {
     try {
       const response = await fetch(
-        "http://localhost/sigizi-sigap//sigizi-backend/get_users.php",
+        `${import.meta.env.VITE_API_BASE_URL}/get_users.php`,
       );
       const data = await response.json();
       if (data.status === "success") {
@@ -62,12 +57,11 @@ export default function Users() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // --- FUNGSI CREATE (TAMBAH) ---
   const handleAddUser = async (e) => {
     e.preventDefault();
     try {
       const response = await fetch(
-        "http://localhost/sigizi-sigap/sigizi-backend/add_user.php",
+        `${import.meta.env.VITE_API_BASE_URL}/add_user.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -95,25 +89,22 @@ export default function Users() {
     }
   };
 
-  // --- FUNGSI KLIK TOMBOL EDIT ---
   const openEditModal = (user) => {
-    // Memasukkan data user yang diklik ke dalam form state
     setFormData({
       id: user.id,
       nama_lengkap: user.nama_lengkap,
       email: user.email,
-      password: "", // Password dikosongkan agar tidak terubah jika tidak diisi
+      password: "",
       role: user.role,
     });
     setShowEditModal(true);
   };
 
-  // --- FUNGSI UPDATE (EDIT) ---
   const handleUpdateUser = async (e) => {
     e.preventDefault();
     try {
       const response = await fetch(
-        "http://localhost/sigizi-sigap/sigizi-backend/update_user.php",
+        `${import.meta.env.VITE_API_BASE_URL}/update_user.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -141,9 +132,7 @@ export default function Users() {
     }
   };
 
-  // --- FUNGSI DELETE (HAPUS) ---
   const handleDeleteUser = async (id) => {
-    // Munculkan konfirmasi sebelum menghapus
     if (
       window.confirm(
         "Apakah Anda yakin ingin menghapus akun ini? Data yang dihapus tidak dapat dikembalikan.",
@@ -151,7 +140,7 @@ export default function Users() {
     ) {
       try {
         const response = await fetch(
-          "http://localhost/sigizi-sigap/sigizi-backend/delete_user.php",
+          `${import.meta.env.VITE_API_BASE_URL}/delete_user.php`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -162,7 +151,7 @@ export default function Users() {
 
         if (data.status === "success") {
           alert(data.message);
-          fetchUsers(); // Refresh tabel setelah dihapus
+          fetchUsers();
         } else {
           alert(data.message);
         }
@@ -274,7 +263,6 @@ export default function Users() {
                           )}
                         </td>
                         <td className="p-4 flex justify-center gap-3">
-                          {/* Tombol Edit & Delete */}
                           <button
                             onClick={() => openEditModal(u)}
                             className="text-blue-500 hover:text-blue-700"
@@ -313,7 +301,6 @@ export default function Users() {
                 </button>
               </div>
               <form onSubmit={handleAddUser} className="p-6 space-y-4">
-                {/* (Input field sama seperti sebelumnya) */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Nama Lengkap

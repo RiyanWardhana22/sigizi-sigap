@@ -27,7 +27,7 @@ export default function Login() {
     if (isLoginView) {
       try {
         const response = await fetch(
-          "http://localhost/sigizi-sigap/sigizi-backend/login.php",
+          `${import.meta.env.VITE_API_BASE_URL}/login.php`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -54,7 +54,7 @@ export default function Login() {
     } else {
       try {
         const response = await fetch(
-          "http://localhost/sigizi-sigap/sigizi-backend/register.php",
+          `${import.meta.env.VITE_API_BASE_URL}/register.php`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },

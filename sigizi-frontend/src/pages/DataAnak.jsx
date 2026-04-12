@@ -51,7 +51,7 @@ export default function DataAnak() {
   const fetchRiwayatAnak = async (userId) => {
     try {
       const response = await fetch(
-        `http://localhost/sigizi-sigap/sigizi-backend/get_riwayat_anak.php?user_id=${userId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/get_riwayat_anak.php?user_id=${userId}`,
       );
       const data = await response.json();
 
@@ -87,7 +87,7 @@ export default function DataAnak() {
 
     try {
       const response = await fetch(
-        "http://localhost/sigizi-sigap/sigizi-backend/add_anak.php",
+        `${import.meta.env.VITE_API_BASE_URL}/add_anak.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

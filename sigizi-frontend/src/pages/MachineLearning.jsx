@@ -52,7 +52,7 @@ export default function MachineLearning() {
     formData.append("algorithm", algorithm);
     try {
       const response = await fetch(
-        "http://localhost/sigizi-sigap/sigizi-backend/train_model.php",
+        `${import.meta.env.VITE_API_BASE_URL}/train_model.php`,
         {
           method: "POST",
           body: formData,
