@@ -23,7 +23,6 @@ export default function PetaSpasial() {
   };
 
   if (!user) return null;
-
   return (
     <div className="flex min-h-screen bg-sigizi-bg">
       <Sidebar handleLogout={handleLogout} />
