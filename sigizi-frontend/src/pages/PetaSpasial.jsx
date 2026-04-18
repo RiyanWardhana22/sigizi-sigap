@@ -24,7 +24,6 @@ export default function PetaSpasial() {
   };
 
   if (!user) return null;
-
   return (
     <div className="flex min-h-screen bg-gray-50 font-sans">
       <Sidebar handleLogout={handleLogout} />
