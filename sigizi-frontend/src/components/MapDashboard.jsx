@@ -140,47 +140,96 @@ export default function MapDashboard({ mode = "balita" }) {
   };
 
   const onEachFeature = (feature, layer) => {
-    // Pastikan menggunakan kunci yang sama: kab_kota
     const namaKabGeoJSON = feature.properties.kab_kota || "Wilayah Tidak Diketahui";
     
+    // 1. Cari Data Prediksi ML & Input Dinas
     const dataWilayah = agregatML.find((item) => {
-      const namaDB = item.kabupaten_kota.toLowerCase()
-        .replace("kabupaten ", "").replace("kota ", "").trim();
-      const namaGeo = namaKabGeoJSON.toLowerCase()
-        .replace("kabupaten ", "").replace("kota ", "").trim();
+      const namaDB = item.kabupaten_kota.toLowerCase().replace("kabupaten ", "").replace("kota ", "").trim();
+      const namaGeo = namaKabGeoJSON.toLowerCase().replace("kabupaten ", "").replace("kota ", "").trim();
       return namaDB === namaGeo;
     });
 
+    // 2. Cari Data Faktual Stunting (Mikro)
+    const dataFakta = laporan.find((item) => {
+      const namaLaporan = item.nama_kabupaten.toLowerCase().replace("kabupaten ", "").replace("kota ", "").trim();
+      const namaGeo = namaKabGeoJSON.toLowerCase().replace("kabupaten ", "").replace("kota ", "").trim();
+      return namaLaporan === namaGeo;
+    });
+
+    let risikoTeks = "BELUM ADA DATA";
+    let warnaRisiko = "#9ca3af";
+
     if (dataWilayah) {
-      layer.bindPopup(`
-        <div style="text-align: center; min-width: 150px;">
-          <h3 style="font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 5px;">
-            ${dataWilayah.kabupaten_kota}
-          </h3>
-          <p style="font-size: 11px; color: gray; margin: 0; text-transform: uppercase;">Tingkat Risiko (ML):</p>
-          <p style="font-weight: 900; font-size: 18px; margin: 5px 0; color: ${
-            dataWilayah.tingkat_kerentanan === 'Rendah' ? '#16a34a' :
-            dataWilayah.tingkat_kerentanan === 'Sedang' ? '#ca8a04' :
-            dataWilayah.tingkat_kerentanan === 'Tinggi' ? '#ea580c' : '#dc2626'
-          };">${dataWilayah.tingkat_kerentanan.toUpperCase()}</p>
-        </div>
-      `);
-    } else {
-      layer.bindPopup(`
-        <div style="text-align: center;">
-          <b>${namaKabGeoJSON}</b><br/>
-          <span style="color: gray; font-size: 11px;">Data agregat belum diinput.</span>
-        </div>
-      `);
+      risikoTeks = dataWilayah.tingkat_kerentanan.toUpperCase();
+      if (risikoTeks === 'RENDAH') warnaRisiko = '#16a34a';
+      else if (risikoTeks === 'SEDANG') warnaRisiko = '#ca8a04';
+      else if (risikoTeks === 'TINGGI') warnaRisiko = '#ea580c';
+      else warnaRisiko = '#dc2626';
     }
 
+    // 3. Susun HTML Popup dengan Desain 2 Kartu (Scrollable)
+    layer.bindPopup(`
+      <div style="text-align: left; min-width: 250px; max-height: 350px; overflow-y: auto; padding-right: 5px; font-family: ui-sans-serif, system-ui, sans-serif;">
+        <h3 style="font-weight: 900; border-bottom: 2px solid #f3f4f6; padding-bottom: 8px; margin-bottom: 12px; font-size: 15px; color: #1f2937; text-transform: uppercase;">
+          ${namaKabGeoJSON}
+        </h3>
+
+        ${dataWilayah ? `
+        <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #cbd5e1; padding-bottom: 8px; margin-bottom: 8px;">
+            <span style="font-size: 10px; color: #475569; font-weight: 800; letter-spacing: 0.5px;">PREDIKSI RISIKO (ML)</span>
+            <span style="font-weight: 900; font-size: 12px; padding: 3px 8px; border-radius: 4px; background-color: ${warnaRisiko}20; color: ${warnaRisiko};">
+              ${risikoTeks}
+            </span>
+          </div>
+          
+          <p style="font-size: 10px; color: #475569; font-weight: 800; letter-spacing: 0.5px; margin: 0 0 6px 0;">FAKTOR DETERMINAN (INPUT DINAS):</p>
+          <table style="width: 100%; font-size: 11px; color: #334155; border-collapse: collapse;">
+            <tbody>
+              <tr><td style="padding: 2px 0;">Bayi BBLR</td><td style="text-align: right; font-weight: 700; color: #ef4444;">${parseFloat(dataWilayah.p_bblr).toFixed(1)}%</td></tr>
+              <tr><td style="padding: 2px 0;">Balita Gizi Buruk</td><td style="text-align: right; font-weight: 700; color: #ef4444;">${parseFloat(dataWilayah.p_gizi_buruk).toFixed(1)}%</td></tr>
+              <tr><td style="padding: 2px 0;">Sanitasi Layak</td><td style="text-align: right; font-weight: 700; color: #22c55e;">${parseFloat(dataWilayah.p_sanitasi).toFixed(1)}%</td></tr>
+              <tr><td style="padding: 2px 0;">Air Bersih</td><td style="text-align: right; font-weight: 700; color: #22c55e;">${parseFloat(dataWilayah.p_air).toFixed(1)}%</td></tr>
+              <tr><td style="padding: 2px 0;">Pendidikan Ibu &lt; SMP</td><td style="text-align: right; font-weight: 700; color: #f59e0b;">${parseFloat(dataWilayah.p_ibu).toFixed(1)}%</td></tr>
+              <tr><td style="padding: 2px 0;">Rata-rata Penghasilan</td><td style="text-align: right; font-weight: 700; color: #3b82f6;">Rp${Number(dataWilayah.penghasilan).toLocaleString('id-ID')}</td></tr>
+            </tbody>
+          </table>
+          <div style="font-size: 9px; color: #94a3b8; text-align: right; margin-top: 6px;">Diperbarui: ${dataWilayah.tanggal_input}</div>
+        </div>
+        ` : `
+        <div style="background-color: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 12px; margin-bottom: 12px; text-align: center;">
+          <p style="font-size: 11px; color: #dc2626; font-weight: 600; margin: 0;">Data agregat faktor sosial-ekonomi belum diinput oleh Dinas.</p>
+        </div>
+        `}
+
+        <div style="background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px;">
+          <p style="font-size: 10px; font-weight: 800; margin: 0 0 8px 0; color: #4b5563; letter-spacing: 0.5px;">LAPORAN KASUS BALITA (MIKRO)</p>
+          
+          <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px solid #f3f4f6;">
+            <span style="color: #6b7280;">Total Anak Terukur</span> 
+            <b style="color: #111827;">${dataFakta ? dataFakta.total_anak : 0}</b>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
+            <span style="color: #6b7280;">Gizi Normal</span> 
+            <b style="color: #16a34a;">${dataFakta ? dataFakta.total_normal : 0}</b>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
+            <span style="color: #6b7280;">Pra-stunting</span> 
+            <b style="color: #ca8a04;">${dataFakta ? dataFakta.total_prastunting : 0}</b>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 11px;">
+            <span style="color: #6b7280;">Stunting</span> 
+            <b style="color: #dc2626;">${dataFakta ? dataFakta.total_stunting : 0}</b>
+          </div>
+        </div>
+
+      </div>
+    `);
+
+    // Efek Hover Poligon
     layer.on({
-      mouseover: (e) => {
-        e.target.setStyle({ weight: 3, color: '#666', fillOpacity: 0.9 });
-      },
-      mouseout: (e) => {
-        e.target.setStyle({ weight: 1.5, color: 'white', fillOpacity: dataWilayah ? 0.8 : 0.6 });
-      }
+      mouseover: (e) => { e.target.setStyle({ weight: 3, color: '#666', fillOpacity: 0.9 }); },
+      mouseout: (e) => { e.target.setStyle({ weight: 1.5, color: 'white', fillOpacity: dataWilayah ? 0.8 : 0.6 }); }
     });
   };
 

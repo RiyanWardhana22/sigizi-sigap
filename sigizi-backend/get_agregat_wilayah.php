@@ -6,7 +6,7 @@ header('Content-Type: application/json');
 
 try {
     // 2. Ambil data nama kabupaten dan tingkat kerentanannya saja
-    $sql = "SELECT kabupaten_kota, tingkat_kerentanan FROM agregat_wilayah";
+    $sql = "SELECT * FROM agregat_wilayah";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     
