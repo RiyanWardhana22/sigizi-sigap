@@ -4,7 +4,7 @@ import {
   FaHome,
   FaMapMarkedAlt,
   FaUsers,
-  FaCogs,
+  FaDatabase, // Mengganti FaCogs dengan FaDatabase
   FaSignOutAlt,
   FaBaby,
   FaClipboardCheck,
@@ -16,31 +16,37 @@ import {
 export default function Sidebar({ handleLogout }) {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const [userRole, setUserRole] = useState("");
+
+  // 1. Ambil Role User dari LocalStorage saat Sidebar dimuat
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUserRole(parsedUser.role);
+    }
+  }, []);
+
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
 
+  // 2. Tambahkan properti 'roles' pada menuItems
   const menuItems = [
-    { name: "Ringkasan", icon: <FaHome />, path: "/dashboard" },
-    {
-      name: "Peta Spasial GIS",
-      icon: <FaMapMarkedAlt />,
-      path: "/dashboard/peta",
-    },
-    { name: "Manajemen Pengguna", icon: <FaUsers />, path: "/dashboard/users" },
-    { name: "Machine Learning", icon: <FaCogs />, path: "/dashboard/ml" },
-    { name: "Data Anak & Gizi", icon: <FaBaby />, path: "/dashboard/anak" },
-    {
-      name: "Verifikasi Data",
-      icon: <FaClipboardCheck />,
-      path: "/dashboard/verifikasi",
-    },
-    {
-      name: "Laporan Kebijakan",
-      icon: <FaChartPie />,
-      path: "/dashboard/laporan",
-    },
+    { name: "Ringkasan", icon: <FaHome />, path: "/dashboard", roles: ["super_admin", "dinas_kesehatan", "orang_tua", "pemangku_kepentingan"] },
+    { name: "Peta Spasial GIS", icon: <FaMapMarkedAlt />, path: "/dashboard/peta", roles: ["super_admin", "dinas_kesehatan", "pemangku_kepentingan"] },
+    { name: "Manajemen Pengguna", icon: <FaUsers />, path: "/dashboard/users", roles: ["super_admin"] }, // Hanya Super Admin
+    
+    // NAMA & PATH SUDAH DISESUAIKAN (TADINYA MACHINE LEARNING)
+    { name: "Input Data Wilayah", icon: <FaDatabase />, path: "/input-wilayah", roles: ["super_admin", "dinas_kesehatan"] }, 
+    
+    { name: "Data Anak & Gizi", icon: <FaBaby />, path: "/dashboard/anak", roles: ["super_admin", "dinas_kesehatan", "orang_tua"] },
+    { name: "Verifikasi Data", icon: <FaClipboardCheck />, path: "/dashboard/verifikasi", roles: ["super_admin", "dinas_kesehatan"] },
+    { name: "Laporan Kebijakan", icon: <FaChartPie />, path: "/dashboard/laporan", roles: ["super_admin", "pemangku_kepentingan"] },
   ];
+
+  // 3. Filter menu berdasarkan Role
+  const allowedMenus = menuItems.filter(menu => menu.roles.includes(userRole));
 
   return (
     <>
@@ -59,7 +65,6 @@ export default function Sidebar({ handleLogout }) {
         ></div>
       )}
 
-      {/* 3. Sidebar Container Utama */}
       <div
         className={`fixed inset-y-0 left-0 z-50 w-64 bg-sigizi-green text-white min-h-screen flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out 
         ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:relative lg:translate-x-0`}
@@ -80,7 +85,9 @@ export default function Sidebar({ handleLogout }) {
 
         <div className="flex-1 py-6 overflow-y-auto">
           <ul className="space-y-2 px-4">
-            {menuItems.map((menu, index) => {
+            
+            {/* 4. Gunakan allowedMenus alih-alih menuItems */}
+            {allowedMenus.map((menu, index) => {
               const isActive = location.pathname === menu.path;
               return (
                 <li key={index}>
@@ -98,6 +105,7 @@ export default function Sidebar({ handleLogout }) {
                 </li>
               );
             })}
+
           </ul>
         </div>
 
