@@ -7,6 +7,8 @@ import {
   FaExclamationTriangle,
   FaCheckCircle,
   FaChartLine,
+  FaUserFriends,
+  FaChartArea
 } from "react-icons/fa";
 
 export default function Dashboard() {
@@ -19,6 +21,9 @@ export default function Dashboard() {
     total_normal: 0,
   });
   const [loading, setLoading] = useState(true);
+  
+  // State BARU untuk mengatur mode peta di Dashboard
+  const [modePeta, setModePeta] = useState("balita");
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -52,22 +57,24 @@ export default function Dashboard() {
   };
 
   if (!user) return null;
+  
   return (
-    <div className="flex min-h-screen bg-sigizi-bg">
+    <div className="flex min-h-screen bg-gray-50">
       <Sidebar handleLogout={handleLogout} />
+      
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="bg-white shadow-sm px-8 py-4 flex justify-between items-center z-10">
+        <header className="bg-white border-b border-gray-200 px-8 py-4 flex justify-between items-center z-10">
           <div>
             <h1 className="text-xl font-bold text-gray-800">Dashboard Utama</h1>
             <p className="text-sm text-gray-500">
               Selamat datang kembali,{" "}
-              <span className="font-semibold text-sigizi-green">
+              <span className="font-bold text-green-600">
                 {user.nama_lengkap}
               </span>
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="bg-sigizi-light-green text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm">
+            <div className="bg-green-100 text-green-700 border border-green-200 px-4 py-2 rounded-lg text-sm font-bold shadow-sm">
               {user.role.replace("_", " ").toUpperCase()}
             </div>
           </div>
@@ -75,22 +82,22 @@ export default function Dashboard() {
 
         <main className="flex-1 overflow-y-auto p-8">
           {loading ? (
-            <div className="text-center p-4 text-gray-500">
-              Memuat statistik sistem...
+            <div className="text-center p-4 text-gray-500 font-bold animate-pulse">
+              Memuat data analitik sistem...
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {/* Kartu 1: Total Anak */}
-              <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500 hover:shadow-md transition">
+              <div className="bg-white rounded-xl border border-gray-200 p-6 border-l-4 border-l-blue-500 hover:shadow-md transition">
                 <div className="flex items-center gap-4">
                   <div className="p-3 bg-blue-50 text-blue-500 rounded-lg text-2xl">
                     <FaBaby />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500 font-semibold">
+                    <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">
                       Total Anak Terdata
                     </p>
-                    <h3 className="text-2xl font-bold text-gray-800">
+                    <h3 className="text-2xl font-black text-gray-800">
                       {stats.total_anak}
                     </h3>
                   </div>
@@ -98,16 +105,16 @@ export default function Dashboard() {
               </div>
 
               {/* Kartu 2: Stunting (Merah) */}
-              <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-red-500 hover:shadow-md transition">
+              <div className="bg-white rounded-xl border border-gray-200 p-6 border-l-4 border-l-red-500 hover:shadow-md transition">
                 <div className="flex items-center gap-4">
                   <div className="p-3 bg-red-50 text-red-500 rounded-lg text-2xl">
                     <FaExclamationTriangle />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500 font-semibold">
+                    <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">
                       Kasus Stunting
                     </p>
-                    <h3 className="text-2xl font-bold text-gray-800">
+                    <h3 className="text-2xl font-black text-gray-800">
                       {stats.total_stunting}
                     </h3>
                   </div>
@@ -115,16 +122,16 @@ export default function Dashboard() {
               </div>
 
               {/* Kartu 3: Pra-stunting (Kuning) */}
-              <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-yellow-500 hover:shadow-md transition">
+              <div className="bg-white rounded-xl border border-gray-200 p-6 border-l-4 border-l-yellow-500 hover:shadow-md transition">
                 <div className="flex items-center gap-4">
                   <div className="p-3 bg-yellow-50 text-yellow-500 rounded-lg text-2xl">
                     <FaChartLine />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500 font-semibold">
+                    <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">
                       Pra-stunting (Waspada)
                     </p>
-                    <h3 className="text-2xl font-bold text-gray-800">
+                    <h3 className="text-2xl font-black text-gray-800">
                       {stats.total_prastunting}
                     </h3>
                   </div>
@@ -132,16 +139,16 @@ export default function Dashboard() {
               </div>
 
               {/* Kartu 4: Normal (Hijau) */}
-              <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-500 hover:shadow-md transition">
+              <div className="bg-white rounded-xl border border-gray-200 p-6 border-l-4 border-l-green-500 hover:shadow-md transition">
                 <div className="flex items-center gap-4">
                   <div className="p-3 bg-green-50 text-green-500 rounded-lg text-2xl">
                     <FaCheckCircle />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500 font-semibold">
+                    <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">
                       Gizi Normal
                     </p>
-                    <h3 className="text-2xl font-bold text-gray-800">
+                    <h3 className="text-2xl font-black text-gray-800">
                       {stats.total_normal}
                     </h3>
                   </div>
@@ -150,17 +157,53 @@ export default function Dashboard() {
             </div>
           )}
 
-          {/* Peta Spasial Web GIS */}
-          <div className="bg-white rounded-xl shadow-sm p-6 mb-8 border border-gray-100">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold text-gray-800">
-                Peta Sebaran Kerentanan Gizi Sumatera Utara
-              </h3>
-              <span className="bg-sigizi-light-green text-white text-xs px-3 py-1 rounded-full">
-                Live Data
-              </span>
+          {/* =========================================
+              BAGIAN PETA SPASIAL DENGAN TOMBOL TOGGLE 
+              ========================================= */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
+            
+            {/* Header Kartu Peta */}
+            <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="flex items-center gap-3">
+                <h3 className="text-lg font-black text-gray-800 uppercase tracking-tight">
+                  {modePeta === "balita" ? "Peta Sebaran Kasus Balita" : "Peta Kerentanan Wilayah (ML)"}
+                </h3>
+                <div className="flex items-center gap-1.5 bg-green-100 text-green-700 px-2.5 py-1 rounded-full border border-green-200">
+                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider">Live</span>
+                </div>
+              </div>
+
+              {/* Tombol Toggle Flat Design */}
+              <div className="flex bg-gray-200 p-1 rounded-lg border border-gray-300">
+                <button
+                  onClick={() => setModePeta("balita")}
+                  className={`flex items-center gap-2 px-4 py-1.5 text-xs font-bold rounded-md transition-all ${
+                    modePeta === "balita"
+                      ? "bg-white text-green-600 shadow-sm"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  <FaUserFriends /> Mikro (Titik)
+                </button>
+                <button
+                  onClick={() => setModePeta("kerentanan")}
+                  className={`flex items-center gap-2 px-4 py-1.5 text-xs font-bold rounded-md transition-all ${
+                    modePeta === "kerentanan"
+                      ? "bg-white text-orange-600 shadow-sm"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  <FaChartArea /> Makro (Poligon ML)
+                </button>
+              </div>
             </div>
-            <MapDashboard />
+
+            {/* Area Peta */}
+            <div className="w-full h-[480px] relative z-0 bg-gray-50">
+              <MapDashboard mode={modePeta} />
+            </div>
+
           </div>
         </main>
       </div>
