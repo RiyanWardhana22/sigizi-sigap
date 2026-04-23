@@ -1,4 +1,3 @@
-// sigizi-frontend/src/components/Sidebar.jsx
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
