@@ -1,21 +1,16 @@
-// sigizi-backend/add_pengukuran.php
 <?php
-// Hapus komentar di baris pertama atau pindahkan ke bawah
 require_once 'config.php';
+require_once 'zscore_calculator.php';
 
-// Ambil input JSON
 $input = file_get_contents("php://input");
 $data = json_decode($input);
-
-// Log untuk debugging (opsional, bisa dihapus setelah testing)
-error_log("Received data: " . $input);
 
 if (!empty($data->anak_id) && !empty($data->tinggi_badan) && !empty($data->berat_badan) && !empty($data->orang_tua_id)) {
     try {
         $conn->beginTransaction();
         
-        // Get anak data to calculate umur
-        $query_anak = "SELECT tanggal_lahir FROM anak WHERE id = :anak_id";
+        // Get data anak
+        $query_anak = "SELECT tanggal_lahir, jenis_kelamin FROM anak WHERE id = :anak_id";
         $stmt_anak = $conn->prepare($query_anak);
         $stmt_anak->bindParam(":anak_id", $data->anak_id);
         $stmt_anak->execute();
@@ -26,59 +21,53 @@ if (!empty($data->anak_id) && !empty($data->tinggi_badan) && !empty($data->berat
             exit();
         }
         
-        $tgl_lahir = new DateTime($anak['tanggal_lahir']);
-        $hari_ini = new DateTime();
-        $selisih = $hari_ini->diff($tgl_lahir);
-        $umur_bulan = ($selisih->y * 12) + $selisih->m;
-        
-        // Calculate status gizi
-        $status_gizi = 'Normal';
-        $z_score = 0;
-        
-        if ($umur_bulan > 0) {
-            $rasio = $data->tinggi_badan / $umur_bulan;
-            if ($rasio < 2.5) {
-                $status_gizi = 'Stunting';
-                $z_score = -3.5;
-            } elseif ($rasio >= 2.5 && $rasio < 3.5) {
-                $status_gizi = 'Pra-stunting';
-                $z_score = -2.5;
-            } else {
-                $status_gizi = 'Normal';
-                $z_score = 1.0;
-            }
-        }
-        
+        // Analisis gizi menggunakan standar WHO
         $tgl_pengukuran = isset($data->tanggal_pengukuran) ? $data->tanggal_pengukuran : date('Y-m-d');
         
-        // Cek apakah kolom lingkar_kepala ada di request
+        $analisis = ZScoreCalculator::analisisLengkap(
+            $anak['tanggal_lahir'],
+            $anak['jenis_kelamin'],
+            (float)$data->tinggi_badan,
+            (float)$data->berat_badan,
+            $tgl_pengukuran
+        );
+        
         $lingkar_kepala = isset($data->lingkar_kepala) && !empty($data->lingkar_kepala) ? $data->lingkar_kepala : null;
         
-        // Query dengan atau tanpa lingkar_kepala tergantung struktur tabel
-        // Jika tabel belum punya kolom lingkar_kepala, gunakan query tanpa lingkar_kepala
-        $query_ukur = "INSERT INTO pengukuran (anak_id, tanggal_pengukuran, tinggi_badan, berat_badan, z_score, status_gizi, diinput_oleh, sumber_data) 
-                       VALUES (:anak_id, :tgl, :tinggi, :berat, :zscore, :status, :user_id, 'Aplikasi_Mobile')";
+        $query_ukur = "INSERT INTO pengukuran (anak_id, tanggal_pengukuran, tinggi_badan, berat_badan, lingkar_kepala, 
+                       z_score, status_gizi, diinput_oleh, sumber_data) 
+                       VALUES (:anak_id, :tgl, :tinggi, :berat, :lingkar_kepala, :zscore, :status, :user_id, 'Aplikasi_Mobile')";
         
         $stmt_ukur = $conn->prepare($query_ukur);
         $stmt_ukur->bindParam(":anak_id", $data->anak_id);
         $stmt_ukur->bindParam(":tgl", $tgl_pengukuran);
         $stmt_ukur->bindParam(":tinggi", $data->tinggi_badan);
         $stmt_ukur->bindParam(":berat", $data->berat_badan);
-        $stmt_ukur->bindParam(":zscore", $z_score);
-        $stmt_ukur->bindParam(":status", $status_gizi);
+        $stmt_ukur->bindParam(":lingkar_kepala", $lingkar_kepala);
+        $stmt_ukur->bindParam(":zscore", $analisis['z_score_utama']);
+        $stmt_ukur->bindParam(":status", $analisis['simplified_status']);
         $stmt_ukur->bindParam(":user_id", $data->orang_tua_id);
         $stmt_ukur->execute();
         
         $conn->commit();
         
-        // Kirim response JSON yang valid
         $response = [
             "status" => "success",
             "message" => "Data pertumbuhan berhasil disimpan!",
             "hasil" => [
-                "umur_bulan" => $umur_bulan,
-                "z_score" => $z_score,
-                "status_gizi" => $status_gizi
+                "umur_bulan" => $analisis['umur_bulan'],
+                "z_score" => $analisis['z_score_utama'],
+                "status_gizi" => $analisis['simplified_status'],
+                "detail" => [
+                    "tb_u" => [
+                        "z_score" => $analisis['tb_u']['z_score'],
+                        "status" => $analisis['tb_u']['status']
+                    ],
+                    "bb_u" => [
+                        "z_score" => $analisis['bb_u']['z_score'],
+                        "status" => $analisis['bb_u']['status']
+                    ]
+                ]
             ]
         ];
         
