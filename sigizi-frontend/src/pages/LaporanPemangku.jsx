@@ -83,7 +83,6 @@ export default function LaporanPemangku() {
   const fetchLaporan = async () => {
     setLoading(true);
     try {
-      // 1. Ambil Laporan Utama (Tabel & Sebaran)
       const resL = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/get_laporan.php?bulan=${filterBulan}&tahun=${filterTahun}`,
       );
@@ -93,13 +92,11 @@ export default function LaporanPemangku() {
         setFilteredData(dataL.data);
       }
 
-      // 2. Ambil Data Korelasi Akar Masalah (Analisis)
       const resK = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/get_korelasi_faktor.php`,
       );
       const dataK = await resK.json();
       if (dataK.status === "success") {
-        // Bersihkan nama wilayah agar rapi di grafik
         setKorelasiData(
           dataK.data.map((item) => ({
             ...item,
@@ -114,7 +111,6 @@ export default function LaporanPemangku() {
     }
   };
 
-  // Logika Filter Pencarian (Khusus Tab Tabel)
   useEffect(() => {
     const results = laporan.filter((item) =>
       item.nama_kabupaten.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -156,11 +152,8 @@ export default function LaporanPemangku() {
         </header>
 
         <main className="p-4 md:p-8 overflow-y-auto print:p-0">
-          {/* KONTAINER LAPORAN UTAMA */}
-          <div className="bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-100 print:shadow-none print:border-none max-w-7xl mx-auto w-full">
-            {/* NAVIGASI TAB & TOOLBOX EKSPOR */}
+          <div className="bg-white shadow-xl rounded-md overflow-hidden border border-gray-100 print:shadow-none print:border-none max-w-7xl mx-auto w-full">
             <div className="p-4 md:p-6 bg-gradient-to-r from-sigizi-green to-green-900 text-white flex flex-col lg:flex-row justify-between items-center gap-6 print:hidden">
-              {/* Navigasi Tab */}
               <div className="flex flex-wrap justify-center gap-1 bg-black/20 p-1 rounded-xl w-full lg:w-auto">
                 <button
                   onClick={() => setActiveTab("sebaran")}
@@ -178,11 +171,10 @@ export default function LaporanPemangku() {
                   onClick={() => setActiveTab("tabel")}
                   className={`flex-1 lg:flex-none px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${activeTab === "tabel" ? "bg-white text-sigizi-green shadow-xl scale-105" : "text-white hover:bg-white/10"}`}
                 >
-                  Database Tabel
+                  Tabel Rekapitulasi
                 </button>
               </div>
 
-              {/* Toolbox Ekspor Contextual */}
               <div className="flex gap-2 w-full lg:w-auto justify-center">
                 <button
                   onClick={handleExportCSV}
@@ -299,7 +291,7 @@ export default function LaporanPemangku() {
                     <div className="space-y-8">
                       <div>
                         <h2 className="text-2xl font-black text-gray-800 tracking-tighter uppercase">
-                          Analisis Faktor Determinan
+                          Analisis Faktor Masalah
                         </h2>
                         <p className="text-gray-500 text-sm">
                           Mencari korelasi antara stunting dengan infrastruktur,
@@ -348,6 +340,7 @@ export default function LaporanPemangku() {
                               }}
                             />
                             <Tooltip
+                              formatter={(value) => Math.round(value)}
                               contentStyle={{
                                 borderRadius: "12px",
                                 border: "none",
@@ -367,7 +360,7 @@ export default function LaporanPemangku() {
                               yAxisId="right"
                               type="monotone"
                               dataKey="akses_sanitasi"
-                              name="Sanitasi (%)"
+                              name="Sanitasi %"
                               stroke="#3b82f6"
                               strokeWidth={3}
                               dot={{ r: 4 }}
@@ -376,7 +369,7 @@ export default function LaporanPemangku() {
                               yAxisId="right"
                               type="monotone"
                               dataKey="akses_air"
-                              name="Air Bersih (%)"
+                              name="Air Bersih %"
                               stroke="#10b981"
                               strokeWidth={3}
                               dot={{ r: 4 }}
@@ -385,7 +378,7 @@ export default function LaporanPemangku() {
                               yAxisId="right"
                               type="monotone"
                               dataKey="prevalensi_bblr"
-                              name="BBLR (%)"
+                              name="BBLR %"
                               stroke="#f97316"
                               strokeWidth={3}
                               strokeDasharray="5 5"
@@ -394,7 +387,7 @@ export default function LaporanPemangku() {
                               yAxisId="right"
                               type="monotone"
                               dataKey="kesehatan_ibu"
-                              name="Gizi Ibu (%)"
+                              name="Gizi Ibu %"
                               stroke="#8b5cf6"
                               strokeWidth={3}
                             />
@@ -404,9 +397,6 @@ export default function LaporanPemangku() {
 
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="p-6 bg-blue-50 border border-blue-100 rounded-2xl">
-                          <div className="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center mb-4 shadow-lg">
-                            <FaLightbulb />
-                          </div>
                           <h4 className="font-bold text-blue-900 mb-2">
                             Intervensi Infrastruktur
                           </h4>
@@ -418,7 +408,6 @@ export default function LaporanPemangku() {
                           </p>
                         </div>
                         <div className="p-6 bg-orange-50 border border-orange-100 rounded-2xl">
-                          <div className="w-10 h-10 bg-orange-500 text-white rounded-lg flex items-center justify-center mb-4 shadow-lg"></div>
                           <h4 className="font-bold text-orange-900 mb-2">
                             Peringatan BBLR
                           </h4>
@@ -429,9 +418,6 @@ export default function LaporanPemangku() {
                           </p>
                         </div>
                         <div className="p-6 bg-purple-50 border border-purple-100 rounded-2xl">
-                          <div className="w-10 h-10 bg-purple-600 text-white rounded-lg flex items-center justify-center mb-4 shadow-lg">
-                            <FaDatabase />
-                          </div>
                           <h4 className="font-bold text-purple-900 mb-2">
                             Kesehatan Ibu
                           </h4>
@@ -451,7 +437,7 @@ export default function LaporanPemangku() {
                       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div>
                           <h2 className="text-2xl font-black text-gray-800 tracking-tighter uppercase">
-                            Database Rekapitulasi
+                            Tabel Rekapitulasi
                           </h2>
                           <p className="text-gray-500 text-sm">
                             Data mentah administratif per kabupaten untuk
