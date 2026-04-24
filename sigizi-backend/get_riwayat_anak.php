@@ -1,5 +1,6 @@
 <?php
 require_once 'config.php';
+require_once 'zscore_calculator.php';
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -8,7 +9,6 @@ $user_id = isset($_GET['user_id']) ? $_GET['user_id'] : '';
 
 if (!empty($user_id)) {
     try {
-        // Ambil data anak dari tabel anak
         $query_anak = "SELECT id, nama_anak, tanggal_lahir, jenis_kelamin, status_verifikasi 
                        FROM anak WHERE orang_tua_id = :uid ORDER BY id ASC";
         $stmt_anak = $conn->prepare($query_anak);
@@ -18,10 +18,8 @@ if (!empty($user_id)) {
         
         if (count($anak_list) > 0) {
             foreach ($anak_list as $key => &$anak) {
-                // Pastikan ID adalah integer
                 $anak['id'] = (int)$anak['id'];
                 
-                // Ambil riwayat pengukuran dari tabel pengukuran untuk setiap anak
                 $query_ukur = "SELECT tanggal_pengukuran, tinggi_badan, berat_badan, 
                                       lingkar_kepala, z_score, status_gizi 
                                FROM pengukuran 
@@ -32,7 +30,6 @@ if (!empty($user_id)) {
                 $stmt_ukur->execute();
                 $riwayat = $stmt_ukur->fetchAll(PDO::FETCH_ASSOC);
                 
-                // Konversi tipe data untuk riwayat
                 foreach ($riwayat as &$r) {
                     $r['tinggi_badan'] = (float)$r['tinggi_badan'];
                     $r['berat_badan'] = (float)$r['berat_badan'];
@@ -43,7 +40,6 @@ if (!empty($user_id)) {
                 $anak['riwayat'] = $riwayat;
             }
             
-            // Kirim response dengan CORS headers yang benar
             header('Content-Type: application/json');
             echo json_encode([
                 "status" => "success",
