@@ -1,61 +1,34 @@
 import sys
 import json
+import joblib
 import pandas as pd
-import joblib # MENGGUNAKAN JOBLIB, BUKAN PICKLE
+import os
 
-def main():
-    try:
-        # 1. Baca data JSON dari PHP
-        input_data = sys.stdin.read()
-        if not input_data:
-            raise ValueError("Tidak ada data yang diterima oleh Python.")
-            
-        data = json.loads(input_data)
+try:
+    input_json = sys.argv[1]
+    data_list = json.loads(input_json)
+    
+    model_path = os.path.join(os.path.dirname(__file__), 'model_prediksi_stunting.pkl')
+    model = joblib.load(model_path)
+    
+    fitur_path = os.path.join(os.path.dirname(__file__), 'daftar_fitur_input.pkl')
+    features = joblib.load(fitur_path)
+    
+    hasil_prediksi = []
+    for data in data_list:
+        df = pd.DataFrame([data])
+        for f in features:
+            if f not in df.columns:
+                df[f] = 0
+        df = df[features]
         
-        # 2. Buka file menggunakan JOBLIB (Agar cocok dengan model_trainer.py Anda)
-        model = joblib.load('model_prediksi_stunting.pkl')
-        daftar_fitur = joblib.load('daftar_fitur_input.pkl')
-            
-        results = []
+        prediction = int(model.predict(df)[0])
+        hasil_prediksi.append({
+            "id_wilayah": data.get("id_wilayah", "unknown"),
+            "prediction": prediction
+        })
         
-        # 3. Proses setiap data kabupaten
-        for item in data:
-            row_dict = {
-                'Persentase_BBLR': item['Persentase_BBLR'],
-                'Persentase_Gizi_Buruk': item['Persentase_Gizi_Buruk'],
-                'Sanitasi_dan_Kebersihan_Lingkungan_mean': item['Sanitasi_dan_Kebersihan_Lingkungan_mean'],
-                'Ketersediaan_Air_Bersih_mean': item['Ketersediaan_Air_Bersih_mean'],
-                'Pendidikan_Ibu_SMP/MTs_mean': item['Pendidikan_Ibu_SMP/MTs_mean'],
-                'Penghasilan_keluarga_mean': item['Penghasilan_keluarga_mean']
-            }
-            
-            df = pd.DataFrame([row_dict])
-            df = df[daftar_fitur] # Sabuk pengaman urutan kolom
-            
-            # 4. Lakukan Prediksi (Outputnya adalah ANGKA, misal: 25.4)
-            prediksi_angka = model.predict(df)[0]
-            
-            # 5. Terjemahkan Angka menjadi Kategori Kerentanan (Standar SSGI/WHO)
-            if prediksi_angka < 10:
-                kategori = "Rendah"
-            elif 10 <= prediksi_angka < 20:
-                kategori = "Sedang"
-            elif 20 <= prediksi_angka < 30:
-                kategori = "Tinggi"
-            else:
-                kategori = "Sangat Tinggi"
-            
-            # Simpan hasil kategori berupa teks ke variabel yang dibaca PHP
-            item['kategori_risiko'] = kategori
-            results.append(item)
-            
-        # 6. Kembalikan data matang + hasil prediksi ke PHP
-        output = {"status": "success", "data": results}
-        print(json.dumps(output))
-        
-    except Exception as e:
-        error_output = {"status": "error", "message": str(e)}
-        print(json.dumps(error_output))
+    print(json.dumps({"status": "success", "predictions": hasil_prediksi}))
 
-if __name__ == "__main__":
-    main()
+except Exception as e:
+    print(json.dumps({"status": "error", "message": str(e)}))
