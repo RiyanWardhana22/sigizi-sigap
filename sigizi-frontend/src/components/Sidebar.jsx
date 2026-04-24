@@ -13,11 +13,9 @@ import {
   FaTimes,
   FaChild,
   FaAppleAlt,
-  FaChartLine,
   FaUserCog,
-  FaLock,
-  FaUserShield,
 } from "react-icons/fa";
+import { IoArrowRedo } from "react-icons/io5";
 import { TbReportAnalytics } from "react-icons/tb";
 
 export default function Sidebar({ handleLogout }) {
@@ -131,7 +129,7 @@ export default function Sidebar({ handleLogout }) {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="lg:hidden fixed bottom-6 right-6 z-40 bg-sigizi-green text-white p-4 rounded-full shadow-2xl focus:outline-none hover:bg-sigizi-light-green transition-transform transform hover:scale-105"
+        className="lg:hidden fixed bottom-6 right-6 z-40 bg-[#0A2A20] text-white p-4 rounded-full shadow-[0_4px_20px_rgba(10,42,32,0.4)] border border-white/10 focus:outline-none hover:bg-[#124233] transition-all duration-300 transform hover:scale-105"
         title="Buka Menu"
       >
         <FaBars className="text-xl" />
@@ -139,76 +137,71 @@ export default function Sidebar({ handleLogout }) {
 
       {isOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-60 z-40 transition-opacity"
+          className="lg:hidden fixed inset-0 bg-[#0f172a]/80 backdrop-blur-sm z-40 transition-opacity"
           onClick={() => setIsOpen(false)}
         ></div>
       )}
 
+      {/* Sidebar Container */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-sigizi-green text-white min-h-screen flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out 
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#0A2A20] text-white min-h-screen flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out 
         ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:relative lg:translate-x-0`}
       >
-        <div className="p-6 text-center border-b border-sigizi-light-green flex justify-between items-center lg:block">
-          <h2 className="text-2xl font-bold tracking-wider mx-auto">
-            SI-GIZI
-            <br className="hidden lg:block" />
-            SIGAP
-          </h2>
+        <div className="p-6 flex justify-between items-center lg:justify-start gap-3">
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl font-bold tracking-wide text-white">
+              SI-GIZI SIGAP<span className="text-emerald-400"></span>
+            </h2>
+          </div>
+
           <button
             onClick={() => setIsOpen(false)}
-            className="lg:hidden text-white hover:text-red-300 text-2xl focus:outline-none transition"
+            className="lg:hidden text-slate-400 hover:text-rose-400 text-xl focus:outline-none transition-colors"
           >
             <FaTimes />
           </button>
         </div>
 
-        {/* Profile Section */}
-        <div className="p-4 border-b border-sigizi-light-green">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-white text-sigizi-green flex items-center justify-center font-bold text-lg">
-              {userName?.charAt(0).toUpperCase() || "U"}
-            </div>
-            <div className="flex-1">
-              <p className="font-semibold text-sm truncate">
-                {userName || "User"}
-              </p>
-              <p className="text-xs text-gray-300">
-                {userRole === "super_admin"
-                  ? "Super Admin"
-                  : userRole === "orang_tua"
-                    ? "Orang Tua"
-                    : userRole?.replace("_", " ")}
-              </p>
-            </div>
+        {/* Menu Navigasi */}
+        <div className="flex-1 px-4 py-2 overflow-y-auto custom-scrollbar">
+          <div className="mb-2">
+            <p className="text-[10px] font-bold tracking-wider text-slate-500 uppercase px-4 mb-3">
+              Main Menu
+            </p>
           </div>
-        </div>
-
-        <div className="flex-1 py-6 overflow-y-auto">
-          <ul className="space-y-2 px-4">
+          <ul className="space-y-1.5">
             {menuItems.map((menu, index) => {
               const isActive = location.pathname === menu.path;
-              // Tambahkan separator untuk super admin antara menu admin dan orang tua
               const isSeparator =
                 userRole === "super_admin" && index === superAdminMenus.length;
 
               return (
                 <li key={index}>
                   {isSeparator && (
-                    <div className="my-4 border-t border-sigizi-light-green opacity-50">
-                      <p className="text-xs text-gray-300 mt-2 mb-2">
-                        FITUR ORANG TUA (Preview)
+                    <div className="mt-8 mb-3 px-4">
+                      <p className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
+                        Fitur Orang Tua (Preview)
                       </p>
                     </div>
                   )}
                   <Link
                     to={menu.path}
-                    className={`flex items-center gap-4 px-4 py-3 rounded-lg transition-colors ${
+                    className={`relative flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium ${
                       isActive
-                        ? "bg-white text-sigizi-green font-bold shadow-sm"
-                        : "hover:bg-sigizi-light-green text-gray-200"
+                        ? "bg-white/10 text-white"
+                        : "text-slate-400 hover:text-white hover:bg-white/5"
                     }`}
                   >
-                    <span className="text-xl">{menu.icon}</span>
+                    {/* Efek Garis Aktif */}
+                    {isActive && (
+                      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-emerald-400 rounded-l-full shadow-[0_0_8px_rgba(52,211,153,0.5)]"></div>
+                    )}
+
+                    <span
+                      className={`text-lg transition-colors ${isActive ? "text-emerald-400" : ""}`}
+                    >
+                      {menu.icon}
+                    </span>
                     <span>{menu.name}</span>
                   </Link>
                 </li>
@@ -217,15 +210,34 @@ export default function Sidebar({ handleLogout }) {
           </ul>
         </div>
 
-        <div className="p-4 border-t border-sigizi-light-green">
+        {/* Account / Profile Section & Logout */}
+        <div className="p-4 mt-auto border-t border-white/5">
+          {/* User Profile Card */}
+          <div className="flex items-center gap-3 p-3 mb-2 bg-[#0f3629] border border-white/5 rounded-xl">
+            <div className="w-9 h-9 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0">
+              {userName?.charAt(0).toUpperCase() || "U"}
+            </div>
+            <div className="overflow-hidden">
+              <p className="font-medium text-sm text-white truncate w-32">
+                {userName || "User"}
+              </p>
+              <p className="text-[10px] text-emerald-400/80 truncate font-medium capitalize">
+                {userRole === "super_admin"
+                  ? "Super Admin"
+                  : userRole === "orang_tua"
+                    ? "Orang Tua"
+                    : userRole?.replace("_", " ")}
+              </p>
+            </div>
+          </div>
+
+          {/* Tombol Logout Terpisah */}
           <button
             onClick={handleLogout}
-            className="flex items-center justify-center gap-3 px-4 py-3 w-full rounded-lg hover:bg-red-500 transition-colors text-gray-200 hover:text-white font-medium"
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 focus:outline-none"
           >
-            <span className="text-xl">
-              <FaSignOutAlt />
-            </span>
-            <span>Keluar</span>
+            <IoArrowRedo className="text-lg" />
+            <span>Logout</span>
           </button>
         </div>
       </div>
