@@ -2,14 +2,11 @@
 require_once 'config.php';
 
 try {
-            // Menentukan Bulan dan Tahun (Saat Ini vs Bulan Lalu)
             $bulan_ini = date('m');
             $tahun_ini = date('Y');
 
             $bulan_lalu = date('m', strtotime('-1 month'));
             $tahun_lalu = date('Y', strtotime('-1 month'));
-
-            // Query untuk menghitung jumlah kasus pada bulan ini dan bulan lalu
             $query = "
         SELECT 
             w.nama_kabupaten as name,
@@ -37,12 +34,8 @@ try {
 
             foreach ($raw_data as $row) {
                         $nama = str_replace(['Kabupaten ', 'Kota '], '', $row['name']);
-
-                        // Hitung selisih
                         $selisih_stunting = $row['stunting_ini'] - $row['stunting_lalu'];
                         $selisih_pra = $row['pra_ini'] - $row['pra_lalu'];
-
-                        // 1. LOGIKA PERINGATAN (Jika Kasus Naik)
                         if ($selisih_stunting > 0 || $selisih_pra > 0) {
                                     $alerts[] = [
                                                 "wilayah" => $nama,
@@ -50,8 +43,6 @@ try {
                                                 "tingkat" => $selisih_stunting > 0 ? "Bahaya" : "Waspada"
                                     ];
                         }
-
-                        // 2. LOGIKA PRESTASI (Jika Kasus Turun)
                         if ($selisih_stunting < 0 || $selisih_pra < 0) {
                                     $total_turun = abs($selisih_stunting) + abs($selisih_pra);
                                     $prestasi[] = [
@@ -61,8 +52,6 @@ try {
                                     ];
                         }
             }
-
-            // Urutkan Papan Peringkat dari yang paling banyak menurunkan kasus
             usort($prestasi, function ($a, $b) {
                         return $b['skor'] <=> $a['skor'];
             });
@@ -71,7 +60,7 @@ try {
                         "status" => "success",
                         "data" => [
                                     "peringatan" => $alerts,
-                                    "prestasi" => array_slice($prestasi, 0, 5) // Ambil Top 5 saja
+                                    "prestasi" => array_slice($prestasi, 0, 5)
                         ]
             ]);
 } catch (PDOException $e) {

@@ -18,6 +18,7 @@ import {
   FaLock,
   FaUserShield,
 } from "react-icons/fa";
+import { TbReportAnalytics } from "react-icons/tb";
 
 export default function Sidebar({ handleLogout }) {
   const location = useLocation();
@@ -84,7 +85,7 @@ export default function Sidebar({ handleLogout }) {
     },
     {
       name: "Laporan Rekapitulasi",
-      icon: <FaChartPie />,
+      icon: <TbReportAnalytics />,
       path: "/dashboard/laporan",
       roles: ["super_admin", "pemangku_kepentingan"],
     },
