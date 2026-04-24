@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 10, 2026 at 07:09 AM
--- Server version: 8.0.42
--- PHP Version: 8.3.22
+-- Generation Time: Apr 24, 2026 at 12:06 AM
+-- Server version: 8.0.30
+-- PHP Version: 8.3.24
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,32 @@ SET time_zone = "+00:00";
 --
 -- Database: `sigizi_sigap`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `agregat_wilayah`
+--
+
+CREATE TABLE `agregat_wilayah` (
+  `id` int NOT NULL,
+  `kabupaten_kota` varchar(100) NOT NULL,
+  `p_bblr` decimal(6,2) DEFAULT NULL,
+  `p_gizi_buruk` decimal(6,2) DEFAULT NULL,
+  `p_sanitasi` decimal(6,2) DEFAULT NULL,
+  `p_air` decimal(6,2) DEFAULT NULL,
+  `p_ibu` decimal(6,2) DEFAULT NULL,
+  `penghasilan` decimal(15,2) DEFAULT NULL,
+  `tingkat_kerentanan` varchar(50) DEFAULT NULL,
+  `tanggal_input` datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `agregat_wilayah`
+--
+
+INSERT INTO `agregat_wilayah` (`id`, `kabupaten_kota`, `p_bblr`, `p_gizi_buruk`, `p_sanitasi`, `p_air`, `p_ibu`, `penghasilan`, `tingkat_kerentanan`, `tanggal_input`) VALUES
+(1, 'Nias', '50.00', '50.00', '70.00', '80.00', '35.00', '1500000.00', 'Tinggi', '2026-04-18 12:11:39');
 
 -- --------------------------------------------------------
 
@@ -44,7 +70,9 @@ CREATE TABLE `anak` (
 --
 
 INSERT INTO `anak` (`id`, `orang_tua_id`, `nama_anak`, `tanggal_lahir`, `jenis_kelamin`, `wilayah_id`, `created_at`, `updated_at`, `status_verifikasi`) VALUES
-(4, 2, 'Yusuf Al-Hafiz', '2025-04-02', 'L', 1, '2026-04-02 07:00:34', '2026-04-07 16:57:37', 'Disetujui');
+(4, 2, 'Yusuf Al-Hafiz', '2025-04-02', 'L', 1, '2026-04-02 07:00:34', '2026-04-07 16:57:37', 'Disetujui'),
+(5, 6, 'riski', '2023-02-08', 'L', 1, '2026-04-18 09:21:54', '2026-04-18 09:21:54', 'Menunggu'),
+(9, 6, 'sa', '2023-05-07', 'P', 1, '2026-04-18 14:28:50', '2026-04-18 14:28:50', 'Menunggu');
 
 -- --------------------------------------------------------
 
@@ -96,6 +124,7 @@ CREATE TABLE `pengukuran` (
   `tanggal_pengukuran` date NOT NULL,
   `tinggi_badan` decimal(5,2) NOT NULL,
   `berat_badan` decimal(5,2) NOT NULL,
+  `lingkar_kepala` decimal(5,2) DEFAULT NULL,
   `z_score` decimal(5,2) DEFAULT NULL,
   `status_gizi` enum('Normal','Pra-stunting','Stunting','Wasting','Gizi Lebih') DEFAULT NULL,
   `diinput_oleh` int NOT NULL,
@@ -107,8 +136,11 @@ CREATE TABLE `pengukuran` (
 -- Dumping data for table `pengukuran`
 --
 
-INSERT INTO `pengukuran` (`id`, `anak_id`, `tanggal_pengukuran`, `tinggi_badan`, `berat_badan`, `z_score`, `status_gizi`, `diinput_oleh`, `sumber_data`, `created_at`) VALUES
-(1, 4, '2026-04-02', '80.00', '8.00', '1.00', 'Normal', 2, 'Aplikasi_Mobile', '2026-04-02 07:00:34');
+INSERT INTO `pengukuran` (`id`, `anak_id`, `tanggal_pengukuran`, `tinggi_badan`, `berat_badan`, `lingkar_kepala`, `z_score`, `status_gizi`, `diinput_oleh`, `sumber_data`, `created_at`) VALUES
+(1, 4, '2026-04-02', '80.00', '8.00', NULL, '1.00', 'Normal', 2, 'Aplikasi_Mobile', '2026-04-02 07:00:34'),
+(2, 5, '2026-04-18', '118.00', '26.30', NULL, '-2.50', 'Pra-stunting', 6, 'Aplikasi_Mobile', '2026-04-18 09:21:54'),
+(4, 5, '2026-04-18', '120.00', '55.00', NULL, '-2.50', 'Pra-stunting', 6, 'Aplikasi_Mobile', '2026-04-18 12:30:41'),
+(7, 9, '2026-04-18', '135.00', '40.00', NULL, '1.00', 'Normal', 6, 'Aplikasi_Mobile', '2026-04-18 14:28:50');
 
 -- --------------------------------------------------------
 
@@ -135,7 +167,10 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `nama_lengkap`, `email`, `password`, `role`, `wilayah_id`, `status_aktif`, `created_at`, `updated_at`) VALUES
 (1, 'Administrator', 'admin@sigizi.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'super_admin', NULL, 1, '2026-04-01 17:12:26', '2026-04-01 17:12:26'),
 (2, 'Riyan Wardhana', 'riyanwardhana2@gmail.com', '$2y$10$MYOxExrT1YM2r822.Q1d6uXbvggT/tUT8PBIjKmBSf9/YHZnG3RJu', 'orang_tua', NULL, 1, '2026-04-01 17:59:08', '2026-04-01 17:59:08'),
-(3, 'Joko Ui', 'jokoui@gmail.com', '$2y$10$TH8VgqPhN71iIzdb3JjCxuXCqza28e6ZRokt1oM9V2O6VxsnzHUqe', 'orang_tua', NULL, 1, '2026-04-07 17:53:07', '2026-04-07 17:53:07');
+(3, 'Joko Ui', 'jokoui@gmail.com', '$2y$10$TH8VgqPhN71iIzdb3JjCxuXCqza28e6ZRokt1oM9V2O6VxsnzHUqe', 'orang_tua', NULL, 1, '2026-04-07 17:53:07', '2026-04-07 17:53:07'),
+(4, 'parent', 'parent@gmail.com', '$2y$10$y0Kl7jA/U5Avm/szI6.yXeaFcHJySxJnk/Lf313M9b.tubn8na3ve', 'orang_tua', NULL, 1, '2026-04-12 17:03:51', '2026-04-12 17:03:51'),
+(5, 'Ki Prana Lewu', 'pranalewu@gmail.com', '$2y$10$gnmgWgIU3M11KVr0YB9mR.tapJBcIsuHJh2r7nlNnqgu8L6T55.AC', 'dinas_kesehatan', NULL, 1, '2026-04-17 14:46:38', '2026-04-17 14:46:38'),
+(6, 'coba1', 'tes@gmail.com', '$2y$10$88PlaVf47Aw4M7dT2i5nWucUrunXPupkf8j.ur62rxli125N5S5cC', 'orang_tua', NULL, 1, '2026-04-18 09:18:11', '2026-04-18 17:29:22'),
 
 -- --------------------------------------------------------
 
@@ -197,6 +232,13 @@ INSERT INTO `wilayah` (`id`, `nama_kabupaten`, `latitude`, `longitude`, `geojson
 --
 
 --
+-- Indexes for table `agregat_wilayah`
+--
+ALTER TABLE `agregat_wilayah`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unik_wilayah` (`kabupaten_kota`);
+
+--
 -- Indexes for table `anak`
 --
 ALTER TABLE `anak`
@@ -244,10 +286,16 @@ ALTER TABLE `wilayah`
 --
 
 --
+-- AUTO_INCREMENT for table `agregat_wilayah`
+--
+ALTER TABLE `agregat_wilayah`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `anak`
 --
 ALTER TABLE `anak`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `dataset_kerentanan`
@@ -265,13 +313,13 @@ ALTER TABLE `edukasi`
 -- AUTO_INCREMENT for table `pengukuran`
 --
 ALTER TABLE `pengukuran`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `wilayah`

@@ -4,26 +4,34 @@ import {
   FaHome,
   FaMapMarkedAlt,
   FaUsers,
-  FaDatabase, // Mengganti FaCogs dengan FaDatabase
+  FaDatabase,
   FaSignOutAlt,
   FaBaby,
   FaClipboardCheck,
   FaChartPie,
   FaBars,
   FaTimes,
+  FaChild,
+  FaAppleAlt,
+  FaChartLine,
+  FaUserCog,
+  FaLock,
+  FaUserShield,
 } from "react-icons/fa";
 
 export default function Sidebar({ handleLogout }) {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [userRole, setUserRole] = useState("");
+  const [userName, setUserName] = useState("");
+  const [showOrangTuaMenu, setShowOrangTuaMenu] = useState(false);
 
-  // 1. Ambil Role User dari LocalStorage saat Sidebar dimuat
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
       const parsedUser = JSON.parse(userData);
       setUserRole(parsedUser.role);
+      setUserName(parsedUser.nama_lengkap);
     }
   }, []);
 
@@ -31,22 +39,38 @@ export default function Sidebar({ handleLogout }) {
     setIsOpen(false);
   }, [location.pathname]);
 
-  // 2. Tambahkan properti 'roles' pada menuItems
-  const menuItems = [
-    { name: "Ringkasan", icon: <FaHome />, path: "/dashboard", roles: ["super_admin", "dinas_kesehatan", "orang_tua", "pemangku_kepentingan"] },
+  // Menu untuk SUPER_ADMIN (lengkap)
+  const superAdminMenus = [
+    { name: "Ringkasan", icon: <FaHome />, path: "/dashboard", roles: ["super_admin", "dinas_kesehatan", "pemangku_kepentingan"] },
     { name: "Peta Spasial GIS", icon: <FaMapMarkedAlt />, path: "/dashboard/peta", roles: ["super_admin", "dinas_kesehatan", "pemangku_kepentingan"] },
-    { name: "Manajemen Pengguna", icon: <FaUsers />, path: "/dashboard/users", roles: ["super_admin"] }, // Hanya Super Admin
-    
-    // NAMA & PATH SUDAH DISESUAIKAN (TADINYA MACHINE LEARNING)
-    { name: "Input Data Wilayah", icon: <FaDatabase />, path: "/input-wilayah", roles: ["super_admin", "dinas_kesehatan"] }, 
-    
+    { name: "Manajemen Pengguna", icon: <FaUsers />, path: "/dashboard/users", roles: ["super_admin"] },
+    { name: "Input Data Wilayah", icon: <FaDatabase />, path: "/input-wilayah", roles: ["super_admin", "dinas_kesehatan"] },
     { name: "Data Anak & Gizi", icon: <FaBaby />, path: "/dashboard/anak", roles: ["super_admin", "dinas_kesehatan", "orang_tua"] },
     { name: "Verifikasi Data", icon: <FaClipboardCheck />, path: "/dashboard/verifikasi", roles: ["super_admin", "dinas_kesehatan"] },
     { name: "Laporan Kebijakan", icon: <FaChartPie />, path: "/dashboard/laporan", roles: ["super_admin", "pemangku_kepentingan"] },
   ];
 
-  // 3. Filter menu berdasarkan Role
-  const allowedMenus = menuItems.filter(menu => menu.roles.includes(userRole));
+  // Menu khusus untuk ORANG TUA (akan ditampilkan juga untuk Super Admin)
+  const orangTuaMenus = [
+    { name: "Dashboard Orang Tua", icon: <FaHome />, path: "/orangtua/dashboard", roles: ["super_admin", "orang_tua"] },
+    { name: "Data Anak", icon: <FaChild />, path: "/orangtua/data-anak", roles: ["super_admin", "orang_tua"] },
+    { name: "Pemantauan Gizi", icon: <FaAppleAlt />, path: "/orangtua/pemantauan-gizi", roles: ["super_admin", "orang_tua"] },
+    { name: "Pengaturan Akun", icon: <FaUserCog />, path: "/orangtua/pengaturan", roles: ["super_admin", "orang_tua"] },
+  ];
+
+  // Pilih menu berdasarkan role
+  let menuItems = [];
+  if (userRole === "super_admin") {
+    // Super admin melihat semua menu (admin + orang tua)
+    menuItems = [...superAdminMenus, ...orangTuaMenus];
+  } else if (userRole === "orang_tua") {
+    menuItems = orangTuaMenus;
+  } else {
+    // Untuk role lain (dinas_kesehatan, pemangku_kepentingan)
+    menuItems = superAdminMenus.filter(menu => 
+      menu.roles.includes(userRole)
+    );
+  }
 
   return (
     <>
@@ -83,14 +107,37 @@ export default function Sidebar({ handleLogout }) {
           </button>
         </div>
 
+        {/* Profile Section */}
+        <div className="p-4 border-b border-sigizi-light-green">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-white text-sigizi-green flex items-center justify-center font-bold text-lg">
+              {userName?.charAt(0).toUpperCase() || "U"}
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-sm truncate">{userName || "User"}</p>
+              <p className="text-xs text-gray-300">
+                {userRole === "super_admin" ? "Super Admin" : 
+                 userRole === "orang_tua" ? "Orang Tua" : 
+                 userRole?.replace("_", " ")}
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="flex-1 py-6 overflow-y-auto">
           <ul className="space-y-2 px-4">
-            
-            {/* 4. Gunakan allowedMenus alih-alih menuItems */}
-            {allowedMenus.map((menu, index) => {
+            {menuItems.map((menu, index) => {
               const isActive = location.pathname === menu.path;
+              // Tambahkan separator untuk super admin antara menu admin dan orang tua
+              const isSeparator = userRole === "super_admin" && index === superAdminMenus.length;
+              
               return (
                 <li key={index}>
+                  {isSeparator && (
+                    <div className="my-4 border-t border-sigizi-light-green opacity-50">
+                      <p className="text-xs text-gray-300 mt-2 mb-2">FITUR ORANG TUA (Preview)</p>
+                    </div>
+                  )}
                   <Link
                     to={menu.path}
                     className={`flex items-center gap-4 px-4 py-3 rounded-lg transition-colors ${
@@ -105,7 +152,6 @@ export default function Sidebar({ handleLogout }) {
                 </li>
               );
             })}
-
           </ul>
         </div>
 
