@@ -39,37 +39,91 @@ export default function Sidebar({ handleLogout }) {
     setIsOpen(false);
   }, [location.pathname]);
 
-  // Menu untuk SUPER_ADMIN (lengkap)
   const superAdminMenus = [
-    { name: "Ringkasan", icon: <FaHome />, path: "/dashboard", roles: ["super_admin", "dinas_kesehatan", "pemangku_kepentingan"] },
-    { name: "Peta Spasial GIS", icon: <FaMapMarkedAlt />, path: "/dashboard/peta", roles: ["super_admin", "dinas_kesehatan", "pemangku_kepentingan"] },
-    { name: "Manajemen Pengguna", icon: <FaUsers />, path: "/dashboard/users", roles: ["super_admin"] },
-    { name: "Input Data Wilayah", icon: <FaDatabase />, path: "/input-wilayah", roles: ["super_admin", "dinas_kesehatan"] },
-    { name: "Data Anak & Gizi", icon: <FaBaby />, path: "/dashboard/anak", roles: ["super_admin", "dinas_kesehatan", "orang_tua"] },
-    { name: "Verifikasi Data", icon: <FaClipboardCheck />, path: "/dashboard/verifikasi", roles: ["super_admin", "dinas_kesehatan"] },
-    { name: "Laporan Kebijakan", icon: <FaChartPie />, path: "/dashboard/laporan", roles: ["super_admin", "pemangku_kepentingan"] },
+    {
+      name: "Ringkasan",
+      icon: <FaHome />,
+      path: "/dashboard",
+      roles: ["super_admin", "dinas_kesehatan", "pemangku_kepentingan"],
+    },
+    {
+      name: "Peta Spasial GIS",
+      icon: <FaMapMarkedAlt />,
+      path: "/dashboard/peta",
+      roles: ["super_admin", "dinas_kesehatan", "pemangku_kepentingan"],
+    },
+    {
+      name: "Manajemen Pengguna",
+      icon: <FaUsers />,
+      path: "/dashboard/users",
+      roles: ["super_admin"],
+    },
+    {
+      name: "Input Data Wilayah",
+      icon: <FaDatabase />,
+      path: "/input-wilayah",
+      roles: ["super_admin", "dinas_kesehatan"],
+    },
+    {
+      name: "Data Anak & Gizi",
+      icon: <FaBaby />,
+      path: "/dashboard/anak",
+      roles: ["super_admin", "dinas_kesehatan", "orang_tua"],
+    },
+    {
+      name: "Verifikasi Data",
+      icon: <FaClipboardCheck />,
+      path: "/dashboard/verifikasi",
+      roles: ["super_admin", "dinas_kesehatan"],
+    },
+    {
+      name: "Analisis & Evaluasi",
+      icon: <FaChartPie />,
+      path: "/dashboard/analisis",
+      roles: ["super_admin", "pemangku_kepentingan"],
+    },
+    {
+      name: "Laporan Rekapitulasi",
+      icon: <FaChartPie />,
+      path: "/dashboard/laporan",
+      roles: ["super_admin", "pemangku_kepentingan"],
+    },
   ];
 
-  // Menu khusus untuk ORANG TUA (akan ditampilkan juga untuk Super Admin)
   const orangTuaMenus = [
-    { name: "Dashboard Orang Tua", icon: <FaHome />, path: "/orangtua/dashboard", roles: ["super_admin", "orang_tua"] },
-    { name: "Data Anak", icon: <FaChild />, path: "/orangtua/data-anak", roles: ["super_admin", "orang_tua"] },
-    { name: "Pemantauan Gizi", icon: <FaAppleAlt />, path: "/orangtua/pemantauan-gizi", roles: ["super_admin", "orang_tua"] },
-    { name: "Pengaturan Akun", icon: <FaUserCog />, path: "/orangtua/pengaturan", roles: ["super_admin", "orang_tua"] },
+    {
+      name: "Dashboard Orang Tua",
+      icon: <FaHome />,
+      path: "/orangtua/dashboard",
+      roles: ["super_admin", "orang_tua"],
+    },
+    {
+      name: "Data Anak",
+      icon: <FaChild />,
+      path: "/orangtua/data-anak",
+      roles: ["super_admin", "orang_tua"],
+    },
+    {
+      name: "Pemantauan Gizi",
+      icon: <FaAppleAlt />,
+      path: "/orangtua/pemantauan-gizi",
+      roles: ["super_admin", "orang_tua"],
+    },
+    {
+      name: "Pengaturan Akun",
+      icon: <FaUserCog />,
+      path: "/orangtua/pengaturan",
+      roles: ["super_admin", "orang_tua"],
+    },
   ];
 
-  // Pilih menu berdasarkan role
   let menuItems = [];
   if (userRole === "super_admin") {
-    // Super admin melihat semua menu (admin + orang tua)
     menuItems = [...superAdminMenus, ...orangTuaMenus];
   } else if (userRole === "orang_tua") {
     menuItems = orangTuaMenus;
   } else {
-    // Untuk role lain (dinas_kesehatan, pemangku_kepentingan)
-    menuItems = superAdminMenus.filter(menu => 
-      menu.roles.includes(userRole)
-    );
+    menuItems = superAdminMenus.filter((menu) => menu.roles.includes(userRole));
   }
 
   return (
@@ -114,11 +168,15 @@ export default function Sidebar({ handleLogout }) {
               {userName?.charAt(0).toUpperCase() || "U"}
             </div>
             <div className="flex-1">
-              <p className="font-semibold text-sm truncate">{userName || "User"}</p>
+              <p className="font-semibold text-sm truncate">
+                {userName || "User"}
+              </p>
               <p className="text-xs text-gray-300">
-                {userRole === "super_admin" ? "Super Admin" : 
-                 userRole === "orang_tua" ? "Orang Tua" : 
-                 userRole?.replace("_", " ")}
+                {userRole === "super_admin"
+                  ? "Super Admin"
+                  : userRole === "orang_tua"
+                    ? "Orang Tua"
+                    : userRole?.replace("_", " ")}
               </p>
             </div>
           </div>
@@ -129,13 +187,16 @@ export default function Sidebar({ handleLogout }) {
             {menuItems.map((menu, index) => {
               const isActive = location.pathname === menu.path;
               // Tambahkan separator untuk super admin antara menu admin dan orang tua
-              const isSeparator = userRole === "super_admin" && index === superAdminMenus.length;
-              
+              const isSeparator =
+                userRole === "super_admin" && index === superAdminMenus.length;
+
               return (
                 <li key={index}>
                   {isSeparator && (
                     <div className="my-4 border-t border-sigizi-light-green opacity-50">
-                      <p className="text-xs text-gray-300 mt-2 mb-2">FITUR ORANG TUA (Preview)</p>
+                      <p className="text-xs text-gray-300 mt-2 mb-2">
+                        FITUR ORANG TUA (Preview)
+                      </p>
                     </div>
                   )}
                   <Link

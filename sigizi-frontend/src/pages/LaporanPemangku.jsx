@@ -6,10 +6,8 @@ import {
   FaFileExcel,
   FaChartBar,
   FaSearch,
-  FaFilter,
   FaCalendarAlt,
   FaDatabase,
-  FaLightbulb,
 } from "react-icons/fa";
 import {
   BarChart,
@@ -20,15 +18,12 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  ComposedChart,
-  Line,
 } from "recharts";
 
 export default function LaporanPemangku() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("sebaran");
   const [laporan, setLaporan] = useState([]);
-  const [korelasiData, setKorelasiData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterBulan, setFilterBulan] = useState("semua");
@@ -36,7 +31,9 @@ export default function LaporanPemangku() {
     new Date().getFullYear().toString(),
   );
   const [loading, setLoading] = useState(true);
+
   const handlePrint = () => window.print();
+
   const handleExportCSV = () => {
     const headers = [
       "Kabupaten/Kota",
@@ -56,10 +53,7 @@ export default function LaporanPemangku() {
       csvRows.join("\n");
     const link = document.createElement("a");
     link.setAttribute("href", encodeURI(csvContent));
-    link.setAttribute(
-      "download",
-      `Laporan_Gizi_Sumut_${activeTab}_${filterTahun}.csv`,
-    );
+    link.setAttribute("download", `Laporan_Rekapitulasi_${filterTahun}.csv`);
     link.click();
   };
 
@@ -83,29 +77,16 @@ export default function LaporanPemangku() {
   const fetchLaporan = async () => {
     setLoading(true);
     try {
-      const resL = await fetch(
+      const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/get_laporan.php?bulan=${filterBulan}&tahun=${filterTahun}`,
       );
-      const dataL = await resL.json();
-      if (dataL.status === "success") {
-        setLaporan(dataL.data);
-        setFilteredData(dataL.data);
-      }
-
-      const resK = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/get_korelasi_faktor.php`,
-      );
-      const dataK = await resK.json();
-      if (dataK.status === "success") {
-        setKorelasiData(
-          dataK.data.map((item) => ({
-            ...item,
-            name: item.name.replace("Kabupaten ", "").replace("Kota ", ""),
-          })),
-        );
+      const data = await response.json();
+      if (data.status === "success") {
+        setLaporan(data.data);
+        setFilteredData(data.data);
       }
     } catch (error) {
-      console.error("Gagal sinkronisasi data:", error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -118,424 +99,193 @@ export default function LaporanPemangku() {
     setFilteredData(results);
   }, [searchTerm, laporan]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/");
-  };
-
   return (
     <div className="flex min-h-screen bg-gray-50 print:bg-white">
       <div className="print:hidden">
-        <Sidebar handleLogout={handleLogout} />
+        <Sidebar
+          handleLogout={() => {
+            localStorage.removeItem("user");
+            navigate("/");
+          }}
+        />
       </div>
 
       <div className="flex-1 flex flex-col relative print:block">
-        <header className="bg-white border-b px-4 md:px-8 py-5 flex flex-col sm:flex-row justify-between items-center gap-4 print:hidden">
-          <h1 className="text-xl font-bold text-gray-800 tracking-tight flex items-center gap-2">
-            {" "}
-            LAPORAN KEBIJAKAN
+        <header className="bg-white border-b px-8 py-5 flex justify-between items-center print:hidden">
+          <h1 className="text-xl font-bold text-gray-800 tracking-tight flex items-center gap-2 uppercase">
+            Laporan Rekapitulasi Wilayah
           </h1>
-
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-lg border border-gray-200">
-              <FaCalendarAlt className="text-gray-400 text-xs" />
-              <select
-                value={filterTahun}
-                onChange={(e) => setFilterTahun(e.target.value)}
-                className="bg-transparent text-xs font-bold outline-none cursor-pointer"
-              >
-                <option value="2025">Periode 2025</option>
-                <option value="2026">Periode 2026</option>
-              </select>
-            </div>
+          <div className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-lg border">
+            <FaCalendarAlt className="text-gray-400 text-xs" />
+            <select
+              value={filterTahun}
+              onChange={(e) => setFilterTahun(e.target.value)}
+              className="bg-transparent text-xs font-bold outline-none"
+            >
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+            </select>
           </div>
         </header>
 
-        <main className="p-4 md:p-8 overflow-y-auto print:p-0">
+        <main className="p-4 md:p-8 overflow-y-auto">
           <div className="bg-white shadow-xl rounded-md overflow-hidden border border-gray-100 print:shadow-none print:border-none max-w-7xl mx-auto w-full">
-            <div className="p-4 md:p-6 bg-gradient-to-r from-sigizi-green to-green-900 text-white flex flex-col lg:flex-row justify-between items-center gap-6 print:hidden">
-              <div className="flex flex-wrap justify-center gap-1 bg-black/20 p-1 rounded-xl w-full lg:w-auto">
+            <div className="p-4 md:p-6 bg-sigizi-green text-white flex flex-col lg:flex-row justify-between items-center gap-6 print:hidden">
+              <div className="flex gap-1 bg-black/20 p-1 rounded-xl">
                 <button
                   onClick={() => setActiveTab("sebaran")}
-                  className={`flex-1 lg:flex-none px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${activeTab === "sebaran" ? "bg-white text-sigizi-green shadow-xl scale-105" : "text-white hover:bg-white/10"}`}
+                  className={`px-5 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${activeTab === "sebaran" ? "bg-white text-sigizi-green" : "text-white hover:bg-white/10"}`}
                 >
                   Sebaran Gizi
                 </button>
                 <button
-                  onClick={() => setActiveTab("analisis")}
-                  className={`flex-1 lg:flex-none px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${activeTab === "analisis" ? "bg-white text-sigizi-green shadow-xl scale-105" : "text-white hover:bg-white/10"}`}
-                >
-                  Akar Masalah
-                </button>
-                <button
                   onClick={() => setActiveTab("tabel")}
-                  className={`flex-1 lg:flex-none px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${activeTab === "tabel" ? "bg-white text-sigizi-green shadow-xl scale-105" : "text-white hover:bg-white/10"}`}
+                  className={`px-5 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${activeTab === "tabel" ? "bg-white text-sigizi-green" : "text-white hover:bg-white/10"}`}
                 >
-                  Tabel Rekapitulasi
+                  Database Tabel
                 </button>
               </div>
-
-              <div className="flex gap-2 w-full lg:w-auto justify-center">
+              <div className="flex gap-2">
                 <button
                   onClick={handleExportCSV}
-                  className="flex-1 lg:flex-none bg-white/10 hover:bg-white/20 border border-white/30 text-white px-5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition backdrop-blur-sm"
+                  className="bg-white/10 hover:bg-white/20 border border-white/30 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition"
                 >
-                  <FaFileExcel className="text-green-400" /> Export Excel
+                  <FaFileExcel /> Excel
                 </button>
                 <button
                   onClick={handlePrint}
-                  className="flex-1 lg:flex-none bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-lg transition transform active:scale-95"
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 shadow-lg transition"
                 >
-                  <FaFilePdf /> Cetak Dokumen
+                  <FaFilePdf /> PDF
                 </button>
               </div>
             </div>
 
-            <div className="p-6 md:p-10">
+            <div className="p-8">
               {loading ? (
-                <div className="py-32 text-center flex flex-col items-center gap-4">
-                  <div className="w-12 h-12 border-4 border-sigizi-green border-t-transparent rounded-full animate-spin"></div>
-                  <p className="text-gray-400 font-bold tracking-widest animate-pulse uppercase text-xs">
-                    Sinkronisasi Intelijen Wilayah...
-                  </p>
+                <div className="py-20 text-center animate-pulse text-gray-400 font-bold">
+                  Sinkronisasi Data...
                 </div>
               ) : (
-                <div className="animate-fadeIn">
-                  {activeTab === "sebaran" && (
-                    <div className="space-y-8">
-                      <div>
-                        <h2 className="text-2xl font-black text-gray-800">
-                          PROFIL KERENTANAN WILAYAH
-                        </h2>
-                        <p className="text-gray-500 text-sm">
-                          Visualisasi perbandingan status gizi di 33
-                          Kabupaten/Kota se-Sumatera Utara.
-                        </p>
-                      </div>
-
-                      <div className="bg-gray-50 p-4 md:p-8 rounded-3xl border border-gray-200">
-                        <div className="h-[1200px] w-full">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <BarChart
-                              layout="vertical"
-                              data={laporan.map((i) => ({
-                                ...i,
-                                name: i.nama_kabupaten
-                                  .replace("Kabupaten ", "")
-                                  .replace("Kota ", ""),
-                              }))}
-                              margin={{ left: 20, right: 30 }}
-                            >
-                              <CartesianGrid
-                                strokeDasharray="3 3"
-                                horizontal={true}
-                                vertical={false}
-                                stroke="#e5e7eb"
-                              />
-                              <XAxis
-                                type="number"
-                                fontSize={11}
-                                stroke="#9ca3af"
-                              />
-                              <YAxis
-                                dataKey="name"
-                                type="category"
-                                width={110}
-                                fontSize={11}
-                                tick={{ fontWeight: "bold", fill: "#374151" }}
-                              />
-                              <Tooltip
-                                cursor={{ fill: "#f3f4f6" }}
-                                contentStyle={{
-                                  borderRadius: "12px",
-                                  border: "none",
-                                  boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
-                                }}
-                              />
-                              <Legend
-                                wrapperStyle={{
-                                  paddingTop: "20px",
-                                  fontSize: "12px",
-                                }}
-                              />
-                              <Bar
-                                dataKey="total_normal"
-                                name="Normal"
-                                stackId="a"
-                                fill="#22c55e"
-                                radius={[0, 0, 0, 0]}
-                              />
-                              <Bar
-                                dataKey="total_prastunting"
-                                name="Pra-Stunting"
-                                stackId="a"
-                                fill="#eab308"
-                                radius={[0, 0, 0, 0]}
-                              />
-                              <Bar
-                                dataKey="total_stunting"
-                                name="Stunting"
-                                stackId="a"
-                                fill="#ef4444"
-                                radius={[0, 4, 4, 0]}
-                              />
-                            </BarChart>
-                          </ResponsiveContainer>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* TAB 2: ANALISIS AKAR MASALAH (MULTI-VARIABEL) */}
-                  {activeTab === "analisis" && (
-                    <div className="space-y-8">
-                      <div>
-                        <h2 className="text-2xl font-black text-gray-800 tracking-tighter uppercase">
-                          Analisis Faktor Masalah
-                        </h2>
-                        <p className="text-gray-500 text-sm">
-                          Mencari korelasi antara stunting dengan infrastruktur,
-                          ekonomi, dan kesehatan ibu.
-                        </p>
-                      </div>
-
-                      <div className="bg-white p-4 md:p-8 rounded-3xl border border-gray-200 shadow-sm h-[600px]">
+                <>
+                  {activeTab === "sebaran" ? (
+                    <div className="space-y-8 animate-fadeIn">
+                      <h2 className="text-xl font-bold text-gray-800 pl-4 uppercase">
+                        Profil Kerentanan 33 Kabupaten/Kota
+                      </h2>
+                      <div className="h-[1200px] w-full bg-gray-50 p-4 rounded-xl border">
                         <ResponsiveContainer width="100%" height="100%">
-                          <ComposedChart data={korelasiData}>
+                          <BarChart
+                            layout="vertical"
+                            data={laporan.map((i) => ({
+                              ...i,
+                              name: i.nama_kabupaten
+                                .replace("Kabupaten ", "")
+                                .replace("Kota ", ""),
+                            }))}
+                          >
                             <CartesianGrid
-                              stroke="#f1f5f9"
-                              strokeDasharray="5 5"
+                              strokeDasharray="3 3"
+                              horizontal={true}
+                              vertical={false}
                             />
-                            <XAxis
+                            <XAxis type="number" fontSize={11} />
+                            <YAxis
                               dataKey="name"
+                              type="category"
+                              width={110}
                               fontSize={10}
-                              angle={-45}
-                              textAnchor="end"
-                              height={80}
-                              interval={0}
                               tick={{ fontWeight: "bold" }}
                             />
-                            <YAxis
-                              yAxisId="left"
-                              stroke="#ef4444"
-                              label={{
-                                value: "Jumlah Jiwa (Stunting)",
-                                angle: -90,
-                                position: "insideLeft",
-                                fontSize: 10,
-                                fontWeight: "bold",
-                              }}
-                            />
-                            <YAxis
-                              yAxisId="right"
-                              orientation="right"
-                              domain={[0, 100]}
-                              stroke="#3b82f6"
-                              label={{
-                                value: "Indikator Persentase (%)",
-                                angle: 90,
-                                position: "insideRight",
-                                fontSize: 10,
-                                fontWeight: "bold",
-                              }}
-                            />
-                            <Tooltip
-                              formatter={(value) => Math.round(value)}
-                              contentStyle={{
-                                borderRadius: "12px",
-                                border: "none",
-                                boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)",
-                              }}
-                            />
-                            <Legend verticalAlign="top" height={36} />
+                            <Tooltip />
+                            <Legend />
                             <Bar
-                              yAxisId="left"
+                              dataKey="total_normal"
+                              name="Normal"
+                              stackId="a"
+                              fill="#22c55e"
+                            />
+                            <Bar
+                              dataKey="total_prastunting"
+                              name="Pra-Stunting"
+                              stackId="a"
+                              fill="#eab308"
+                            />
+                            <Bar
                               dataKey="total_stunting"
-                              name="Total Stunting"
+                              name="Stunting"
+                              stackId="a"
                               fill="#ef4444"
-                              barSize={35}
-                              radius={[6, 6, 0, 0]}
+                              radius={[0, 4, 4, 0]}
                             />
-                            <Line
-                              yAxisId="right"
-                              type="monotone"
-                              dataKey="akses_sanitasi"
-                              name="Sanitasi %"
-                              stroke="#3b82f6"
-                              strokeWidth={3}
-                              dot={{ r: 4 }}
-                            />
-                            <Line
-                              yAxisId="right"
-                              type="monotone"
-                              dataKey="akses_air"
-                              name="Air Bersih %"
-                              stroke="#10b981"
-                              strokeWidth={3}
-                              dot={{ r: 4 }}
-                            />
-                            <Line
-                              yAxisId="right"
-                              type="monotone"
-                              dataKey="prevalensi_bblr"
-                              name="BBLR %"
-                              stroke="#f97316"
-                              strokeWidth={3}
-                              strokeDasharray="5 5"
-                            />
-                            <Line
-                              yAxisId="right"
-                              type="monotone"
-                              dataKey="kesehatan_ibu"
-                              name="Gizi Ibu %"
-                              stroke="#8b5cf6"
-                              strokeWidth={3}
-                            />
-                          </ComposedChart>
+                          </BarChart>
                         </ResponsiveContainer>
                       </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="p-6 bg-blue-50 border border-blue-100 rounded-2xl">
-                          <h4 className="font-bold text-blue-900 mb-2">
-                            Intervensi Infrastruktur
-                          </h4>
-                          <p className="text-xs text-blue-700 leading-relaxed font-medium">
-                            Jika garis Biru/Hijau (Air & Sanitasi) berada di
-                            bawah tren batang merah, wilayah tersebut memerlukan
-                            percepatan pembangunan sanitasi total berbasis
-                            masyarakat.
-                          </p>
-                        </div>
-                        <div className="p-6 bg-orange-50 border border-orange-100 rounded-2xl">
-                          <h4 className="font-bold text-orange-900 mb-2">
-                            Peringatan BBLR
-                          </h4>
-                          <p className="text-xs text-orange-700 leading-relaxed font-medium">
-                            Garis oranye putus-putus menunjukkan prevalensi bayi
-                            lahir rendah. Ini menandakan masalah gizi kronis
-                            yang sudah terjadi sejak dalam kandungan.
-                          </p>
-                        </div>
-                        <div className="p-6 bg-purple-50 border border-purple-100 rounded-2xl">
-                          <h4 className="font-bold text-purple-900 mb-2">
-                            Kesehatan Ibu
-                          </h4>
-                          <p className="text-xs text-purple-700 leading-relaxed font-medium">
-                            Pantau garis ungu. Penurunan akses gizi ibu hamil di
-                            wilayah zona merah memerlukan program PMT (Pemberian
-                            Makanan Tambahan) darurat.
-                          </p>
-                        </div>
-                      </div>
                     </div>
-                  )}
-
-                  {/* TAB 3: TABEL RINCIAN DETAIL */}
-                  {activeTab === "tabel" && (
-                    <div className="space-y-6 animate-fadeIn">
-                      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <div>
-                          <h2 className="text-2xl font-black text-gray-800 tracking-tighter uppercase">
-                            Tabel Rekapitulasi
-                          </h2>
-                          <p className="text-gray-500 text-sm">
-                            Data mentah administratif per kabupaten untuk
-                            verifikasi detail.
-                          </p>
-                        </div>
-                        <div className="relative w-full md:w-80">
-                          <FaSearch className="absolute left-4 top-3.5 text-gray-400 text-sm" />
+                  ) : (
+                    <div className="animate-fadeIn">
+                      <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-bold text-gray-800 uppercase">
+                          Database Rekapitulasi
+                        </h2>
+                        <div className="relative w-64">
+                          <FaSearch className="absolute left-3 top-3 text-gray-400 text-xs" />
                           <input
                             type="text"
-                            placeholder="Cari wilayah spesifik..."
-                            className="w-full pl-11 pr-4 py-3 text-sm border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-sigizi-green transition-all shadow-sm"
+                            placeholder="Cari wilayah..."
+                            className="w-full pl-9 pr-4 py-2 text-sm border rounded-lg outline-none"
                             onChange={(e) => setSearchTerm(e.target.value)}
                           />
                         </div>
                       </div>
-
-                      <div className="overflow-x-auto rounded-3xl border border-gray-200 shadow-inner">
+                      <div className="overflow-x-auto border rounded-xl">
                         <table className="w-full text-left text-sm">
                           <thead className="bg-gray-50 border-b">
                             <tr>
-                              <th className="p-5 font-black text-gray-500 uppercase text-[10px] tracking-widest">
-                                Wilayah Administratif
+                              <th className="p-4 font-bold">Wilayah</th>
+                              <th className="p-4 font-bold text-center">
+                                Total Anak
                               </th>
-                              <th className="p-5 font-black text-gray-500 uppercase text-[10px] tracking-widest text-center">
-                                Total Sampel
-                              </th>
-                              <th className="p-5 font-black text-green-700 uppercase text-[10px] tracking-widest text-center bg-green-50">
+                              <th className="p-4 font-bold text-center text-green-600">
                                 Normal
                               </th>
-                              <th className="p-5 font-black text-yellow-700 uppercase text-[10px] tracking-widest text-center bg-yellow-50">
+                              <th className="p-4 font-bold text-center text-yellow-600">
                                 Pra-Stunting
                               </th>
-                              <th className="p-5 font-black text-red-700 uppercase text-[10px] tracking-widest text-center bg-red-50">
+                              <th className="p-4 font-bold text-center text-red-600">
                                 Stunting
                               </th>
                             </tr>
                           </thead>
                           <tbody>
-                            {filteredData.length > 0 ? (
-                              filteredData.map((row, idx) => (
-                                <tr
-                                  key={idx}
-                                  className="border-b hover:bg-gray-50 transition"
-                                >
-                                  <td className="p-5 font-bold text-gray-800">
-                                    {row.nama_kabupaten}
-                                  </td>
-                                  <td className="p-5 text-center font-black text-gray-600">
-                                    {row.total_anak}
-                                  </td>
-                                  <td className="p-5 text-center font-bold text-green-600 bg-green-50/30">
-                                    {row.total_normal || 0}
-                                  </td>
-                                  <td className="p-5 text-center font-bold text-yellow-600 bg-yellow-50/30">
-                                    {row.total_prastunting || 0}
-                                  </td>
-                                  <td className="p-5 text-center font-black text-red-600 bg-red-50/30">
-                                    {row.total_stunting || 0}
-                                  </td>
-                                </tr>
-                              ))
-                            ) : (
-                              <tr>
-                                <td
-                                  colSpan="5"
-                                  className="p-20 text-center text-gray-400 italic"
-                                >
-                                  Data tidak ditemukan untuk pencarian tersebut.
+                            {filteredData.map((row, idx) => (
+                              <tr
+                                key={idx}
+                                className="border-b hover:bg-gray-50 transition"
+                              >
+                                <td className="p-4 font-bold text-gray-700">
+                                  {row.nama_kabupaten}
+                                </td>
+                                <td className="p-4 text-center font-bold">
+                                  {row.total_anak}
+                                </td>
+                                <td className="p-4 text-center text-green-600 font-medium">
+                                  {row.total_normal}
+                                </td>
+                                <td className="p-4 text-center text-yellow-600 font-medium">
+                                  {row.total_prastunting}
+                                </td>
+                                <td className="p-4 text-center text-red-600 font-black">
+                                  {row.total_stunting}
                                 </td>
                               </tr>
-                            )}
+                            ))}
                           </tbody>
                         </table>
                       </div>
                     </div>
                   )}
-
-                  {/* KOP TANDA TANGAN (KHUSUS PRINT) */}
-                  <div className="mt-20 hidden print:flex justify-end">
-                    <div className="text-center w-80">
-                      <p className="text-sm text-gray-600 mb-24">
-                        Dicetak:{" "}
-                        {new Date().toLocaleDateString("id-ID", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </p>
-                      <p className="font-bold text-gray-900 border-b-2 border-gray-900 pb-1 uppercase tracking-tighter">
-                        Kepala Analis Sistem SI-GIZI SIGAP
-                      </p>
-                      <p className="text-[10px] text-gray-500 mt-2 uppercase font-bold tracking-widest">
-                        Pemerintah Provinsi Sumatera Utara
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                </>
               )}
             </div>
           </div>
