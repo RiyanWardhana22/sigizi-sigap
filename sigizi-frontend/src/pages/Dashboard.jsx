@@ -8,7 +8,7 @@ import {
   FaCheckCircle,
   FaChartLine,
   FaUserFriends,
-  FaChartArea
+  FaChartArea,
 } from "react-icons/fa";
 
 export default function Dashboard() {
@@ -21,7 +21,7 @@ export default function Dashboard() {
     total_normal: 0,
   });
   const [loading, setLoading] = useState(true);
-  
+
   // State BARU untuk mengatur mode peta di Dashboard
   const [modePeta, setModePeta] = useState("balita");
 
@@ -57,26 +57,15 @@ export default function Dashboard() {
   };
 
   if (!user) return null;
-  
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar handleLogout={handleLogout} />
-      
+
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="bg-white border-b border-gray-200 px-8 py-4 flex justify-between items-center z-10">
+        <header className="bg-white border-b border-gray-200 px-8 py-5 flex justify-between items-center z-10">
           <div>
-            <h1 className="text-xl font-bold text-gray-800">Dashboard Utama</h1>
-            <p className="text-sm text-gray-500">
-              Selamat datang kembali,{" "}
-              <span className="font-bold text-green-600">
-                {user.nama_lengkap}
-              </span>
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="bg-green-100 text-green-700 border border-green-200 px-4 py-2 rounded-lg text-sm font-bold shadow-sm">
-              {user.role.replace("_", " ").toUpperCase()}
-            </div>
+            <h1 className="text-xl font-bold text-gray-800">DASHBOARD UTAMA</h1>
           </div>
         </header>
 
@@ -87,7 +76,6 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              {/* Kartu 1: Total Anak */}
               <div className="bg-white rounded-xl border border-gray-200 p-6 border-l-4 border-l-blue-500 hover:shadow-md transition">
                 <div className="flex items-center gap-4">
                   <div className="p-3 bg-blue-50 text-blue-500 rounded-lg text-2xl">
@@ -161,16 +149,19 @@ export default function Dashboard() {
               BAGIAN PETA SPASIAL DENGAN TOMBOL TOGGLE 
               ========================================= */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
-            
             {/* Header Kartu Peta */}
             <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex flex-col md:flex-row justify-between items-center gap-4">
               <div className="flex items-center gap-3">
                 <h3 className="text-lg font-black text-gray-800 uppercase tracking-tight">
-                  {modePeta === "balita" ? "Peta Sebaran Kasus Balita" : "Peta Kerentanan Wilayah (ML)"}
+                  {modePeta === "balita"
+                    ? "Peta Sebaran Kasus Balita"
+                    : "Peta Kerentanan Wilayah (ML)"}
                 </h3>
                 <div className="flex items-center gap-1.5 bg-green-100 text-green-700 px-2.5 py-1 rounded-full border border-green-200">
                   <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider">Live</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider">
+                    Live
+                  </span>
                 </div>
               </div>
 
@@ -203,7 +194,6 @@ export default function Dashboard() {
             <div className="w-full h-[480px] relative z-0 bg-gray-50">
               <MapDashboard mode={modePeta} />
             </div>
-
           </div>
         </main>
       </div>

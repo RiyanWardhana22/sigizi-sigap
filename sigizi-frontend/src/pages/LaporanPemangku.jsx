@@ -18,6 +18,8 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  ComposedChart,
+  Line,
 } from "recharts";
 
 export default function LaporanPemangku() {
@@ -30,7 +32,7 @@ export default function LaporanPemangku() {
   const [filterTahun, setFilterTahun] = useState(
     new Date().getFullYear().toString(),
   );
-
+  const [korelasiData, setKorelasiData] = useState([]);
   const handlePrint = () => {
     window.print();
   };
@@ -92,6 +94,18 @@ export default function LaporanPemangku() {
       if (data.status === "success") {
         setLaporan(data.data);
         setFilteredData(data.data);
+      }
+
+      const resKorelasi = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/get_korelasi_faktor.php`,
+      );
+      const dataKorelasi = await resKorelasi.json();
+      if (dataKorelasi.status === "success") {
+        const cleanKorelasi = dataKorelasi.data.map((item) => ({
+          ...item,
+          name: item.name.replace("Kabupaten ", "").replace("Kota ", ""),
+        }));
+        setKorelasiData(cleanKorelasi);
       }
     } catch (error) {
       console.error("Gagal mengambil data:", error);
@@ -296,6 +310,130 @@ export default function LaporanPemangku() {
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
+                  </div>
+                </section>
+
+                {/* SECTION BARU: ANALISIS FAKTOR PENENTU */}
+                <section className="print:break-inside-avoid mt-12 mb-8">
+                  <div className="flex items-center justify-between mb-6 border-l-4 border-blue-500 pl-4">
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-800">
+                        Analisis Akar Masalah (Faktor Determinan)
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        Korelasi antara Tingkat Stunting dengan Akses Sanitasi &
+                        Air Bersih di 15 Wilayah Kritis
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-2 md:p-6 rounded-2xl border border-gray-200 shadow-sm">
+                    <div style={{ height: "450px", width: "100%" }}>
+                      <ResponsiveContainer>
+                        <ComposedChart
+                          data={korelasiData}
+                          margin={{ top: 20, right: 20, bottom: 60, left: 20 }}
+                        >
+                          <CartesianGrid
+                            stroke="#f5f5f5"
+                            strokeDasharray="3 3"
+                          />
+
+                          {/* Sumbu X untuk Nama Daerah */}
+                          <XAxis
+                            dataKey="name"
+                            angle={-45}
+                            textAnchor="end"
+                            tick={{ fontSize: 11, fill: "#6b7280" }}
+                            interval={0}
+                          />
+
+                          {/* Sumbu Y Kiri untuk Jumlah Stunting (Angka Mutlak) */}
+                          <YAxis
+                            yAxisId="left"
+                            orientation="left"
+                            stroke="#ef4444"
+                            tick={{ fontSize: 12 }}
+                          />
+
+                          {/* Sumbu Y Kanan untuk Persentase (%) Sanitasi/Air */}
+                          <YAxis
+                            yAxisId="right"
+                            orientation="right"
+                            stroke="#3b82f6"
+                            domain={[0, 100]}
+                            tick={{ fontSize: 12 }}
+                            tickFormatter={(value) => `${value}%`}
+                          />
+
+                          <Tooltip
+                            contentStyle={{
+                              borderRadius: "12px",
+                              border: "none",
+                              boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
+                            }}
+                          />
+                          <Legend
+                            wrapperStyle={{
+                              paddingTop: "30px",
+                              fontSize: "13px",
+                              fontWeight: "bold",
+                            }}
+                          />
+
+                          {/* Batang Merah untuk Stunting (Pakai Sumbu Kiri) */}
+                          <Bar
+                            yAxisId="left"
+                            dataKey="total_stunting"
+                            name="Total Stunting"
+                            barSize={30}
+                            fill="#ef4444"
+                            radius={[4, 4, 0, 0]}
+                          />
+
+                          {/* Garis Biru untuk Sanitasi (Pakai Sumbu Kanan) */}
+                          <Line
+                            yAxisId="right"
+                            type="monotone"
+                            dataKey="akses_sanitasi"
+                            name="Akses Sanitasi Layak (%)"
+                            stroke="#3b82f6"
+                            strokeWidth={4}
+                            dot={{ r: 5 }}
+                            activeDot={{ r: 8 }}
+                          />
+
+                          {/* Garis Hijau untuk Air Bersih (Pakai Sumbu Kanan) */}
+                          <Line
+                            yAxisId="right"
+                            type="monotone"
+                            dataKey="akses_air"
+                            name="Akses Air Bersih (%)"
+                            stroke="#10b981"
+                            strokeWidth={4}
+                            dot={{ r: 5 }}
+                            activeDot={{ r: 8 }}
+                          />
+                        </ComposedChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+
+                  {/* Insight Otomatis Berbasis Data */}
+                  <div className="mt-4 bg-blue-50 border border-blue-200 text-blue-800 px-5 py-4 rounded-xl flex gap-3 text-sm">
+                    <span className="text-xl">💡</span>
+                    <p>
+                      <strong>Insight Strategis:</strong> Perhatikan titik
+                      persilangan pada grafik di atas. Jika batang merah
+                      (Stunting) sangat tinggi di suatu daerah, namun garis
+                      biru/hijau (Sanitasi/Air) anjlok ke bawah, ini menandakan
+                      bahwa{" "}
+                      <strong>
+                        buruknya infrastruktur air dan sanitasi adalah
+                        penyumbang utama stunting di wilayah tersebut.
+                      </strong>{" "}
+                      Fokuskan anggaran infrastruktur ke wilayah ini!
+                    </p>
                   </div>
                 </section>
 
