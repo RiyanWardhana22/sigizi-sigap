@@ -170,7 +170,7 @@ INSERT INTO `users` (`id`, `nama_lengkap`, `email`, `password`, `role`, `wilayah
 (3, 'Joko Ui', 'jokoui@gmail.com', '$2y$10$TH8VgqPhN71iIzdb3JjCxuXCqza28e6ZRokt1oM9V2O6VxsnzHUqe', 'orang_tua', NULL, 1, '2026-04-07 17:53:07', '2026-04-07 17:53:07'),
 (4, 'parent', 'parent@gmail.com', '$2y$10$y0Kl7jA/U5Avm/szI6.yXeaFcHJySxJnk/Lf313M9b.tubn8na3ve', 'orang_tua', NULL, 1, '2026-04-12 17:03:51', '2026-04-12 17:03:51'),
 (5, 'Ki Prana Lewu', 'pranalewu@gmail.com', '$2y$10$gnmgWgIU3M11KVr0YB9mR.tapJBcIsuHJh2r7nlNnqgu8L6T55.AC', 'dinas_kesehatan', NULL, 1, '2026-04-17 14:46:38', '2026-04-17 14:46:38'),
-(6, 'coba1', 'tes@gmail.com', '$2y$10$88PlaVf47Aw4M7dT2i5nWucUrunXPupkf8j.ur62rxli125N5S5cC', 'orang_tua', NULL, 1, '2026-04-18 09:18:11', '2026-04-18 17:29:22'),
+(6, 'coba1', 'tes@gmail.com', '$2y$10$88PlaVf47Aw4M7dT2i5nWucUrunXPupkf8j.ur62rxli125N5S5cC', 'orang_tua', NULL, 1, '2026-04-18 09:18:11', '2026-04-18 17:29:22');
 
 -- --------------------------------------------------------
 
