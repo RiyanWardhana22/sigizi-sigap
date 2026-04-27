@@ -33,6 +33,17 @@ const EsriDynamicLayer = ({ url, opacity }) => {
   return null;
 };
 
+const MapResizer = () => {
+  const map = useMap();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 500); // Jeda setengah detik memastikan animasi CSS Tailwind selesai
+    return () => clearTimeout(timer);
+  }, [map]);
+  return null;
+};
+
 // =========================================================================
 // KOMPONEN SWITCH KUSTOM
 // =========================================================================
@@ -113,7 +124,20 @@ export default function MapDashboard({ mode = "balita" }) {
   }, [mode]);
 
   const centerPosition = [2.115355, 99.545097];
-  const getMarkerColor = (a, s, p) => (a == 0 ? "#9ca3af" : s > 0 ? "#ef4444" : p > 0 ? "#eab308" : "#22c55e");
+
+  // ================= LOGIKA VISUAL MIKRO (BALITA) =================
+  const getMarkerColor = (totalAnak, totalStunting, totalPraStunting) => {
+    if (totalAnak === 0 || totalAnak === "0") return "#9ca3af";
+    if (totalStunting > 0) return "#ef4444";
+    if (totalPraStunting > 0) return "#eab308";
+    return "#22c55e";
+  };
+
+  const getMarkerRadius = (totalAnak) => {
+    const baseRadius = 6;
+    const anakCount = parseInt(totalAnak) || 0;
+    return baseRadius + (anakCount * 2); 
+  };
   
   // =========================================================================
   // LOGIKA WARNA PINTAR (HOLLOW POLYGON)
@@ -287,6 +311,8 @@ export default function MapDashboard({ mode = "balita" }) {
       {/* KANVAS PETA LEAFLET                                       */}
       {/* ========================================================= */}
       <MapContainer center={centerPosition} zoom={7} scrollWheelZoom={true} className="w-full h-full z-0" zoomControl={false}>
+
+        <MapResizer />
         <TileLayer attribution='&copy; OpenStreetMap | Data: Dinkes & BNPB' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
         {/* OVERLAY BNPB */}
@@ -306,8 +332,35 @@ export default function MapDashboard({ mode = "balita" }) {
             if (pos) {
               const c = getMarkerColor(w.total_anak, w.total_stunting, w.total_prastunting);
               return (
-                <CircleMarker key={i} center={pos} pathOptions={{ color: c, fillColor: c, fillOpacity: 0.8 }} radius={6 + parseInt(w.total_anak||0)*2}>
-                  <Popup><b>{w.nama_kabupaten}</b><br/>Total: {w.total_anak}<br/>Stunting: {w.total_stunting}</Popup>
+                <CircleMarker 
+                  key={i} 
+                  center={pos} 
+                  pathOptions={{ color: c, fillColor: c, fillOpacity: 0.8 }} 
+                  radius={getMarkerRadius(w.total_anak)}
+                >
+                  <Popup>
+                    <div style={{ textAlign: "left", fontFamily: "ui-sans-serif, system-ui, sans-serif", minWidth: "160px" }}>
+                      <h3 style={{ fontWeight: 900, marginBottom: "8px", fontSize: "13px", textTransform: "uppercase", borderBottom: "1px solid #e5e7eb", paddingBottom: "4px", color: "#1f2937" }}>
+                        {w.nama_kabupaten}
+                      </h3>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", marginBottom: "4px" }}>
+                        <span style={{ color: "#6b7280", fontWeight: 600 }}>Total Anak:</span> 
+                        <b style={{ color: "#1f2937" }}>{w.total_anak}</b>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", marginBottom: "4px" }}>
+                        <span style={{ color: "#6b7280", fontWeight: 600 }}>Gizi Normal:</span> 
+                        <b style={{ color: "#16a34a" }}>{w.total_normal}</b>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", marginBottom: "4px" }}>
+                        <span style={{ color: "#6b7280", fontWeight: 600 }}>Pra-Stunting:</span> 
+                        <b style={{ color: "#ca8a04" }}>{w.total_prastunting}</b>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px" }}>
+                        <span style={{ color: "#6b7280", fontWeight: 600 }}>Stunting:</span> 
+                        <b style={{ color: "#dc2626" }}>{w.total_stunting}</b>
+                      </div>
+                    </div>
+                  </Popup>
                 </CircleMarker>
               );
             } return null;
