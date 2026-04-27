@@ -1,318 +1,319 @@
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, CircleMarker, Popup, GeoJSON } from "react-leaflet";
+import { 
+  MapContainer, 
+  TileLayer, 
+  CircleMarker, 
+  Popup, 
+  GeoJSON, 
+  useMap 
+} from "react-leaflet";
+import { dynamicMapLayer } from "esri-leaflet";
+import { 
+  FaLayerGroup, 
+  FaWater, 
+  FaFire, 
+  FaInfoCircle,
+  FaShieldAlt,
+  FaChevronDown,
+  FaChevronUp,
+  FaMapMarkedAlt
+} from "react-icons/fa";
 import "leaflet/dist/leaflet.css";
 
-// 1. TERIMA PROP 'mode' DARI HALAMAN INDUK
+// =========================================================================
+// KOMPONEN RENDER BNPB
+// =========================================================================
+const EsriDynamicLayer = ({ url, opacity }) => {
+  const map = useMap();
+  useEffect(() => {
+    const layer = dynamicMapLayer({ url, opacity });
+    layer.addTo(map);
+    return () => map.removeLayer(layer);
+  }, [map, url, opacity]);
+  return null;
+};
+
+// =========================================================================
+// KOMPONEN SWITCH KUSTOM
+// =========================================================================
+const CustomToggle = ({ label, icon, active, onChange, activeColor }) => (
+  <div 
+    className={`flex items-center justify-between p-2.5 sm:p-3 bg-white border ${active ? 'border-gray-200 shadow-sm' : 'border-gray-100'} rounded-xl cursor-pointer transition-all duration-200 active:scale-[0.98]`}
+    onClick={onChange}
+  >
+    <div className="flex items-center gap-2 sm:gap-3">
+      <div className={`p-1.5 sm:p-2 rounded-lg transition-colors duration-300 ${active ? activeColor.bg : 'bg-gray-50'} ${active ? activeColor.text : 'text-gray-400'}`}>
+        {icon}
+      </div>
+      <span className={`text-xs sm:text-sm font-bold transition-colors duration-300 ${active ? 'text-gray-800' : 'text-gray-500'}`}>{label}</span>
+    </div>
+    <div className={`relative w-10 sm:w-11 h-5 sm:h-6 rounded-full transition-colors duration-300 flex items-center px-1 ${active ? activeColor.switch : 'bg-gray-200'}`}>
+      <div className={`w-3.5 sm:w-4 h-3.5 sm:h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${active ? 'translate-x-5' : 'translate-x-0'}`} />
+    </div>
+  </div>
+);
+
 export default function MapDashboard({ mode = "balita" }) {
-  // --- STATE UNTUK MODE 1: BALITA (Milik Teman Anda) ---
   const [laporan, setLaporan] = useState([]);
-  
-  // --- STATE UNTUK MODE 2: MACHINE LEARNING (Baru) ---
   const [agregatML, setAgregatML] = useState([]);
   const [geoJsonData, setGeoJsonData] = useState(null);
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLegendOpen, setIsLegendOpen] = useState(true); 
+  
+  const [layerBanjir, setLayerBanjir] = useState(false);
+  const [layerKekeringan, setLayerKekeringan] = useState(false);
+
+  // LOGIKA PINTAR: Cek apakah ada layer bencana yang menyala
+  const isBencanaActive = layerBanjir || layerKekeringan;
+
   const koordinatWilayah = {
-    Nias: [1.1963, 97.6453],
-    "Mandailing Natal": [0.8656, 99.4253],
-    "Tapanuli Selatan": [1.5936, 99.2731],
-    "Tapanuli Tengah": [1.8596, 98.6656],
-    "Tapanuli Utara": [2.0253, 99.0436],
-    Toba: [2.35, 99.0],
-    Labuhanbatu: [2.1, 100.1],
-    Asahan: [2.9833, 99.6333],
-    Simalungun: [2.9, 99.05],
-    Dairi: [2.75, 98.3],
-    Karo: [3.1167, 98.2833],
-    "Deli Serdang": [3.55, 98.8333],
-    Langkat: [3.75, 98.0],
-    "Nias Selatan": [0.5833, 97.8],
-    "Humbang Hasundutan": [2.3, 98.5],
-    "Pakpak Bharat": [2.55, 98.25],
-    Samosir: [2.6, 98.7],
-    "Serdang Bedagai": [3.3667, 99.0833],
-    "Batu Bara": [3.2167, 99.5833],
-    "Padang Lawas Utara": [1.5, 99.75],
-    "Padang Lawas": [1.25, 99.9],
-    "Labuhanbatu Selatan": [1.8, 100.1],
-    "Labuhanbatu Utara": [2.25, 99.8333],
-    "Nias Utara": [1.4, 97.6],
-    "Nias Barat": [1.0, 97.5],
-    "Kota Sibolga": [1.7427, 98.7792],
-    "Kota Tanjung Balai": [2.9667, 99.8],
-    "Kota Pematangsiantar": [2.9667, 99.0667],
-    "Kota Tebing Tinggi": [3.3274, 99.1623],
-    "Kota Medan": [3.5951, 98.6722],
-    "Kota Binjai": [3.6, 98.4833],
-    "Kota PadangSidempuan": [1.3793, 99.2734],
+    Nias: [1.1963, 97.6453], "Mandailing Natal": [0.8656, 99.4253], "Tapanuli Selatan": [1.5936, 99.2731],
+    "Tapanuli Tengah": [1.8596, 98.6656], "Tapanuli Utara": [2.0253, 99.0436], Toba: [2.35, 99.0],
+    Labuhanbatu: [2.1, 100.1], Asahan: [2.9833, 99.6333], Simalungun: [2.9, 99.05],
+    Dairi: [2.75, 98.3], Karo: [3.1167, 98.2833], "Deli Serdang": [3.55, 98.8333],
+    Langkat: [3.75, 98.0], "Nias Selatan": [0.5833, 97.8], "Humbang Hasundutan": [2.3, 98.5],
+    "Pakpak Bharat": [2.55, 98.25], Samosir: [2.6, 98.7], "Serdang Bedagai": [3.3667, 99.0833],
+    "Batu Bara": [3.2167, 99.5833], "Padang Lawas Utara": [1.5, 99.75], "Padang Lawas": [1.25, 99.9],
+    "Labuhanbatu Selatan": [1.8, 100.1], "Labuhanbatu Utara": [2.25, 99.8333], "Nias Utara": [1.4, 97.6],
+    "Nias Barat": [1.0, 97.5], "Kota Sibolga": [1.7427, 98.7792], "Kota Tanjung Balai": [2.9667, 99.8],
+    "Kota Pematangsiantar": [2.9667, 99.0667], "Kota Tebing Tinggi": [3.3274, 99.1623],
+    "Kota Medan": [3.5951, 98.6722], "Kota Binjai": [3.6, 98.4833], "Kota PadangSidempuan": [1.3793, 99.2734],
     "Kota Gunungsitoli": [1.2833, 97.6167],
   };
 
-  // 2. FETCH SEMUA DATA SAAT HALAMAN DIBUKA
   useEffect(() => {
-    // A. Ambil Data Titik Balita
-    const fetchPetaBalita = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/get_laporan.php`);
-        const data = await response.json();
-        if (data.status === "success") setLaporan(data.data);
-      } catch (error) {
-        console.error("Gagal mengambil data peta balita:", error);
-      }
-    };
+        const [resBalita, resML, resGeo] = await Promise.all([
+          fetch(`${import.meta.env.VITE_API_BASE_URL}/get_laporan.php`),
+          fetch(`${import.meta.env.VITE_API_BASE_URL}/get_agregat_wilayah.php`),
+          fetch("/sumut.geojson")
+        ]);
+        
+        const dataBalita = await resBalita.json();
+        const dataML = await resML.json();
+        const dataGeo = await resGeo.json();
 
-    // B. Ambil Data Prediksi Kerentanan ML dari Database
-    const fetchPetaML = async () => {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/get_agregat_wilayah.php`);
-        const data = await response.json();
-        if (data.status === "success") setAgregatML(data.data);
-      } catch (error) {
-        console.error("Gagal mengambil data ML:", error);
-      }
+        if (dataBalita.status === "success") setLaporan(dataBalita.data);
+        if (dataML.status === "success") setAgregatML(dataML.data);
+        setGeoJsonData(dataGeo);
+      } catch (error) { console.error("Gagal memuat data peta", error); }
     };
-
-    // C. Ambil File GeoJSON dari folder public
-    const fetchGeoJSON = async () => {
-      try {
-        const response = await fetch("/sumut.geojson"); // Pastikan namanya sumut.geojson
-        const data = await response.json();
-        setGeoJsonData(data);
-      } catch (error) {
-        console.error("Gagal memuat GeoJSON. Pastikan file sumut.geojson ada di folder public.", error);
-      }
-    };
-
-    fetchPetaBalita();
-    fetchPetaML();
-    fetchGeoJSON();
+    fetchData();
+    if (window.innerWidth < 768) setIsLegendOpen(false);
   }, []);
 
+  useEffect(() => {
+    if (mode === "balita") {
+      setIsMenuOpen(false);
+      setLayerBanjir(false);
+      setLayerKekeringan(false);
+    }
+  }, [mode]);
+
   const centerPosition = [2.115355, 99.545097];
-
-  // ================= LOGIKA WARNA MIKRO (BALITA) =================
-  const getMarkerColor = (totalAnak, totalStunting, totalPraStunting) => {
-    if (totalAnak === 0 || totalAnak === "0") return "#9ca3af";
-    if (totalStunting > 0) return "#ef4444";
-    if (totalPraStunting > 0) return "#eab308";
-    return "#22c55e";
-  };
+  const getMarkerColor = (a, s, p) => (a == 0 ? "#9ca3af" : s > 0 ? "#ef4444" : p > 0 ? "#eab308" : "#22c55e");
   
-  const getMarkerRadius = (totalAnak) => {
-    const baseRadius = 8;
-    const anakCount = parseInt(totalAnak) || 0;
-    return baseRadius + anakCount * 3;
-  };
-
-  // ================= LOGIKA WARNA MAKRO (MACHINE LEARNING) =================
+  // =========================================================================
+  // LOGIKA WARNA PINTAR (HOLLOW POLYGON)
+  // =========================================================================
   const getPolygonStyle = (feature) => {
-    // 1. GUNAKAN KUNCI 'kab_kota' (Sesuai hasil log console Anda)
-    const namaKabGeoJSON = feature.properties.kab_kota || "";
-    
-    // 2. Logika Pencocokan Pintar (Menghapus kata 'Kabupaten' atau 'Kota' agar sinkron dengan DB)
-    const dataWilayah = agregatML.find((item) => {
-      const namaDB = item.kabupaten_kota.toLowerCase()
-        .replace("kabupaten ", "").replace("kota ", "").trim();
-      const namaGeo = namaKabGeoJSON.toLowerCase()
-        .replace("kabupaten ", "").replace("kota ", "").trim();
-      return namaDB === namaGeo;
-    });
+    const namaGeo = (feature.properties.kab_kota || "").toLowerCase().replace("kabupaten ", "").replace("kota ", "").trim();
+    const dataWilayah = agregatML.find((item) => item.kabupaten_kota.toLowerCase().replace("kabupaten ", "").replace("kota ", "").trim() === namaGeo);
 
-    let fillColor = "#e5e7eb"; // Default: Abu-abu jika tidak cocok
-    let fillOpacity = 0.6;
+    let riskColor = "#9ca3af"; // Default Abu-abu
+    let hasData = false;
 
     if (dataWilayah) {
-      fillOpacity = 0.8;
-      const risiko = dataWilayah.tingkat_kerentanan;
-      // Mewarnai berdasarkan hasil prediksi di Database
-      if (risiko === "Rendah") fillColor = "#22c55e";      // Hijau
-      else if (risiko === "Sedang") fillColor = "#facc15"; // Kuning
-      else if (risiko === "Tinggi") fillColor = "#f97316"; // Oranye
-      else if (risiko === "Sangat Tinggi") fillColor = "#dc2626"; // Merah
+      hasData = true;
+      const r = dataWilayah.tingkat_kerentanan;
+      riskColor = r === "Rendah" ? "#22c55e" : r === "Sedang" ? "#facc15" : r === "Tinggi" ? "#f97316" : "#dc2626";
     }
 
+    // JIKA BENCANA MENYALA: Kosongkan isi, tebalkan garis batas dengan warna risiko
+    if (isBencanaActive) {
+      return {
+        fillColor: riskColor,
+        fillOpacity: 0, // Transparan 100% agar peta bencana terlihat
+        color: hasData ? riskColor : "#9ca3af", // Garis berubah jadi warna risiko
+        weight: 3.5, // Garis batas ditebalkan
+        opacity: 1
+      };
+    } 
+    
+    // JIKA BENCANA MATI: Kembalikan warna isi seperti biasa (Peta Blok)
     return {
-      fillColor: fillColor,
+      fillColor: riskColor,
+      fillOpacity: hasData ? 0.8 : 0.4,
+      color: "white", // Garis batas putih
       weight: 1.5,
-      opacity: 1,
-      color: "white",
-      fillOpacity: fillOpacity,
+      opacity: 1
     };
   };
 
   const onEachFeature = (feature, layer) => {
-    const namaKabGeoJSON = feature.properties.kab_kota || "Wilayah Tidak Diketahui";
-    
-    // 1. Cari Data Prediksi ML & Input Dinas
-    const dataWilayah = agregatML.find((item) => {
-      const namaDB = item.kabupaten_kota.toLowerCase().replace("kabupaten ", "").replace("kota ", "").trim();
-      const namaGeo = namaKabGeoJSON.toLowerCase().replace("kabupaten ", "").replace("kota ", "").trim();
-      return namaDB === namaGeo;
-    });
+    const namaGeo = (feature.properties.kab_kota || "Wilayah Tidak Diketahui").toLowerCase().replace("kabupaten ", "").replace("kota ", "").trim();
+    const dataWilayah = agregatML.find((i) => i.kabupaten_kota.toLowerCase().replace("kabupaten ", "").replace("kota ", "").trim() === namaGeo);
 
-    // 2. Cari Data Faktual Stunting (Mikro)
-    const dataFakta = laporan.find((item) => {
-      const namaLaporan = item.nama_kabupaten.toLowerCase().replace("kabupaten ", "").replace("kota ", "").trim();
-      const namaGeo = namaKabGeoJSON.toLowerCase().replace("kabupaten ", "").replace("kota ", "").trim();
-      return namaLaporan === namaGeo;
-    });
-
-    let risikoTeks = "BELUM ADA DATA";
-    let warnaRisiko = "#9ca3af";
-
-    if (dataWilayah) {
-      risikoTeks = dataWilayah.tingkat_kerentanan.toUpperCase();
-      if (risikoTeks === 'RENDAH') warnaRisiko = '#16a34a';
-      else if (risikoTeks === 'SEDANG') warnaRisiko = '#ca8a04';
-      else if (risikoTeks === 'TINGGI') warnaRisiko = '#ea580c';
-      else warnaRisiko = '#dc2626';
-    }
-
-    // 3. Susun HTML Popup dengan Desain 2 Kartu (Scrollable)
     layer.bindPopup(`
-      <div style="text-align: left; min-width: 250px; max-height: 350px; overflow-y: auto; padding-right: 5px; font-family: ui-sans-serif, system-ui, sans-serif;">
-        <h3 style="font-weight: 900; border-bottom: 2px solid #f3f4f6; padding-bottom: 8px; margin-bottom: 12px; font-size: 15px; color: #1f2937; text-transform: uppercase;">
-          ${namaKabGeoJSON}
-        </h3>
-
+      <div style="text-align: center; font-family: ui-sans-serif, system-ui, sans-serif; min-width:160px;">
+        <h3 style="font-weight: 900; margin-bottom: 5px; font-size: 13px; text-transform:uppercase;">${feature.properties.kab_kota}</h3>
         ${dataWilayah ? `
-        <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #cbd5e1; padding-bottom: 8px; margin-bottom: 8px;">
-            <span style="font-size: 10px; color: #475569; font-weight: 800; letter-spacing: 0.5px;">PREDIKSI RISIKO (ML)</span>
-            <span style="font-weight: 900; font-size: 12px; padding: 3px 8px; border-radius: 4px; background-color: ${warnaRisiko}20; color: ${warnaRisiko};">
-              ${risikoTeks}
-            </span>
-          </div>
-          
-          <p style="font-size: 10px; color: #475569; font-weight: 800; letter-spacing: 0.5px; margin: 0 0 6px 0;">FAKTOR DETERMINAN (INPUT DINAS):</p>
-          <table style="width: 100%; font-size: 11px; color: #334155; border-collapse: collapse;">
-            <tbody>
-              <tr><td style="padding: 2px 0;">Bayi BBLR</td><td style="text-align: right; font-weight: 700; color: #ef4444;">${parseFloat(dataWilayah.p_bblr).toFixed(1)}%</td></tr>
-              <tr><td style="padding: 2px 0;">Balita Gizi Buruk</td><td style="text-align: right; font-weight: 700; color: #ef4444;">${parseFloat(dataWilayah.p_gizi_buruk).toFixed(1)}%</td></tr>
-              <tr><td style="padding: 2px 0;">Sanitasi Layak</td><td style="text-align: right; font-weight: 700; color: #22c55e;">${parseFloat(dataWilayah.p_sanitasi).toFixed(1)}%</td></tr>
-              <tr><td style="padding: 2px 0;">Air Bersih</td><td style="text-align: right; font-weight: 700; color: #22c55e;">${parseFloat(dataWilayah.p_air).toFixed(1)}%</td></tr>
-              <tr><td style="padding: 2px 0;">Pendidikan Ibu &lt; SMP</td><td style="text-align: right; font-weight: 700; color: #f59e0b;">${parseFloat(dataWilayah.p_ibu).toFixed(1)}%</td></tr>
-              <tr><td style="padding: 2px 0;">Rata-rata Penghasilan</td><td style="text-align: right; font-weight: 700; color: #3b82f6;">Rp${Number(dataWilayah.penghasilan).toLocaleString('id-ID')}</td></tr>
-            </tbody>
-          </table>
-          <div style="font-size: 9px; color: #94a3b8; text-align: right; margin-top: 6px;">Diperbarui: ${dataWilayah.tanggal_input}</div>
-        </div>
-        ` : `
-        <div style="background-color: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 12px; margin-bottom: 12px; text-align: center;">
-          <p style="font-size: 11px; color: #dc2626; font-weight: 600; margin: 0;">Data agregat faktor sosial-ekonomi belum diinput oleh Dinas.</p>
-        </div>
-        `}
-
-        <div style="background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px;">
-          <p style="font-size: 10px; font-weight: 800; margin: 0 0 8px 0; color: #4b5563; letter-spacing: 0.5px;">LAPORAN KASUS BALITA (MIKRO)</p>
-          
-          <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px solid #f3f4f6;">
-            <span style="color: #6b7280;">Total Anak Terukur</span> 
-            <b style="color: #111827;">${dataFakta ? dataFakta.total_anak : 0}</b>
-          </div>
-          <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
-            <span style="color: #6b7280;">Gizi Normal</span> 
-            <b style="color: #16a34a;">${dataFakta ? dataFakta.total_normal : 0}</b>
-          </div>
-          <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
-            <span style="color: #6b7280;">Pra-stunting</span> 
-            <b style="color: #ca8a04;">${dataFakta ? dataFakta.total_prastunting : 0}</b>
-          </div>
-          <div style="display: flex; justify-content: space-between; font-size: 11px;">
-            <span style="color: #6b7280;">Stunting</span> 
-            <b style="color: #dc2626;">${dataFakta ? dataFakta.total_stunting : 0}</b>
-          </div>
-        </div>
-
+          <p style="font-size: 10px; color: gray; margin: 0;">Risiko Stunting (ML):</p>
+          <span style="font-weight: 900; font-size: 14px; color: ${
+            dataWilayah.tingkat_kerentanan === 'Rendah' ? '#16a34a' :
+            dataWilayah.tingkat_kerentanan === 'Sedang' ? '#ca8a04' :
+            dataWilayah.tingkat_kerentanan === 'Tinggi' ? '#ea580c' : '#dc2626'
+          };">${dataWilayah.tingkat_kerentanan.toUpperCase()}</span>
+        ` : `<span style="font-size:10px; color:gray;">Belum ada data ML</span>`}
       </div>
     `);
 
-    // Efek Hover Poligon
+    // Logika Hover juga harus disesuaikan
     layer.on({
-      mouseover: (e) => { e.target.setStyle({ weight: 3, color: '#666', fillOpacity: 0.9 }); },
-      mouseout: (e) => { e.target.setStyle({ weight: 1.5, color: 'white', fillOpacity: dataWilayah ? 0.8 : 0.6 }); }
+      mouseover: (e) => {
+        if (isBencanaActive) {
+          e.target.setStyle({ fillOpacity: 0.2, weight: 5 }); // Saat di-hover batas makin tebal dan sedikit berwarna
+        } else {
+          e.target.setStyle({ fillOpacity: 0.95, weight: 3, color: '#666' });
+        }
+      },
+      mouseout: (e) => {
+        // Kembalikan ke style awal menggunakan fungsi getPolygonStyle
+        e.target.setStyle(getPolygonStyle(feature));
+      }
     });
   };
 
   return (
-    <div className="w-full h-full">
-      <MapContainer
-        center={centerPosition}
-        zoom={7}
-        scrollWheelZoom={true}
-        className="w-full h-full z-0"
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+    <div className="w-full h-full relative font-sans">
+      
+      {/* ========================================================= */}
+      {/* KANAN ATAS: MENU LAPISAN BENCANA */}
+      {/* ========================================================= */}
+      {mode === "kerentanan" && (
+        <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-[1000] flex flex-col items-end gap-2 pointer-events-none">
+          <button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className={`pointer-events-auto flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 bg-white/95 backdrop-blur-md rounded-xl shadow-md border transition-all duration-300 hover:bg-gray-50 active:scale-95 ${isMenuOpen ? 'border-blue-500 text-blue-600' : 'border-gray-200 text-gray-700'}`}
+          >
+            <FaLayerGroup className="text-sm sm:text-base" />
+            <span className="text-xs sm:text-sm font-bold tracking-tight">Lapisan Bencana</span>
+            <FaChevronDown className={`text-[10px] sm:text-xs transition-transform duration-300 ${isMenuOpen ? 'rotate-180' : ''}`} />
+          </button>
 
-        {/* --- LOGIKA PERGANTIAN RENDER PETA --- */}
-        {mode === "balita" ? (
-          /* RENDER 1: TITIK KASUS BALITA (ASLI) */
-          laporan.map((wilayah, index) => {
-            const posisi = koordinatWilayah[wilayah.nama_kabupaten];
-            if (posisi) {
-              const warnaLingkaran = getMarkerColor(
-                wilayah.total_anak,
-                wilayah.total_stunting,
-                wilayah.total_prastunting
-              );
-              return (
-                <CircleMarker
-                  key={index}
-                  center={posisi}
-                  pathOptions={{
-                    color: warnaLingkaran,
-                    fillColor: warnaLingkaran,
-                    fillOpacity: 0.7,
-                  }}
-                  radius={getMarkerRadius(wilayah.total_anak)}
-                >
-                  <Popup>
-                    <div className="text-center min-w-[150px]">
-                      <h3 className="font-bold text-gray-800 border-b pb-1 mb-2">
-                        {wilayah.nama_kabupaten}
-                      </h3>
-                      <p className="text-sm text-gray-600 mb-2 border-b pb-1">
-                        Total Anak Terdata: <strong>{wilayah.total_anak}</strong>
-                      </p>
-                      <div className="flex flex-col gap-1 text-sm text-left">
-                        <p className="flex justify-between items-center">
-                          <span className="text-green-600">Normal:</span>
-                          <span className="font-bold bg-green-100 px-2 rounded text-green-700">
-                            {wilayah.total_normal || 0}
-                          </span>
-                        </p>
-                        <p className="flex justify-between items-center">
-                          <span className="text-yellow-600">Pra-stunting:</span>
-                          <span className="font-bold bg-yellow-100 px-2 rounded text-yellow-700">
-                            {wilayah.total_prastunting || 0}
-                          </span>
-                        </p>
-                        <p className="flex justify-between items-center">
-                          <span className="text-red-600">Stunting:</span>
-                          <span className="font-bold bg-red-100 px-2 rounded text-red-700">
-                            {wilayah.total_stunting || 0}
-                          </span>
-                        </p>
-                      </div>
+          <div className={`pointer-events-auto transition-all duration-300 origin-top-right w-[calc(100vw-1.5rem)] max-w-[280px] sm:max-w-[320px] ${isMenuOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 -translate-y-2 hidden'}`}>
+            <div className="bg-white/95 backdrop-blur-xl p-4 sm:p-5 rounded-2xl shadow-xl border border-gray-100">
+              <div className="mb-3 sm:mb-4">
+                <h4 className="text-xs sm:text-[13px] font-black text-gray-800 uppercase tracking-tight">Konteks Kewilayahan</h4>
+                <p className="text-[10px] sm:text-[11px] text-gray-500 font-medium">Server Live InaRISK BNPB</p>
+              </div>
+              <div className="flex flex-col gap-2 sm:gap-3">
+                <CustomToggle label="Rawan Banjir" icon={<FaWater size={14} />} active={layerBanjir} onChange={() => setLayerBanjir(!layerBanjir)} activeColor={{ bg: 'bg-blue-100', text: 'text-blue-600', switch: 'bg-blue-500' }} />
+                <CustomToggle label="Rawan Kekeringan" icon={<FaFire size={14} />} active={layerKekeringan} onChange={() => setLayerKekeringan(!layerKekeringan)} activeColor={{ bg: 'bg-orange-100', text: 'text-orange-600', switch: 'bg-orange-500' }} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* KIRI BAWAH: LEGENDA PETA */}
+      {/* ========================================================= */}
+      <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-[1000] flex flex-col items-start gap-2 pointer-events-none">
+        <button 
+          onClick={() => setIsLegendOpen(!isLegendOpen)}
+          className="pointer-events-auto flex items-center gap-2 px-3 py-2 bg-white/95 backdrop-blur-md rounded-xl shadow-md border border-gray-200 text-gray-700 hover:bg-gray-50 transition-all active:scale-95"
+        >
+          <FaMapMarkedAlt className="text-gray-500 text-sm" />
+          <span className="text-xs font-bold tracking-tight">Legenda Peta</span>
+          {isLegendOpen ? <FaChevronDown className="text-[10px] text-gray-400" /> : <FaChevronUp className="text-[10px] text-gray-400" />}
+        </button>
+
+        <div className={`pointer-events-auto transition-all duration-300 origin-bottom-left w-[calc(100vw-1.5rem)] max-w-[240px] sm:max-w-[260px] ${isLegendOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-2 hidden'}`}>
+          <div className="bg-white/95 backdrop-blur-xl p-3 sm:p-4 rounded-2xl shadow-xl border border-gray-100 max-h-[50vh] overflow-y-auto custom-scrollbar">
+            
+            {mode === "balita" ? (
+              <div className="flex flex-col gap-2">
+                <div className="text-[9px] sm:text-[10px] font-bold text-gray-400 mb-1 border-b pb-1">KASUS MIKRO (BALITA)</div>
+                <div className="flex items-center gap-2.5"><div className="w-2.5 h-2.5 rounded-full bg-red-500 border border-white"></div><span className="text-[11px] sm:text-xs font-semibold text-gray-700">Stunting Ditemukan</span></div>
+                <div className="flex items-center gap-2.5"><div className="w-2.5 h-2.5 rounded-full bg-yellow-400 border border-white"></div><span className="text-[11px] sm:text-xs font-semibold text-gray-700">Pra-Stunting (Waspada)</span></div>
+                <div className="flex items-center gap-2.5"><div className="w-2.5 h-2.5 rounded-full bg-green-500 border border-white"></div><span className="text-[11px] sm:text-xs font-semibold text-gray-700">Gizi Normal / Aman</span></div>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                <div>
+                  <div className="text-[9px] sm:text-[10px] font-bold text-gray-400 mb-2 border-b pb-1 flex items-center justify-between">
+                    <span className="flex items-center gap-1"><FaShieldAlt/> RISIKO STUNTING (ML)</span>
+                  </div>
+                  
+                  {/* PENANDA CERDAS DI LEGENDA: Beritahu user bentuk petanya berubah */}
+                  {isBencanaActive && (
+                    <div className="bg-orange-50 border border-orange-200 text-orange-700 text-[9px] px-2 py-1 rounded mb-2 font-medium leading-tight">
+                      Mode Overlay Aktif: Risiko ML kini ditampilkan sebagai <b className="font-bold">Warna Garis Batas Wilayah</b>.
                     </div>
-                  </Popup>
+                  )}
+
+                  <div className="flex w-full h-1.5 sm:h-2 rounded-full overflow-hidden mb-1.5">
+                    <div className="w-1/4 bg-green-500"></div>
+                    <div className="w-1/4 bg-yellow-400"></div>
+                    <div className="w-1/4 bg-orange-500"></div>
+                    <div className="w-1/4 bg-red-600"></div>
+                  </div>
+                  <div className="flex justify-between text-[8px] sm:text-[9px] font-bold text-gray-500 uppercase">
+                    <span>Aman</span><span>Waspada</span><span>Rawan</span><span>Kritis</span>
+                  </div>
+                </div>
+
+                {isBencanaActive && (
+                  <div className="mt-1 sm:mt-2 pt-2 sm:pt-3 border-t border-gray-100">
+                    <div className="text-[9px] sm:text-[10px] font-bold text-gray-400 mb-2 border-b pb-1 flex items-center gap-1.5">
+                      {layerBanjir ? <FaWater className="text-blue-500"/> : <FaFire className="text-orange-500"/>} 
+                      PETA KERAWANAN (BNPB)
+                    </div>
+                    <div className="flex items-center gap-2 mb-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-red-500 opacity-70"></div><span className="text-[10px] sm:text-[11px] font-semibold text-gray-700">Kawasan Rawan Tinggi</span></div>
+                    <div className="flex items-center gap-2 mb-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-yellow-400 opacity-70"></div><span className="text-[10px] sm:text-[11px] font-semibold text-gray-700">Tingkat Menengah</span></div>
+                    <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-sm bg-green-500 opacity-70"></div><span className="text-[10px] sm:text-[11px] font-semibold text-gray-700">Kawasan Aman</span></div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================================= */}
+      {/* KANVAS PETA LEAFLET                                       */}
+      {/* ========================================================= */}
+      <MapContainer center={centerPosition} zoom={7} scrollWheelZoom={true} className="w-full h-full z-0" zoomControl={false}>
+        <TileLayer attribution='&copy; OpenStreetMap | Data: Dinkes & BNPB' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
+        {/* OVERLAY BNPB */}
+        {mode === "kerentanan" && layerBanjir && (
+          <EsriDynamicLayer url="https://gis.bnpb.go.id/server/rest/services/inarisk/layer_bahaya_banjir_30/MapServer" opacity={0.65} />
+        )}
+        {mode === "kerentanan" && layerKekeringan && (
+          <EsriDynamicLayer url="https://gis.bnpb.go.id/server/rest/services/inarisk/layer_bahaya_kekeringan_30/MapServer" opacity={0.65} />
+        )}
+
+        {/* Trik Kunci: Tambahkan isBencanaActive ke dalam 'key' GeoJSON. 
+          Ini memaksa React menggambar ulang ulang garis batas (Hollow/Solid) setiap kali sakelar bencana dinyalakan/dimatikan. 
+        */}
+        {mode === "balita" ? (
+          laporan.map((w, i) => {
+            const pos = koordinatWilayah[w.nama_kabupaten];
+            if (pos) {
+              const c = getMarkerColor(w.total_anak, w.total_stunting, w.total_prastunting);
+              return (
+                <CircleMarker key={i} center={pos} pathOptions={{ color: c, fillColor: c, fillOpacity: 0.8 }} radius={6 + parseInt(w.total_anak||0)*2}>
+                  <Popup><b>{w.nama_kabupaten}</b><br/>Total: {w.total_anak}<br/>Stunting: {w.total_stunting}</Popup>
                 </CircleMarker>
               );
-            }
-            return null;
+            } return null;
           })
         ) : (
-          /* RENDER 2: POLIGON KERENTANAN MACHINE LEARNING */
-          geoJsonData && (
-            <GeoJSON
-              key={agregatML.length} // Force re-render saat data DB masuk
-              data={geoJsonData}
-              style={getPolygonStyle}
-              onEachFeature={onEachFeature}
-            />
-          )
+          geoJsonData && <GeoJSON key={`${agregatML.length}-${isBencanaActive}`} data={geoJsonData} style={getPolygonStyle} onEachFeature={onEachFeature} />
         )}
       </MapContainer>
     </div>
