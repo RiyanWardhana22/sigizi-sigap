@@ -9,7 +9,7 @@ import {
   ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, 
   Area, Scatter
 } from "recharts";
-import { whoGrowthData, cdcGrowthData, calculatePercentile, calculateZScore } from "./growthReferences";
+import { whoGrowthData, cdcGrowthData, whoWFHData, calculatePercentile, calculateZScore } from "./growthReferences";
 
 export default function OrangTuaPemantauanGizi() {
   const navigate = useNavigate();
@@ -309,7 +309,7 @@ export default function OrangTuaPemantauanGizi() {
     }
   };
 
-  // Membuat data referensi lengkap dengan stacked area
+  // Membuat data referensi lengkap - menyimpan NILAI ABSOLUT setiap batas zona
   const generateFullReferenceData = (jenisKelamin, indicator) => {
     const isWHO = ageRangeConfig[ageRange]?.isWHO !== false;
     let config;
@@ -335,44 +335,92 @@ export default function OrangTuaPemantauanGizi() {
       const dataPoint = { usiaBulan: usia, usiaTahun: usia / 12 };
       
       if (isWHO) {
-        const sdNeg3 = getReferenceValue(usia, jenisKelamin, indicator, '-3sd');
-        const sdNeg2 = getReferenceValue(usia, jenisKelamin, indicator, '-2sd');
-        const sd0 = getReferenceValue(usia, jenisKelamin, indicator, '0sd');
-        const sd2 = getReferenceValue(usia, jenisKelamin, indicator, '2sd');
-        const sd3 = getReferenceValue(usia, jenisKelamin, indicator, '3sd');
+        // Map indicator ke key WHO: 'berat'→'bb_u', 'tinggi'→'tb_u', 'imt'→'imt_u'
+        const whoIndicator = indicator === 'berat' ? 'bb_u' : indicator === 'tinggi' ? 'tb_u' : indicator === 'imt' ? 'imt_u' : indicator;
+        // Simpan nilai absolut setiap batas SD
+        const sdNeg3 = getReferenceValue(usia, jenisKelamin, whoIndicator, '-3sd');
+        const sdNeg2 = getReferenceValue(usia, jenisKelamin, whoIndicator, '-2sd');
+        const sd0 = getReferenceValue(usia, jenisKelamin, whoIndicator, '0sd');
+        const sd2 = getReferenceValue(usia, jenisKelamin, whoIndicator, '2sd');
+        const sd3 = getReferenceValue(usia, jenisKelamin, whoIndicator, '3sd');
         
-        if (sdNeg3 !== null) dataPoint.sdNeg3 = sdNeg3;
-        if (sdNeg2 !== null) dataPoint.sdNeg2 = sdNeg2;
-        if (sd0 !== null) dataPoint.sd0 = sd0;
-        if (sd2 !== null) dataPoint.sd2 = sd2;
-        if (sd3 !== null) dataPoint.sd3 = sd3;
-        
-        if (sdNeg3 && sdNeg2) dataPoint.zoneBawah = sdNeg2 - sdNeg3;
-        if (sdNeg2 && sd2) dataPoint.zoneNormal = sd2 - sdNeg2;
-        if (sd2 && sd3) dataPoint.zoneAtas = sd3 - sd2;
+        if (sdNeg3 != null) dataPoint.sdNeg3 = sdNeg3;
+        if (sdNeg2 != null) dataPoint.sdNeg2 = sdNeg2;
+        if (sd0 != null) dataPoint.sd0 = sd0;
+        if (sd2 != null) dataPoint.sd2 = sd2;
+        if (sd3 != null) dataPoint.sd3 = sd3;
+
+        // Untuk Area berpasangan: simpan [lower, upper] tiap zona sebagai nilai absolut
+        // zona merah bawah: dari sdNeg3 ke sdNeg2
+        if (sdNeg3 != null && sdNeg2 != null) {
+          dataPoint.zonaMerahBawahMin = sdNeg3;
+          dataPoint.zonaMerahBawahMax = sdNeg2;
+          dataPoint.zonaMerahBawahDiff = sdNeg2 - sdNeg3;
+        }
+        // zona kuning bawah: dari sdNeg2 ke -1sd → tidak ada -1sd, langsung ke sdNeg2
+        // WHO: Kuning = -3sd s.d -2sd, dan 2sd s.d 3sd; Hijau = -2sd s.d 2sd
+        if (sdNeg2 != null && sd2 != null) {
+          dataPoint.zonaHijauMin = sdNeg2;
+          dataPoint.zonaHijauMax = sd2;
+          dataPoint.zonaHijauDiff = sd2 - sdNeg2;
+        }
+        if (sd2 != null && sd3 != null) {
+          dataPoint.zonaMerahAtasMin = sd2;
+          dataPoint.zonaMerahAtasMax = sd3;
+          dataPoint.zonaMerahAtasDiff = sd3 - sd2;
+        }
       } else {
-        const p3 = getReferenceValue(usia, jenisKelamin, indicator, 'p3');
-        const p5 = getReferenceValue(usia, jenisKelamin, indicator, 'p5');
-        const p85 = getReferenceValue(usia, jenisKelamin, indicator, 'p85');
-        const p90 = getReferenceValue(usia, jenisKelamin, indicator, 'p90');
-        const p95 = getReferenceValue(usia, jenisKelamin, indicator, 'p95');
-        const p97 = getReferenceValue(usia, jenisKelamin, indicator, 'p97');
+        // CDC: simpan nilai absolut setiap persentil
+        // Map indicator ke key CDC: 'berat'→'bb_u', 'tinggi'→'tb_u', 'imt'→'imt_u'
+        const cdcIndicator = indicator === 'berat' ? 'bb_u' : indicator === 'tinggi' ? 'tb_u' : 'imt_u';
+        const p3 = getReferenceValue(usia, jenisKelamin, cdcIndicator, 'p3');
+        const p5 = getReferenceValue(usia, jenisKelamin, cdcIndicator, 'p5');
+        const p50 = getReferenceValue(usia, jenisKelamin, cdcIndicator, 'p50');
+        const p85 = getReferenceValue(usia, jenisKelamin, cdcIndicator, 'p85');
+        const p90 = getReferenceValue(usia, jenisKelamin, cdcIndicator, 'p90');
+        const p95 = getReferenceValue(usia, jenisKelamin, cdcIndicator, 'p95');
         
-        if (p3 !== null) dataPoint.baseP3 = p3;
-        if (p5 !== null) dataPoint.baseP5 = p5;
-        if (p85 !== null) dataPoint.baseP85 = p85;
-        if (p90 !== null) dataPoint.baseP90 = p90;
-        if (p95 !== null) dataPoint.baseP95 = p95;
-        if (p97 !== null) dataPoint.baseP97 = p97;
+        if (p3 != null) dataPoint.baseP3 = p3;
+        if (p5 != null) dataPoint.baseP5 = p5;
+        if (p50 != null) dataPoint.baseP50 = p50;
+        if (p85 != null) dataPoint.baseP85 = p85;
+        if (p90 != null) dataPoint.baseP90 = p90;
+        if (p95 != null) dataPoint.baseP95 = p95;
         
-        if (indicator === 'bb_u' || indicator === 'imt_u') {
-          if (p3 && p5) dataPoint.zoneBahayaBawah = p5 - p3;
-          if (p5 && p90) dataPoint.zoneNormal = p90 - p5;
-          if (p90 && p95) dataPoint.zonePerhatianAtas = p95 - p90;
-          if (p95 && p97) dataPoint.zoneBahayaAtas = p97 - p95;
+        if (indicator === 'berat') {
+          // Hijau = p5 - p90, Kuning = p3-p5 dan p90-p95
+          if (p3 != null && p5 != null) {
+            dataPoint.zonaKuningBawahMin = p3;
+            dataPoint.zonaKuningBawahDiff = p5 - p3;
+          }
+          if (p5 != null && p90 != null) {
+            dataPoint.zonaHijauMin = p5;
+            dataPoint.zonaHijauDiff = p90 - p5;
+          }
+          if (p90 != null && p95 != null) {
+            dataPoint.zonaKuningAtasMin = p90;
+            dataPoint.zonaKuningAtasDiff = p95 - p90;
+          }
+        } else if (indicator === 'imt') {
+          // Hijau = p5 - p85, Kuning = p3-p5 dan p85-p95
+          if (p3 != null && p5 != null) {
+            dataPoint.zonaKuningBawahMin = p3;
+            dataPoint.zonaKuningBawahDiff = p5 - p3;
+          }
+          if (p5 != null && p85 != null) {
+            dataPoint.zonaHijauMin = p5;
+            dataPoint.zonaHijauDiff = p85 - p5;
+          }
+          if (p85 != null && p95 != null) {
+            dataPoint.zonaKuningAtasMin = p85;
+            dataPoint.zonaKuningAtasDiff = p95 - p85;
+          }
         } else {
-          if (p3 && p95) dataPoint.zoneNormal = p95 - p3;
-          if (p95 && p97) dataPoint.zonePerhatianAtas = p97 - p95;
+          // tinggi CDC: Hijau = p3-p95
+          if (p3 != null && p95 != null) {
+            dataPoint.zonaHijauMin = p3;
+            dataPoint.zonaHijauDiff = p95 - p3;
+          }
         }
       }
       
@@ -645,176 +693,207 @@ export default function OrangTuaPemantauanGizi() {
                 wrapperStyle={{ fontSize: '11px', paddingBottom: '10px' }}
               />
               
-              {/* Area Zona Warna untuk WHO */}
+              {/* =====================================================
+                  ZONA WARNA WHO: -3SD s.d -2SD (Kuning), -2SD s.d 2SD (Hijau), 2SD s.d 3SD (Kuning)
+                  Teknik: stackId dengan baseValue absolut:
+                    Layer 1 (transparan baseline): dari 0 ke sdNeg3
+                    Layer 2 (kuning bawah): dari sdNeg3 ke sdNeg2 → diff = zonaMerahBawahDiff
+                    Layer 3 (hijau): dari sdNeg2 ke sd2 → diff = zonaHijauDiff
+                    Layer 4 (kuning atas): dari sd2 ke sd3 → diff = zonaMerahAtasDiff
+                  ===================================================== */}
               {isWHO && (
                 <>
+                  {/* Layer transparan: mendorong stack ke nilai absolut sdNeg3 */}
                   <Area
                     type="monotone"
                     dataKey="sdNeg3"
-                    stackId="1"
+                    stackId="who_stack"
                     stroke="none"
-                    fill="#fee2e2"
-                    fillOpacity={0.5}
-                    name="Zona Bahaya"
-                    legendType="square"
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="zoneBawah"
-                    stackId="1"
-                    stroke="none"
-                    fill="#fef3c7"
-                    fillOpacity={0.5}
-                    name="Zona Perhatian"
-                    legendType="square"
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="zoneNormal"
-                    stackId="1"
-                    stroke="none"
-                    fill="#d1fae5"
-                    fillOpacity={0.6}
-                    name="Zona Normal"
-                    legendType="square"
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="zoneAtas"
-                    stackId="1"
-                    stroke="none"
-                    fill="#fef3c7"
-                    fillOpacity={0.5}
-                    name="Zona Perhatian"
+                    fill="transparent"
                     legendType="none"
+                    isAnimationActive={false}
+                    dot={false}
+                    activeDot={false}
+                  />
+                  {/* Kuning bawah: -3SD sampai -2SD */}
+                  <Area
+                    type="monotone"
+                    dataKey="zonaMerahBawahDiff"
+                    stackId="who_stack"
+                    stroke="#f59e0b"
+                    strokeWidth={1}
+                    fill="#fef3c7"
+                    fillOpacity={0.85}
+                    name="Zona Perhatian (-3SD s.d -2SD)"
+                    legendType="square"
+                    isAnimationActive={false}
+                    dot={false}
+                    activeDot={false}
+                  />
+                  {/* Hijau: -2SD sampai +2SD */}
+                  <Area
+                    type="monotone"
+                    dataKey="zonaHijauDiff"
+                    stackId="who_stack"
+                    stroke="#22c55e"
+                    strokeWidth={1}
+                    fill="#bbf7d0"
+                    fillOpacity={0.85}
+                    name="Zona Normal (-2SD s.d +2SD)"
+                    legendType="square"
+                    isAnimationActive={false}
+                    dot={false}
+                    activeDot={false}
+                  />
+                  {/* Kuning atas: +2SD sampai +3SD */}
+                  <Area
+                    type="monotone"
+                    dataKey="zonaMerahAtasDiff"
+                    stackId="who_stack"
+                    stroke="#f59e0b"
+                    strokeWidth={1}
+                    fill="#fef3c7"
+                    fillOpacity={0.85}
+                    name="Zona Perhatian (+2SD s.d +3SD)"
+                    legendType="none"
+                    isAnimationActive={false}
+                    dot={false}
+                    activeDot={false}
                   />
                 </>
               )}
               
-              {/* Area Zona Warna untuk CDC */}
+              {/* =====================================================
+                  ZONA WARNA CDC BB/U & IMT/U: p3-p5 (kuning), p5-p90/p85 (hijau), p90/p85-p95 (kuning)
+                  ZONA WARNA CDC TB/U: p3-p95 (hijau)
+                  ===================================================== */}
               {!isWHO && (
                 <>
-                  {indicator !== 'tb_u' ? (
-                    <>
-                      <Area
-                        type="monotone"
-                        dataKey="baseP3"
-                        stackId="1"
-                        stroke="none"
-                        fill="transparent"
-                        legendType="none"
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="zoneBahayaBawah"
-                        stackId="1"
-                        stroke="none"
-                        fill="#fee2e2"
-                        fillOpacity={0.5}
-                        name="Zona Bahaya"
-                        legendType="square"
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="zoneNormal"
-                        stackId="1"
-                        stroke="none"
-                        fill="#d1fae5"
-                        fillOpacity={0.6}
-                        name="Zona Normal"
-                        legendType="square"
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="zonePerhatianAtas"
-                        stackId="1"
-                        stroke="none"
-                        fill="#fef3c7"
-                        fillOpacity={0.5}
-                        name="Zona Perhatian"
-                        legendType="square"
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="zoneBahayaAtas"
-                        stackId="1"
-                        stroke="none"
-                        fill="#fee2e2"
-                        fillOpacity={0.5}
-                        name="Zona Bahaya"
-                        legendType="none"
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <Area
-                        type="monotone"
-                        dataKey="baseP3"
-                        stackId="1"
-                        stroke="none"
-                        fill="transparent"
-                        legendType="none"
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="zoneNormal"
-                        stackId="1"
-                        stroke="none"
-                        fill="#d1fae5"
-                        fillOpacity={0.6}
-                        name="Zona Normal"
-                        legendType="square"
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="zonePerhatianAtas"
-                        stackId="1"
-                        stroke="none"
-                        fill="#fef3c7"
-                        fillOpacity={0.5}
-                        name="Zona Perhatian"
-                        legendType="square"
-                      />
-                    </>
+                  {/* Baseline transparan: mendorong ke nilai p3 */}
+                  <Area
+                    type="monotone"
+                    dataKey="baseP3"
+                    stackId="cdc_stack"
+                    stroke="none"
+                    fill="transparent"
+                    legendType="none"
+                    isAnimationActive={false}
+                    dot={false}
+                    activeDot={false}
+                  />
+                  {indicator !== 'tinggi' && (
+                    /* Kuning bawah: p3 sampai p5 */
+                    <Area
+                      type="monotone"
+                      dataKey="zonaKuningBawahDiff"
+                      stackId="cdc_stack"
+                      stroke="#f59e0b"
+                      strokeWidth={1}
+                      fill="#fef3c7"
+                      fillOpacity={0.85}
+                      name={`Zona Perhatian (p3–p5)`}
+                      legendType="square"
+                      isAnimationActive={false}
+                      dot={false}
+                      activeDot={false}
+                    />
+                  )}
+                  {/* Hijau: p5-p90 (berat), p5-p85 (imt), p3-p95 (tinggi) */}
+                  <Area
+                    type="monotone"
+                    dataKey="zonaHijauDiff"
+                    stackId="cdc_stack"
+                    stroke="#22c55e"
+                    strokeWidth={1}
+                    fill="#bbf7d0"
+                    fillOpacity={0.85}
+                    name={indicator === 'berat' ? 'Zona Normal (P5–P90)' : indicator === 'imt' ? 'Zona Normal (P5–P85)' : 'Zona Normal (P3–P95)'}
+                    legendType="square"
+                    isAnimationActive={false}
+                    dot={false}
+                    activeDot={false}
+                  />
+                  {indicator !== 'tinggi' && (
+                    /* Kuning atas: p90-p95 (berat) atau p85-p95 (imt) */
+                    <Area
+                      type="monotone"
+                      dataKey="zonaKuningAtasDiff"
+                      stackId="cdc_stack"
+                      stroke="#f59e0b"
+                      strokeWidth={1}
+                      fill="#fef3c7"
+                      fillOpacity={0.85}
+                      name={indicator === 'berat' ? 'Zona Perhatian (P90–P95)' : 'Zona Perhatian (P85–P95)'}
+                      legendType="square"
+                      isAnimationActive={false}
+                      dot={false}
+                      activeDot={false}
+                    />
                   )}
                 </>
               )}
               
-              {/* Garis Median / P50 */}
+              {/* Garis batas zona WHO — tipis, putus-putus */}
+              {isWHO && (
+                <>
+                  <Line type="monotone" dataKey="sdNeg3" stroke="#f59e0b" strokeWidth={1} strokeDasharray="4 3" name="-3 SD" dot={false} activeDot={false} legendType="none" isAnimationActive={false} />
+                  <Line type="monotone" dataKey="sdNeg2" stroke="#f59e0b" strokeWidth={1} strokeDasharray="4 3" name="-2 SD" dot={false} activeDot={false} legendType="none" isAnimationActive={false} />
+                  <Line type="monotone" dataKey="sd2" stroke="#f59e0b" strokeWidth={1} strokeDasharray="4 3" name="+2 SD" dot={false} activeDot={false} legendType="none" isAnimationActive={false} />
+                  <Line type="monotone" dataKey="sd3" stroke="#f59e0b" strokeWidth={1} strokeDasharray="4 3" name="+3 SD" dot={false} activeDot={false} legendType="none" isAnimationActive={false} />
+                </>
+              )}
+
+              {/* Garis batas zona CDC — tipis, putus-putus */}
+              {!isWHO && (
+                <>
+                  <Line type="monotone" dataKey="baseP3" stroke="#f59e0b" strokeWidth={1} strokeDasharray="4 3" name="P3" dot={false} activeDot={false} legendType="none" isAnimationActive={false} />
+                  {indicator !== 'tinggi' && <Line type="monotone" dataKey="baseP5" stroke="#f59e0b" strokeWidth={1} strokeDasharray="4 3" name="P5" dot={false} activeDot={false} legendType="none" isAnimationActive={false} />}
+                  {indicator === 'berat' && <Line type="monotone" dataKey="baseP90" stroke="#f59e0b" strokeWidth={1} strokeDasharray="4 3" name="P90" dot={false} activeDot={false} legendType="none" isAnimationActive={false} />}
+                  {indicator === 'imt' && <Line type="monotone" dataKey="baseP85" stroke="#f59e0b" strokeWidth={1} strokeDasharray="4 3" name="P85" dot={false} activeDot={false} legendType="none" isAnimationActive={false} />}
+                  <Line type="monotone" dataKey="baseP95" stroke="#f59e0b" strokeWidth={1} strokeDasharray="4 3" name="P95" dot={false} activeDot={false} legendType="none" isAnimationActive={false} />
+                </>
+              )}
+
+              {/* Garis Median */}
               <Line
                 type="natural"
                 dataKey={isWHO ? "sd0" : "baseP50"}
-                stroke={isWHO ? "#166534" : "#2563eb"}
-                strokeWidth={2.5}
-                strokeDasharray={isWHO ? "0" : "5 5"}
-                name={isWHO ? "Median WHO" : "P50 (Median CDC)"}
+                stroke={isWHO ? "#15803d" : "#2563eb"}
+                strokeWidth={2}
+                strokeDasharray={isWHO ? "0" : "6 4"}
+                name={isWHO ? "Median (0 SD)" : "P50 (Median CDC)"}
                 dot={false}
                 activeDot={false}
+                legendType="line"
+                isAnimationActive={false}
               />
               
               {/* Garis data anak */}
               <Line
                 type="monotone"
                 dataKey="nilai"
-                stroke="#3b82f6"
-                strokeWidth={4}
-                name="Garis Pertumbuhan"
-                dot={false}
-                activeDot={false}
+                stroke="#1d4ed8"
+                strokeWidth={2.5}
+                name="Pertumbuhan Si Kecil"
+                dot={(props) => {
+                  const { cx, cy, value } = props;
+                  if (value == null) return null;
+                  return (
+                    <circle
+                      key={`dot-${cx}-${cy}`}
+                      cx={cx}
+                      cy={cy}
+                      r={5}
+                      fill="#1d4ed8"
+                      stroke="#ffffff"
+                      strokeWidth={2}
+                    />
+                  );
+                }}
+                activeDot={{ r: 7, fill: '#1d4ed8', stroke: '#ffffff', strokeWidth: 2 }}
                 connectNulls
-                legendType="none"
-              />
-              
-              {/* Scatter titik data anak */}
-              <Scatter
-                data={childPoints.filter(p => p.nilai < (indicator === 'berat' ? MAX_VALID_WEIGHT : MAX_VALID_HEIGHT))}
-                dataKey="nilai"
-                fill="#3b82f6"
-                stroke="#ffffff"
-                strokeWidth={2}
-                name="Data Anak"
-                shape="circle"
-                line={false}
+                legendType="circle"
+                isAnimationActive={false}
               />
             </ComposedChart>
           </ResponsiveContainer>
@@ -823,24 +902,30 @@ export default function OrangTuaPemantauanGizi() {
         {/* Keterangan zona warna */}
         <div className="flex flex-wrap justify-center gap-4 mt-4 text-xs">
           <div className="flex items-center gap-1.5">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#d1fae5' }}></div>
-            <span className="text-gray-500">Zona Normal</span>
+            <div className="w-4 h-4 rounded border border-green-400" style={{ backgroundColor: '#bbf7d0' }}></div>
+            <span className="text-gray-600 font-medium">
+              {isWHO ? 'Normal (-2SD s.d +2SD)' : indicator === 'tinggi' ? 'Normal (P3–P95)' : indicator === 'imt' ? 'Normal (P5–P85)' : 'Normal (P5–P90)'}
+            </span>
+          </div>
+          {(isWHO || indicator !== 'tinggi') && (
+            <div className="flex items-center gap-1.5">
+              <div className="w-4 h-4 rounded border border-yellow-400" style={{ backgroundColor: '#fef3c7' }}></div>
+              <span className="text-gray-600 font-medium">
+                {isWHO ? 'Perhatian (-3SD s.d -2SD / +2SD s.d +3SD)' : indicator === 'berat' ? 'Perhatian (P3–P5 / P90–P95)' : 'Perhatian (P3–P5 / P85–P95)'}
+              </span>
+            </div>
+          )}
+          <div className="flex items-center gap-1.5">
+            <div className="w-6 h-0.5 rounded" style={{ backgroundColor: isWHO ? '#15803d' : '#2563eb', borderTop: isWHO ? 'none' : '2px dashed' }}></div>
+            <span className="text-gray-600 font-medium">{isWHO ? 'Median (0 SD)' : 'Median (P50)'}</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#fef3c7' }}></div>
-            <span className="text-gray-500">Zona Perhatian</span>
+            <div className="w-6 h-0.5" style={{ borderTop: '2px dashed #f59e0b' }}></div>
+            <span className="text-gray-600 font-medium">Batas Zona</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#fee2e2' }}></div>
-            <span className="text-gray-500">Zona Bahaya</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-6 h-0.5" style={{ backgroundColor: isWHO ? '#166534' : '#2563eb' }}></div>
-            <span className="text-gray-500">{isWHO ? 'Median WHO' : 'Median CDC'}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-4 h-4 rounded-full bg-blue-500 border-2 border-white shadow-sm"></div>
-            <span className="text-gray-500">Data Anak</span>
+            <div className="w-4 h-4 rounded-full border-2 border-white shadow" style={{ backgroundColor: '#1d4ed8' }}></div>
+            <span className="text-gray-600 font-medium">Pertumbuhan Si Kecil</span>
           </div>
         </div>
       </div>
@@ -852,7 +937,22 @@ export default function OrangTuaPemantauanGizi() {
   const renderIMTUChart = () => renderGrowthChart('imt', 'IMT (kg/m²)', 'kg/m²');
   const renderTBUChart = () => renderGrowthChart('tinggi', 'Tinggi Badan (cm)', 'cm');
 
-  // Render BB/TB chart
+  // Helper: interpolasi nilai WHO WFH berdasarkan tinggi (cm)
+  const getWFHReferenceValue = (heightCm, jenisKelamin, key) => {
+    const genderData = jenisKelamin === 'L' ? whoWFHData.laki : whoWFHData.perempuan;
+    if (!genderData) return null;
+    const heights = Object.keys(genderData).map(Number).sort((a, b) => a - b);
+    const lower = heights.filter(h => h <= heightCm).at(-1);
+    const upper = heights.find(h => h > heightCm);
+    if (lower === undefined) return genderData[heights[0]]?.[key];
+    if (upper === undefined) return genderData[heights.at(-1)]?.[key];
+    const v1 = genderData[lower]?.[key];
+    const v2 = genderData[upper]?.[key];
+    if (v1 == null || v2 == null) return v1 ?? v2;
+    return v1 + (v2 - v1) * (heightCm - lower) / (upper - lower);
+  };
+
+  // Render BB/TB chart dengan zona warna WHO WFH
   const renderBBTBChart = () => {
     const displayGrowthData = userRole === "orang_tua" ? growthData : superAdminGrowthData;
     const anak = userRole === "orang_tua" ? selectedAnakData : superAdminSelectedAnak;
@@ -866,19 +966,115 @@ export default function OrangTuaPemantauanGizi() {
       );
     }
     
-    const scatterData = displayGrowthData
-      .filter(point => point.tinggi > 0 && point.tinggi < MAX_VALID_HEIGHT && point.berat > 0 && point.berat < MAX_VALID_WEIGHT)
-      .map(point => ({
-        tinggi: point.tinggi,
-        berat: point.berat,
-        tanggal: point.tanggal,
-        usiaBulan: point.usiaBulan
-      }));
+    const jenisKelamin = anak.jenis_kelamin;
     
-    const latestData = scatterData[scatterData.length - 1];
-    
+    const childPoints = displayGrowthData
+      .filter(p => p.tinggi > 0 && p.tinggi < MAX_VALID_HEIGHT && p.berat > 0 && p.berat < MAX_VALID_WEIGHT)
+      .map(p => ({ tinggi: p.tinggi, berat: p.berat, tanggal: p.tanggal, usiaBulan: p.usiaBulan }));
+
+    const latestData = childPoints[childPoints.length - 1];
+
+    // Tentukan rentang tinggi untuk reference data
+    const allHeights = childPoints.map(p => p.tinggi);
+    const minHeight = allHeights.length > 0 ? Math.max(45, Math.floor(Math.min(...allHeights)) - 2) : 45;
+    const maxHeight = allHeights.length > 0 ? Math.min(120, Math.ceil(Math.max(...allHeights)) + 2) : 120;
+
+    // Generate reference data per 1 cm
+    const refHeights = [];
+    for (let h = minHeight; h <= maxHeight; h++) refHeights.push(h);
+
+    const referenceData = refHeights.map(h => {
+      const sdNeg3 = getWFHReferenceValue(h, jenisKelamin, '-3sd');
+      const sdNeg2 = getWFHReferenceValue(h, jenisKelamin, '-2sd');
+      const sd0    = getWFHReferenceValue(h, jenisKelamin, '0sd');
+      const sd2    = getWFHReferenceValue(h, jenisKelamin, '2sd');
+      const sd3    = getWFHReferenceValue(h, jenisKelamin, '3sd');
+
+      const dp = { tinggi: h, sdNeg3, sdNeg2, sd0, sd2, sd3 };
+
+      // Zone diffs untuk stack area
+      if (sdNeg3 != null && sdNeg2 != null) dp.zonaKuningBawahDiff = sdNeg2 - sdNeg3;
+      if (sdNeg2 != null && sd2 != null)    dp.zonaHijauDiff = sd2 - sdNeg2;
+      if (sd2 != null && sd3 != null)        dp.zonaKuningAtasDiff = sd3 - sd2;
+
+      // Merge child data point jika ada pengukuran di tinggi ini (±0.5 cm)
+      const match = childPoints.find(cp => Math.abs(cp.tinggi - h) < 0.5);
+      dp.berat = match ? match.berat : null;
+      dp.tanggal = match ? match.tanggal : null;
+
+      return dp;
+    });
+
+    // Tambahkan child points yang tidak ter-merge (tinggi presisi)
+    const mergedData = [...referenceData];
+    childPoints.forEach(cp => {
+      const alreadyIn = mergedData.some(d => d.tinggi === cp.tinggi);
+      if (!alreadyIn) {
+        const sdNeg3 = getWFHReferenceValue(cp.tinggi, jenisKelamin, '-3sd');
+        const sdNeg2 = getWFHReferenceValue(cp.tinggi, jenisKelamin, '-2sd');
+        const sd0    = getWFHReferenceValue(cp.tinggi, jenisKelamin, '0sd');
+        const sd2    = getWFHReferenceValue(cp.tinggi, jenisKelamin, '2sd');
+        const sd3    = getWFHReferenceValue(cp.tinggi, jenisKelamin, '3sd');
+        mergedData.push({
+          tinggi: cp.tinggi, berat: cp.berat, tanggal: cp.tanggal, usiaBulan: cp.usiaBulan,
+          sdNeg3, sdNeg2, sd0, sd2, sd3,
+          zonaKuningBawahDiff: sdNeg3 != null && sdNeg2 != null ? sdNeg2 - sdNeg3 : null,
+          zonaHijauDiff: sdNeg2 != null && sd2 != null ? sd2 - sdNeg2 : null,
+          zonaKuningAtasDiff: sd2 != null && sd3 != null ? sd3 - sd2 : null,
+        });
+      }
+    });
+    mergedData.sort((a, b) => a.tinggi - b.tinggi);
+
+    // Y domain dari WHO reference
+    const allSd3 = mergedData.map(d => d.sd3).filter(Boolean);
+    const allSdNeg3 = mergedData.map(d => d.sdNeg3).filter(Boolean);
+    const allBerats = childPoints.map(p => p.berat);
+    const yMin = Math.max(0, Math.floor(Math.min(...allSdNeg3, ...allBerats)) - 1);
+    const yMax = Math.ceil(Math.max(...allSd3, ...allBerats)) + 2;
+
+    // Tooltip BB/TB
+    const BBTBTooltip = ({ active, payload, label }) => {
+      if (!active || !payload || !payload.length) return null;
+      const childEntry = payload.find(p => p.dataKey === 'berat' && p.value != null);
+      const sd0Entry = payload.find(p => p.dataKey === 'sd0');
+      const sdNeg2Entry = payload.find(p => p.dataKey === 'sdNeg2');
+      const sd2Entry = payload.find(p => p.dataKey === 'sd2');
+
+      let status = null;
+      let statusColor = "text-green-600";
+      if (childEntry?.value) {
+        const berat = childEntry.value;
+        const sdNeg3 = payload.find(p => p.dataKey === 'sdNeg3')?.value;
+        const sdNeg2 = sdNeg2Entry?.value;
+        const sd2v = sd2Entry?.value;
+        const sd3 = payload.find(p => p.dataKey === 'sd3')?.value;
+        if (sdNeg3 != null && berat < sdNeg3) { status = "Sangat Kurus (< -3SD)"; statusColor = "text-red-600"; }
+        else if (sdNeg2 != null && berat < sdNeg2) { status = "Kurus (-3SD s.d -2SD)"; statusColor = "text-yellow-600"; }
+        else if (sd2v != null && berat <= sd2v) { status = "Normal (-2SD s.d +2SD)"; statusColor = "text-green-600"; }
+        else if (sd3 != null && berat <= sd3) { status = "Gemuk (+2SD s.d +3SD)"; statusColor = "text-yellow-600"; }
+        else { status = "Obesitas (> +3SD)"; statusColor = "text-red-600"; }
+      }
+
+      return (
+        <div className="bg-white rounded-xl shadow-lg p-4 border border-gray-100 min-w-[200px]">
+          <p className="text-sm font-semibold text-gray-700 mb-2">Tinggi: {label} cm</p>
+          {childEntry?.value && (
+            <>
+              <p className="text-lg font-bold text-gray-800">{childEntry.value.toFixed(1)} kg</p>
+              {status && <p className={`text-sm font-medium ${statusColor} mt-1`}>{status}</p>}
+            </>
+          )}
+          {sd0Entry?.value && (
+            <p className="text-xs text-gray-400 mt-1">Median: {sd0Entry.value.toFixed(1)} kg</p>
+          )}
+        </div>
+      );
+    };
+
     return (
       <div>
+        {/* Info Card */}
         <div className="mb-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-5">
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div>
@@ -892,66 +1088,106 @@ export default function OrangTuaPemantauanGizi() {
                 </p>
               )}
             </div>
+            <div className="text-right">
+              <p className="text-sm text-gray-500 font-medium">Standar Referensi</p>
+              <span className="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-700">WHO - BB/TB</span>
+            </div>
           </div>
         </div>
-        
+
         <div className="mb-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-500">
           <FontAwesomeIcon icon={fas.faInfoCircle} className="mr-2 text-blue-400" />
           Grafik Berat Badan vs Tinggi Badan - Membandingkan berat dengan tinggi aktual anak
         </div>
-        
-        <div style={{ height: "450px", width: "100%" }}>
+
+        {/* Chart */}
+        <div style={{ height: "520px", width: "100%" }}>
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart margin={{ top: 20, right: 30, left: 20, bottom: 30 }}>
+            <ComposedChart data={mergedData} margin={{ top: 20, right: 30, left: 20, bottom: 30 }}>
               <CartesianGrid vertical={false} stroke="#e5e7eb" strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="tinggi" 
-                name="Tinggi Badan" 
-                unit=" cm"
-                label={{ value: 'Tinggi Badan (cm)', position: 'insideBottom', offset: -10, fontSize: 11 }}
+              <XAxis
                 type="number"
-                domain={['auto', 'auto']}
-                tick={{ fontSize: 11 }}
+                dataKey="tinggi"
+                scale="linear"
+                domain={[minHeight, maxHeight]}
+                tick={{ fontSize: 11, fill: '#6b7280' }}
+                label={{ value: 'Tinggi Badan (cm)', position: 'insideBottom', offset: -15, fontSize: 11, fill: '#6b7280' }}
+                axisLine={{ stroke: '#e5e7eb' }}
+                tickLine={{ stroke: '#e5e7eb' }}
               />
-              <YAxis 
-                dataKey="berat" 
-                name="Berat Badan" 
-                unit=" kg"
-                label={{ value: 'Berat Badan (kg)', angle: -90, position: 'insideLeft', fontSize: 11 }}
-                type="number"
-                domain={['auto', 'auto']}
-                tick={{ fontSize: 11 }}
+              <YAxis
+                domain={[yMin, yMax]}
+                tick={{ fontSize: 11, fill: '#6b7280' }}
+                label={{ value: 'Berat Badan (kg)', angle: -90, position: 'insideLeft', fontSize: 11, fill: '#6b7280' }}
+                axisLine={{ stroke: '#e5e7eb' }}
+                tickLine={{ stroke: '#e5e7eb' }}
+                tickFormatter={v => v.toFixed(1)}
               />
-              <Tooltip 
-                contentStyle={{ backgroundColor: 'white', borderRadius: '12px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
-                formatter={(value, name) => {
-                  if (name === 'Tinggi Badan') return [`${value} cm`, name];
-                  if (name === 'Berat Badan') return [`${value} kg`, name];
-                  return [value, name];
-                }}
-              />
-              <Legend verticalAlign="top" height={36} />
-              <Scatter 
-                name="Data Anak" 
-                data={scatterData} 
-                fill="#3b82f6" 
-                stroke="#ffffff"
-                strokeWidth={2}
-                shape="circle"
-              />
+              <Tooltip content={<BBTBTooltip />} cursor={{ stroke: '#9ca3af', strokeWidth: 1, strokeDasharray: '3 3' }} />
+              <Legend verticalAlign="top" height={40} iconType="circle" wrapperStyle={{ fontSize: '11px', paddingBottom: '10px' }} />
+
+              {/* === ZONA WARNA WHO WFH (stacked area) === */}
+              {/* Layer transparan: baseline ke sdNeg3 */}
+              <Area type="monotone" dataKey="sdNeg3" stackId="wfh_stack" stroke="none" fill="transparent" legendType="none" isAnimationActive={false} dot={false} activeDot={false} />
+              {/* Kuning bawah: -3SD → -2SD */}
+              <Area type="monotone" dataKey="zonaKuningBawahDiff" stackId="wfh_stack" stroke="#f59e0b" strokeWidth={1} fill="#fef3c7" fillOpacity={0.85} name="Zona Perhatian (-3SD s.d -2SD)" legendType="square" isAnimationActive={false} dot={false} activeDot={false} />
+              {/* Hijau: -2SD → +2SD */}
+              <Area type="monotone" dataKey="zonaHijauDiff" stackId="wfh_stack" stroke="#22c55e" strokeWidth={1} fill="#bbf7d0" fillOpacity={0.85} name="Zona Normal (-2SD s.d +2SD)" legendType="square" isAnimationActive={false} dot={false} activeDot={false} />
+              {/* Kuning atas: +2SD → +3SD */}
+              <Area type="monotone" dataKey="zonaKuningAtasDiff" stackId="wfh_stack" stroke="#f59e0b" strokeWidth={1} fill="#fef3c7" fillOpacity={0.85} name="Zona Perhatian (+2SD s.d +3SD)" legendType="none" isAnimationActive={false} dot={false} activeDot={false} />
+
+              {/* Garis batas zona */}
+              <Line type="monotone" dataKey="sdNeg3" stroke="#f59e0b" strokeWidth={1} strokeDasharray="4 3" name="-3 SD" dot={false} activeDot={false} legendType="none" isAnimationActive={false} />
+              <Line type="monotone" dataKey="sdNeg2" stroke="#f59e0b" strokeWidth={1} strokeDasharray="4 3" name="-2 SD" dot={false} activeDot={false} legendType="none" isAnimationActive={false} />
+              <Line type="monotone" dataKey="sd2" stroke="#f59e0b" strokeWidth={1} strokeDasharray="4 3" name="+2 SD" dot={false} activeDot={false} legendType="none" isAnimationActive={false} />
+              <Line type="monotone" dataKey="sd3" stroke="#f59e0b" strokeWidth={1} strokeDasharray="4 3" name="+3 SD" dot={false} activeDot={false} legendType="none" isAnimationActive={false} />
+
+              {/* Garis Median */}
+              <Line type="natural" dataKey="sd0" stroke="#15803d" strokeWidth={2} name="Median (0 SD)" dot={false} activeDot={false} legendType="line" isAnimationActive={false} />
+
+              {/* Garis data anak */}
               <Line
                 type="monotone"
-                data={scatterData}
                 dataKey="berat"
-                stroke="#3b82f6"
-                strokeWidth={3}
-                name="Garis Pertumbuhan"
-                dot={false}
-                activeDot={false}
-                legendType="none"
+                stroke="#1d4ed8"
+                strokeWidth={2.5}
+                name="Data Anak"
+                dot={(props) => {
+                  const { cx, cy, value } = props;
+                  if (value == null) return null;
+                  return <circle key={`bbtb-${cx}-${cy}`} cx={cx} cy={cy} r={5} fill="#1d4ed8" stroke="#ffffff" strokeWidth={2} />;
+                }}
+                activeDot={{ r: 7, fill: '#1d4ed8', stroke: '#ffffff', strokeWidth: 2 }}
+                connectNulls
+                legendType="circle"
+                isAnimationActive={false}
               />
             </ComposedChart>
           </ResponsiveContainer>
+        </div>
+
+        {/* Keterangan zona */}
+        <div className="flex flex-wrap justify-center gap-4 mt-4 text-xs">
+          <div className="flex items-center gap-1.5">
+            <div className="w-4 h-4 rounded border border-green-400" style={{ backgroundColor: '#bbf7d0' }}></div>
+            <span className="text-gray-600 font-medium">Normal (-2SD s.d +2SD)</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-4 h-4 rounded border border-yellow-400" style={{ backgroundColor: '#fef3c7' }}></div>
+            <span className="text-gray-600 font-medium">Perhatian (-3SD s.d -2SD / +2SD s.d +3SD)</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-6 h-0.5 rounded" style={{ backgroundColor: '#15803d' }}></div>
+            <span className="text-gray-600 font-medium">Median (0 SD)</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-6 h-0.5" style={{ borderTop: '2px dashed #f59e0b' }}></div>
+            <span className="text-gray-600 font-medium">Batas Zona</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-4 h-4 rounded-full border-2 border-white shadow" style={{ backgroundColor: '#1d4ed8' }}></div>
+            <span className="text-gray-600 font-medium">Data Anak</span>
+          </div>
         </div>
       </div>
     );
@@ -994,16 +1230,31 @@ export default function OrangTuaPemantauanGizi() {
     const referenceData = [];
     for (const usia of referenceAges) {
       const dataPoint = { usiaBulan: usia };
+      const sdNeg3 = getReferenceValue(usia, jenisKelamin, 'lk_u', '-3sd');
       const sdNeg2 = getReferenceValue(usia, jenisKelamin, 'lk_u', '-2sd');
       const sd0 = getReferenceValue(usia, jenisKelamin, 'lk_u', '0sd');
       const sd2 = getReferenceValue(usia, jenisKelamin, 'lk_u', '2sd');
+      const sd3 = getReferenceValue(usia, jenisKelamin, 'lk_u', '3sd');
       
-      if (sdNeg2 !== null) dataPoint.sdNeg2 = sdNeg2;
-      if (sd0 !== null) dataPoint.sd0 = sd0;
-      if (sd2 !== null) dataPoint.sd2 = sd2;
+      if (sdNeg3 != null) dataPoint.sdNeg3 = sdNeg3;
+      if (sdNeg2 != null) dataPoint.sdNeg2 = sdNeg2;
+      if (sd0 != null) dataPoint.sd0 = sd0;
+      if (sd2 != null) dataPoint.sd2 = sd2;
+      if (sd3 != null) dataPoint.sd3 = sd3;
       
-      if (sdNeg2 && sd0) dataPoint.zoneNormal = sd0 - sdNeg2;
-      if (sd0 && sd2) dataPoint.zoneAtas = sd2 - sd0;
+      // Simpan nilai absolut batas zona — sama seperti WHO pada grafik utama
+      if (sdNeg3 != null && sdNeg2 != null) {
+        dataPoint.zonaKuningBawahMin = sdNeg3;
+        dataPoint.zonaKuningBawahDiff = sdNeg2 - sdNeg3;
+      }
+      if (sdNeg2 != null && sd2 != null) {
+        dataPoint.zonaHijauMin = sdNeg2;
+        dataPoint.zonaHijauDiff = sd2 - sdNeg2;
+      }
+      if (sd2 != null && sd3 != null) {
+        dataPoint.zonaKuningAtasMin = sd2;
+        dataPoint.zonaKuningAtasDiff = sd3 - sd2;
+      }
       referenceData.push(dataPoint);
     }
     
@@ -1082,65 +1333,107 @@ export default function OrangTuaPemantauanGizi() {
               />
               <Legend verticalAlign="top" height={36} />
               
+              {/* Baseline transparan ke sdNeg3 */}
               <Area
                 type="monotone"
-                dataKey="sdNeg2"
-                stackId="1"
+                dataKey="sdNeg3"
+                stackId="lk_stack"
                 stroke="none"
-                fill="#fef3c7"
-                fillOpacity={0.5}
-                name="Zona Perhatian"
-              />
-              <Area
-                type="monotone"
-                dataKey="zoneNormal"
-                stackId="1"
-                stroke="none"
-                fill="#d1fae5"
-                fillOpacity={0.6}
-                name="Zona Normal"
-              />
-              <Area
-                type="monotone"
-                dataKey="zoneAtas"
-                stackId="1"
-                stroke="none"
-                fill="#fef3c7"
-                fillOpacity={0.5}
-                name="Zona Perhatian"
+                fill="transparent"
                 legendType="none"
+                isAnimationActive={false}
+                dot={false}
+                activeDot={false}
               />
+              {/* Kuning bawah: -3SD sampai -2SD */}
+              <Area
+                type="monotone"
+                dataKey="zonaKuningBawahDiff"
+                stackId="lk_stack"
+                stroke="#f59e0b"
+                strokeWidth={1}
+                fill="#fef3c7"
+                fillOpacity={0.85}
+                name="Zona Perhatian (-3SD s.d -2SD)"
+                legendType="square"
+                isAnimationActive={false}
+                dot={false}
+                activeDot={false}
+              />
+              {/* Hijau: -2SD sampai +2SD */}
+              <Area
+                type="monotone"
+                dataKey="zonaHijauDiff"
+                stackId="lk_stack"
+                stroke="#22c55e"
+                strokeWidth={1}
+                fill="#bbf7d0"
+                fillOpacity={0.85}
+                name="Zona Normal (-2SD s.d +2SD)"
+                legendType="square"
+                isAnimationActive={false}
+                dot={false}
+                activeDot={false}
+              />
+              {/* Kuning atas: +2SD sampai +3SD */}
+              <Area
+                type="monotone"
+                dataKey="zonaKuningAtasDiff"
+                stackId="lk_stack"
+                stroke="#f59e0b"
+                strokeWidth={1}
+                fill="#fef3c7"
+                fillOpacity={0.85}
+                name="Zona Perhatian (+2SD s.d +3SD)"
+                legendType="none"
+                isAnimationActive={false}
+                dot={false}
+                activeDot={false}
+              />
+              
+              {/* Garis batas zona — tipis putus-putus */}
+              <Line type="monotone" dataKey="sdNeg3" stroke="#f59e0b" strokeWidth={1} strokeDasharray="4 3" dot={false} activeDot={false} legendType="none" isAnimationActive={false} name="-3 SD" />
+              <Line type="monotone" dataKey="sdNeg2" stroke="#f59e0b" strokeWidth={1} strokeDasharray="4 3" dot={false} activeDot={false} legendType="none" isAnimationActive={false} name="-2 SD" />
+              <Line type="monotone" dataKey="sd2" stroke="#f59e0b" strokeWidth={1} strokeDasharray="4 3" dot={false} activeDot={false} legendType="none" isAnimationActive={false} name="+2 SD" />
+              <Line type="monotone" dataKey="sd3" stroke="#f59e0b" strokeWidth={1} strokeDasharray="4 3" dot={false} activeDot={false} legendType="none" isAnimationActive={false} name="+3 SD" />
               
               <Line
                 type="natural"
                 dataKey="sd0"
-                stroke="#166534"
-                strokeWidth={2.5}
-                name="Median"
+                stroke="#15803d"
+                strokeWidth={2}
+                name="Median (0 SD)"
                 dot={false}
+                activeDot={false}
+                legendType="line"
+                isAnimationActive={false}
               />
               
               <Line
                 type="monotone"
                 dataKey="nilai"
-                stroke="#3b82f6"
-                strokeWidth={4}
-                name="Garis Pertumbuhan"
-                dot={false}
-                activeDot={false}
-                legendType="none"
+                stroke="#1d4ed8"
+                strokeWidth={2.5}
+                name="Pertumbuhan Si Kecil"
+                dot={(props) => {
+                  const { cx, cy, value } = props;
+                  if (value == null) return null;
+                  return (
+                    <circle
+                      key={`dot-lk-${cx}-${cy}`}
+                      cx={cx}
+                      cy={cy}
+                      r={5}
+                      fill="#1d4ed8"
+                      stroke="#ffffff"
+                      strokeWidth={2}
+                    />
+                  );
+                }}
+                activeDot={{ r: 7, fill: '#1d4ed8', stroke: '#ffffff', strokeWidth: 2 }}
                 connectNulls
-              />
-              
-              <Scatter
-                data={childPoints}
-                dataKey="nilai"
-                fill="#3b82f6"
-                stroke="#ffffff"
-                strokeWidth={2}
-                name="Data Anak"
-                shape="circle"
-                line={false}
+                legendType="circle"
+                isAnimationActive={false}
               />
             </ComposedChart>
           </ResponsiveContainer>
@@ -1299,6 +1592,34 @@ export default function OrangTuaPemantauanGizi() {
                         <button
                           key={anak.id}
                           onClick={() => handleAnakChange(anak.id)}
+                          className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition border-b border-gray-100 last:border-0"
+                        >
+                          <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold">
+                            {anak.nama_anak?.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="flex-1 text-left">
+                            <p className="font-medium text-gray-800">{anak.nama_anak}</p>
+                            <p className="text-xs text-gray-400">
+                              Lahir: {anak.tanggal_lahir}
+                            </p>
+                          </div>
+                          {displaySelectedAnakId === anak.id && (
+                            <FontAwesomeIcon icon={fas.faCheckCircle} className="text-sigizi-green" />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {(userRole === "super_admin" && superAdminShowAnakDropdown) && (
+                  <>
+                    <div className="fixed inset-0 z-10" onClick={() => setSuperAdminShowAnakDropdown(false)}></div>
+                    <div className="absolute left-0 mt-2 w-full bg-white rounded-xl shadow-lg border border-gray-100 z-20 overflow-hidden">
+                      {displayAnakList.map(anak => (
+                        <button
+                          key={anak.id}
+                          onClick={() => handleSuperAdminAnakChange(anak)}
                           className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition border-b border-gray-100 last:border-0"
                         >
                           <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold">
