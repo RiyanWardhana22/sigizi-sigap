@@ -181,7 +181,11 @@ export default function OrangTuaPengaturan() {
       <div className="flex-1 flex flex-col">
         <header className="bg-white shadow px-6 py-4">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold text-gray-800">PENGATURAN AKUN</h1>
+            <FontAwesomeIcon
+              icon={fas.faUserCog}
+              className="text-2xl text-sigizi-green"
+            />
+            <h1 className="text-xl font-bold text-gray-800">Pengaturan Akun</h1>
           </div>
         </header>
 

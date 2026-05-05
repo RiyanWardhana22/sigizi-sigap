@@ -298,7 +298,7 @@ export default function AnalisisStrategis() {
                           yAxisId="right"
                           type="monotone"
                           dataKey="kesehatan_ibu"
-                          name="Gizi Ibu (%)"
+                          name="Pendidikan Ibu (%)"
                           stroke="#8b5cf6"
                           strokeWidth={3}
                           dot={{ r: 3 }}
@@ -349,7 +349,7 @@ export default function AnalisisStrategis() {
                           <FaInfoCircle /> Indikator Waspada
                         </div>
                         <p className="text-xs text-slate-600">
-                          Gizi Ibu &lt; 60% <br /> BBLR &gt; 15%
+                          Pendidikan Ibu &lt; 60% <br /> BBLR &gt; 15%
                         </p>
                       </div>
                     </div>
@@ -406,7 +406,7 @@ export default function AnalisisStrategis() {
                             </div>
                             <div className="bg-slate-50 rounded-lg p-2.5">
                               <div className="text-[10px] text-slate-400 font-medium mb-1">
-                                Gizi Ibu
+                                Pendidikan Ibu
                               </div>
                               <div
                                 className={`text-sm font-bold ${item.data_mentah.p_ibu < 60 ? "text-rose-600" : "text-slate-700"}`}
