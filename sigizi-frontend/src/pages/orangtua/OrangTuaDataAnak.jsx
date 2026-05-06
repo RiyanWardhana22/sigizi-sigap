@@ -20,6 +20,22 @@ const PENGHASILAN_OPTIONS = [
   ">10.000.000",
 ];
 
+const PENDIDIKAN_OPTIONS = [
+  "Tidak Sekolah",
+  "SD",
+  "SMP",
+  "SMA",
+  "SMK",
+  "D1",
+  "D2",
+  "D3",
+  "D4",
+  "S1",
+  "S2",
+  "S3",
+  "Spesialis",
+];
+
 export default function OrangTuaDataAnak() {
   const navigate = useNavigate();
   const {
@@ -48,6 +64,7 @@ export default function OrangTuaDataAnak() {
     tanggal_lahir: "",
     wilayah_id: "",
     penghasilan_range: "",
+    pendidikan_ibu: "",
     sanitasi: "",
     kualitas_air: "",
     akses_kesehatan: "",
@@ -124,6 +141,7 @@ export default function OrangTuaDataAnak() {
           tanggal_lahir: data.data.tanggal_lahir || "",
           wilayah_id: data.data.wilayah_id || "",
           penghasilan_range: data.data.penghasilan_range || "",
+          pendidikan_ibu: data.data.pendidikan_ibu || "",
           sanitasi: data.data.sanitasi || "",
           kualitas_air: data.data.kualitas_air || "",
           akses_kesehatan: data.data.akses_kesehatan || "",
@@ -487,7 +505,7 @@ export default function OrangTuaDataAnak() {
                 </div>
                 <p className="text-sm text-amber-700">
                   Sebelum menambah data anak, Anda perlu melengkapi data diri meliputi tanggal lahir, domisili,
-                  penghasilan, kondisi sanitasi, kualitas air, dan akses layanan kesehatan.
+                  penghasilan, pendidikan ibu, kondisi sanitasi, kualitas air, dan akses layanan kesehatan.
                 </p>
               </div>
               <button
@@ -514,11 +532,12 @@ export default function OrangTuaDataAnak() {
                   Edit
                 </button>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-sm">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 text-sm">
                 {[
                   { label: "Tanggal Lahir", value: profilData.tanggal_lahir || "-", sub: profilData.tanggal_lahir ? `${calculateOrangTuaAge(profilData.tanggal_lahir)} tahun` : null, icon: fas.faCalendar },
                   { label: "Domisili", value: profilData.nama_kabupaten || "-", icon: fas.faLocationDot },
                   { label: "Penghasilan/bln", value: `Rp ${profilData.penghasilan_range || "-"}`, icon: fas.faMoneyBillWave },
+                  { label: "Pendidikan Ibu", value: profilData.pendidikan_ibu || "-", icon: fas.faGraduationCap },
                   { label: "Sanitasi", value: profilData.sanitasi || "-", icon: fas.faToilet },
                   { label: "Kualitas Air", value: profilData.kualitas_air || "-", icon: fas.faDroplet },
                   { label: "Akses Kesehatan", value: profilData.akses_kesehatan || "-", icon: fas.faHospital },
@@ -923,6 +942,25 @@ export default function OrangTuaDataAnak() {
                     <option key={opt} value={opt}>Rp {opt}</option>
                   ))}
                 </select>
+              </div>
+
+              {/* Pendidikan Ibu */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-1.5">
+                  <FontAwesomeIcon icon={fas.faGraduationCap} className="text-sigizi-green" /> Pendidikan Terakhir Ibu
+                </label>
+                <select
+                  value={profilForm.pendidikan_ibu}
+                  onChange={(e) => setProfilForm({ ...profilForm, pendidikan_ibu: e.target.value })}
+                  required
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sigizi-green bg-white"
+                >
+                  <option value="">-- Pilih Pendidikan Terakhir --</option>
+                  {PENDIDIKAN_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
+                <p className="text-xs text-gray-500 mt-1">Pendidikan terakhir yang ditempuh ibu</p>
               </div>
 
               {/* Sanitasi & Kualitas Air */}

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 06, 2026 at 02:49 AM
+-- Generation Time: May 06, 2026 at 12:20 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.24
 
@@ -258,6 +258,7 @@ INSERT INTO `pengukuran` (`id`, `anak_id`, `tanggal_pengukuran`, `tinggi_badan`,
 CREATE TABLE `users` (
   `id` int NOT NULL,
   `nama_lengkap` varchar(150) NOT NULL,
+  `tanggal_lahir` date DEFAULT NULL,
   `email` varchar(150) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` enum('super_admin','orang_tua','dinas_kesehatan','pemangku_kepentingan') DEFAULT 'orang_tua',
@@ -268,21 +269,24 @@ CREATE TABLE `users` (
   `penghasilan_range` varchar(50) DEFAULT NULL COMMENT 'Rentang penghasilan per bulan',
   `sanitasi` enum('Baik','Buruk') DEFAULT NULL COMMENT 'Kondisi sanitasi rumah',
   `kualitas_air` enum('Bersih','Kotor') DEFAULT NULL COMMENT 'Kualitas air yang digunakan',
-  `akses_kesehatan` enum('Mudah','Sulit') DEFAULT NULL COMMENT 'Akses layanan kesehatan'
+  `akses_kesehatan` enum('Mudah','Sulit') DEFAULT NULL COMMENT 'Akses layanan kesehatan',
+  `pendidikan_ibu` varchar(50) DEFAULT NULL COMMENT 'Pendidikan terakhir ibu'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `nama_lengkap`, `email`, `password`, `role`, `wilayah_id`, `status_aktif`, `created_at`, `updated_at`, `penghasilan_range`, `sanitasi`, `kualitas_air`, `akses_kesehatan`) VALUES
-(1, 'Administrator', 'admin@sigizi.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'super_admin', NULL, 1, '2026-04-01 17:12:26', '2026-04-01 17:12:26', NULL, NULL, NULL, NULL),
-(2, 'Riyan Wardhana', 'riyanwardhana2@gmail.com', '$2y$10$MYOxExrT1YM2r822.Q1d6uXbvggT/tUT8PBIjKmBSf9/YHZnG3RJu', 'orang_tua', NULL, 1, '2026-04-01 17:59:08', '2026-04-01 17:59:08', NULL, NULL, NULL, NULL),
-(3, 'Joko Ui', 'jokoui@gmail.com', '$2y$10$TH8VgqPhN71iIzdb3JjCxuXCqza28e6ZRokt1oM9V2O6VxsnzHUqe', 'orang_tua', NULL, 1, '2026-04-07 17:53:07', '2026-04-07 17:53:07', NULL, NULL, NULL, NULL),
-(4, 'parent', 'parent@gmail.com', '$2y$10$y0Kl7jA/U5Avm/szI6.yXeaFcHJySxJnk/Lf313M9b.tubn8na3ve', 'orang_tua', NULL, 1, '2026-04-12 17:03:51', '2026-04-12 17:03:51', NULL, NULL, NULL, NULL),
-(5, 'Ki Prana Lewu', 'pranalewu@gmail.com', '$2y$10$gnmgWgIU3M11KVr0YB9mR.tapJBcIsuHJh2r7nlNnqgu8L6T55.AC', 'dinas_kesehatan', NULL, 1, '2026-04-17 14:46:38', '2026-04-17 14:46:38', NULL, NULL, NULL, NULL),
-(6, 'coba1', 'tes@gmail.com', '$2y$10$88PlaVf47Aw4M7dT2i5nWucUrunXPupkf8j.ur62rxli125N5S5cC', 'orang_tua', 30, 1, '2026-04-18 09:18:11', '2026-05-06 02:36:20', '4.000.000 - 5.000.000', 'Baik', 'Bersih', 'Mudah'),
-(7, 'tes2', 'tes2@gmail.com', '$2y$10$DiZBP3vONqoKVww0KQLXXuxu6r2lUK5hzsWfEJoHfY5mbI2S2csFW', 'orang_tua', NULL, 1, '2026-04-18 10:24:45', '2026-04-18 10:24:45', NULL, NULL, NULL, NULL);
+INSERT INTO `users` (`id`, `nama_lengkap`, `tanggal_lahir`, `email`, `password`, `role`, `wilayah_id`, `status_aktif`, `created_at`, `updated_at`, `penghasilan_range`, `sanitasi`, `kualitas_air`, `akses_kesehatan`, `pendidikan_ibu`) VALUES
+(1, 'Administrator', NULL, 'admin@sigizi.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'super_admin', NULL, 1, '2026-04-01 17:12:26', '2026-04-01 17:12:26', NULL, NULL, NULL, NULL, NULL),
+(2, 'Riyan Wardhana', NULL, 'riyanwardhana2@gmail.com', '$2y$10$MYOxExrT1YM2r822.Q1d6uXbvggT/tUT8PBIjKmBSf9/YHZnG3RJu', 'orang_tua', NULL, 1, '2026-04-01 17:59:08', '2026-04-01 17:59:08', NULL, NULL, NULL, NULL, NULL),
+(3, 'Joko Ui', NULL, 'jokoui@gmail.com', '$2y$10$TH8VgqPhN71iIzdb3JjCxuXCqza28e6ZRokt1oM9V2O6VxsnzHUqe', 'orang_tua', NULL, 1, '2026-04-07 17:53:07', '2026-04-07 17:53:07', NULL, NULL, NULL, NULL, NULL),
+(4, 'parent', NULL, 'parent@gmail.com', '$2y$10$y0Kl7jA/U5Avm/szI6.yXeaFcHJySxJnk/Lf313M9b.tubn8na3ve', 'orang_tua', NULL, 1, '2026-04-12 17:03:51', '2026-04-12 17:03:51', NULL, NULL, NULL, NULL, NULL),
+(5, 'Ki Prana Lewu', NULL, 'pranalewu@gmail.com', '$2y$10$gnmgWgIU3M11KVr0YB9mR.tapJBcIsuHJh2r7nlNnqgu8L6T55.AC', 'dinas_kesehatan', NULL, 1, '2026-04-17 14:46:38', '2026-04-17 14:46:38', NULL, NULL, NULL, NULL, NULL),
+(6, 'coba1', '1975-08-15', 'tes@gmail.com', '$2y$10$88PlaVf47Aw4M7dT2i5nWucUrunXPupkf8j.ur62rxli125N5S5cC', 'orang_tua', 30, 1, '2026-04-18 09:18:11', '2026-05-06 11:09:26', '4.000.000 - 5.000.000', 'Baik', 'Bersih', 'Mudah', 'S1'),
+(7, 'tes2', NULL, 'tes2@gmail.com', '$2y$10$DiZBP3vONqoKVww0KQLXXuxu6r2lUK5hzsWfEJoHfY5mbI2S2csFW', 'orang_tua', NULL, 1, '2026-04-18 10:24:45', '2026-04-18 10:24:45', NULL, NULL, NULL, NULL, NULL),
+(8, 'Oka', '2006-02-01', 'oka@gmail.com', '$2y$10$EHffdyNk/kqIfMS1rtD3W.6cU8sOLqTQtDqcpygmV4tQ61hZIdOLe', 'orang_tua', 33, 1, '2026-05-06 04:39:43', '2026-05-06 04:44:19', '0 - 1.000.000', 'Buruk', 'Kotor', 'Sulit', NULL),
+(9, 'uji', NULL, 'uji@gmail.com', '$2y$10$OSdXAZ5gaC3V5Si6qjGi3OC3L72r5jDxj8PHZImHtP0qv9FTsN552', 'orang_tua', NULL, 1, '2026-05-06 05:11:46', '2026-05-06 05:11:46', NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -431,7 +435,7 @@ ALTER TABLE `pengukuran`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `wilayah`
