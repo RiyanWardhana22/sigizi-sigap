@@ -1,5 +1,5 @@
 // sigizi-frontend/src/App.jsx
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AnakProvider } from "./contexts/AnakContext";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -10,18 +10,36 @@ import VerifikasiData from "./pages/VerifikasiData";
 import LaporanPemangku from "./pages/LaporanPemangku";
 import PetaSpasial from "./pages/PetaSpasial";
 import AnalisisStrategis from "./pages/AnalisisStrategis";
-
 import OrangTuaDashboard from "./pages/orangtua/OrangTuaDashboard";
 import OrangTuaDataAnak from "./pages/orangtua/OrangTuaDataAnak";
 import OrangTuaPemantauanGizi from "./pages/orangtua/OrangTuaPemantauanGizi";
 import OrangTuaPengaturan from "./pages/orangtua/OrangTuaPengaturan";
+
+// Redirect ke halaman sesuai role setelah login
+function RoleBasedRedirect() {
+  const userData = localStorage.getItem("user");
+  if (!userData) return <Navigate to="/" replace />;
+  const user = JSON.parse(userData);
+  if (user.role === "orang_tua") return <Navigate to="/orangtua/dashboard" replace />;
+  return <Navigate to="/dashboard" replace />;
+}
+
+// Halaman login: jika sudah login, langsung redirect sesuai role
+function LoginOrRedirect() {
+  const userData = localStorage.getItem("user");
+  if (!userData) return <Login />;
+  const user = JSON.parse(userData);
+  if (user.role === "orang_tua") return <Navigate to="/orangtua/dashboard" replace />;
+  return <Navigate to="/dashboard" replace />;
+}
 
 function App() {
   return (
     <BrowserRouter>
       <AnakProvider>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<LoginOrRedirect />} />
+          <Route path="/home" element={<RoleBasedRedirect />} />
 
           {/* Routes untuk Super Admin & Dinas Kesehatan */}
           <Route path="/dashboard" element={<Dashboard />} />
@@ -30,7 +48,6 @@ function App() {
           <Route path="/input-wilayah" element={<InputDataWilayah />} />
           <Route path="/dashboard/anak" element={<DataAnak />} />
           <Route path="/dashboard/verifikasi" element={<VerifikasiData />} />
-          <Route path="/dashboard/laporan" element={<LaporanPemangku />} />
           <Route path="/dashboard/laporan" element={<LaporanPemangku />} />
           <Route path="/dashboard/analisis" element={<AnalisisStrategis />} />
 

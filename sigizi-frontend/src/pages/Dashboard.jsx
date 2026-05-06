@@ -27,7 +27,12 @@ export default function Dashboard() {
     if (!userData) {
       navigate("/");
     } else {
-      setUser(JSON.parse(userData));
+      const parsedUser = JSON.parse(userData);
+      if (parsedUser.role === "orang_tua") {
+        navigate("/orangtua/dashboard");
+        return;
+      }
+      setUser(parsedUser);
       fetchStats();
     }
   }, [navigate]);

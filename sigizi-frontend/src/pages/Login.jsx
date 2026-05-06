@@ -43,7 +43,11 @@ export default function Login() {
           }
 
           localStorage.setItem("user", JSON.stringify(data.user));
-          navigate("/dashboard");
+          if (data.user.role === "orang_tua") {
+            navigate("/orangtua/dashboard");
+          } else {
+            navigate("/dashboard");
+          }
         } else {
           setErrorMsg(data.message);
         }
