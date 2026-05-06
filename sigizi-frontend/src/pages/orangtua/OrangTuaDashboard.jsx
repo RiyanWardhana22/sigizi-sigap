@@ -216,7 +216,7 @@ function EdukasiSection({ status }) {
 }
 
 // ─────────────────────────────────────────────
-// KOMPONEN: KARTU DATA DIRI ORANG TUA - STYLE DINAS KESEHATAN
+// KOMPONEN: KARTU DATA DIRI ORANG TUA
 // ─────────────────────────────────────────────
 function DataDiriOrangTua({ user, profilData, navigate }) {
   // Fungsi untuk menghitung usia dari tanggal lahir
@@ -242,7 +242,7 @@ function DataDiriOrangTua({ user, profilData, navigate }) {
 
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden mb-6 border border-gray-100">
-      {/* Header - Style Dinas Kesehatan */}
+      {/* Header */}
       <div className="bg-gradient-to-r from-green-600 to-green-700 px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -343,6 +343,19 @@ function DataDiriOrangTua({ user, profilData, navigate }) {
                     <p className="text-xs text-gray-400">Penghasilan per Bulan</p>
                     <p className="font-semibold text-gray-800 text-sm">
                       Rp {profilData.penghasilan_range}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Pendidikan Ibu */}
+                <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-indigo-50/50 transition-colors group">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
+                    <FontAwesomeIcon icon={fas.faGraduationCap} className="text-indigo-600 text-sm" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-gray-400">Pendidikan Terakhir Ibu</p>
+                    <p className="font-semibold text-gray-800 text-sm">
+                      {profilData.pendidikan_ibu || "-"}
                     </p>
                   </div>
                 </div>
@@ -648,9 +661,7 @@ export default function OrangTuaDashboard() {
         </header>
 
         <main className="p-6 overflow-y-auto">
-          {/* ========================================== */}
           {/* SUPER ADMIN: Info + Dropdown Orang Tua */}
-          {/* ========================================== */}
           {userRole === "super_admin" && orangTuaList.length > 0 && (
             <div className="mb-6 bg-blue-50 rounded-xl p-4 border border-blue-200">
               <div className="flex items-center gap-3 mb-3">
@@ -752,9 +763,7 @@ export default function OrangTuaDashboard() {
             </div>
           )}
 
-          {/* ========================================== */}
           {/* ORANG TUA: Dropdown Anak */}
-          {/* ========================================== */}
           {userRole === "orang_tua" && displayAnakList.length > 0 && (
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">Pilih Anak</label>
@@ -830,7 +839,7 @@ export default function OrangTuaDashboard() {
             </div>
           )}
 
-          {/* ── Statistik Cards ── */}
+          {/* Statistik Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
             <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-sigizi-green">
               <div className="flex items-center justify-between">
@@ -911,7 +920,7 @@ export default function OrangTuaDashboard() {
             </div>
           )}
 
-          {/* ══ KARTU DATA DIRI ORANG TUA - UI BARU ══ */}
+          {/* KARTU DATA DIRI ORANG TUA */}
           {userRole === "orang_tua" && user && (
             <DataDiriOrangTua 
               user={user} 
@@ -920,7 +929,7 @@ export default function OrangTuaDashboard() {
             />
           )}
 
-          {/* ══ KARTU DATA DIRI ORANG TUA - MODE SUPER ADMIN ══ */}
+          {/* KARTU DATA DIRI ORANG TUA - MODE SUPER ADMIN */}
           {userRole === "super_admin" && selectedOrangTua && (
             <DataDiriOrangTua 
               user={selectedOrangTua} 
