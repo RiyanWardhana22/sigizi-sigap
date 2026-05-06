@@ -466,12 +466,26 @@ export default function OrangTuaDashboard() {
 
   // Profil orang tua
   const [profilData, setProfilData] = useState(null);
+  const [superAdminProfilData, setSuperAdminProfilData] = useState(null);
 
   // Super Admin
   const [orangTuaList, setOrangTuaList] = useState([]);
   const [selectedOrangTuaId, setSelectedOrangTuaId] = useState(null);
   const [superAdminSelectedAnak, setSuperAdminSelectedAnak] = useState(null);
   const [superAdminAnakList, setAnakListForSuperAdmin] = useState([]);
+  const [superAdminShowAnakDropdown, setSuperAdminShowAnakDropdown] = useState(false);
+
+  const getStatusBadgeClass = (status) => {
+    const statusBadgeClass = {
+      Normal: "bg-green-100 text-green-800",
+      Stunting: "bg-red-100 text-red-800",
+      "Pra-stunting": "bg-yellow-100 text-yellow-800",
+      Wasting: "bg-orange-100 text-orange-800",
+      "Gizi Lebih": "bg-blue-100 text-blue-800",
+      "Gizi Berlebih": "bg-purple-100 text-purple-800",
+    };
+    return statusBadgeClass[status] || "bg-gray-100 text-gray-700";
+  };
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -500,25 +514,32 @@ export default function OrangTuaDashboard() {
   }, [selectedAnakData, superAdminSelectedAnak, userRole]);
 
   // ── API: Ambil profil orang tua ─────────────────────────────
-  const fetchProfil = async (userId) => {
+  const fetchProfil = async (userId, role = "orang_tua") => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/profil_orangtua.php?user_id=${userId}`);
       const data = await res.json();
-      if (data.status === "success") setProfilData(data.data);
+      if (data.status === "success") {
+        if (role === "super_admin") setSuperAdminProfilData(data.data);
+        else setProfilData(data.data);
+      } else {
+        if (role === "super_admin") setSuperAdminProfilData(null);
+      }
     } catch (e) {
       console.error("Gagal memuat profil:", e);
+      if (role === "super_admin") setSuperAdminProfilData(null);
     }
   };
 
   const fetchOrangTuaList = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/get_users.php`);
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/get_users.php?role=orang_tua`);
       const data = await response.json();
       if (data.status === "success") {
         const orangTua = data.data.filter((u) => u.role === "orang_tua");
         setOrangTuaList(orangTua);
         if (orangTua.length > 0) {
           setSelectedOrangTuaId(orangTua[0].id);
+          await fetchProfil(orangTua[0].id, "super_admin");
           await fetchData(orangTua[0].id, "super_admin");
         } else setLoading(false);
       }
@@ -569,7 +590,14 @@ export default function OrangTuaDashboard() {
   const handleOrangTuaChange = async (userId) => {
     setSelectedOrangTuaId(userId);
     setSuperAdminSelectedAnak(null);
+    setSuperAdminProfilData(null);
+    await fetchProfil(userId, "super_admin");
     await fetchData(userId, "super_admin");
+  };
+
+  const handleSuperAdminAnakChange = (anak) => {
+    setSuperAdminSelectedAnak(anak);
+    setSuperAdminShowAnakDropdown(false);
   };
 
   const handleLogout = () => {
@@ -617,46 +645,160 @@ export default function OrangTuaDashboard() {
             <FontAwesomeIcon icon={fas.faHouse} className="text-2xl text-sigizi-green" />
             <h1 className="text-xl font-bold text-gray-800">Dashboard Orang Tua</h1>
           </div>
+        </header>
 
-          <div className="flex gap-3">
-            {/* Super admin selector */}
-            {userRole === "super_admin" && orangTuaList.length > 0 && (
-              <select value={selectedOrangTuaId || ""} onChange={(e) => handleOrangTuaChange(parseInt(e.target.value))} className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sigizi-green bg-white">
-                {orangTuaList.map((ot) => (<option key={ot.id} value={ot.id}>{ot.nama_lengkap} - {ot.email}</option>))}
-              </select>
-            )}
+        <main className="p-6 overflow-y-auto">
+          {/* ========================================== */}
+          {/* SUPER ADMIN: Info + Dropdown Orang Tua */}
+          {/* ========================================== */}
+          {userRole === "super_admin" && orangTuaList.length > 0 && (
+            <div className="mb-6 bg-blue-50 rounded-xl p-4 border border-blue-200">
+              <div className="flex items-center gap-3 mb-3">
+                <FontAwesomeIcon icon={fas.faUsers} className="text-blue-600" />
+                <h3 className="font-semibold text-blue-800">Mode Super Admin</h3>
+              </div>
+              <div className="flex flex-col lg:flex-row gap-4">
+                {/* Dropdown Orang Tua */}
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-blue-700 mb-1">
+                    <FontAwesomeIcon icon={fas.faUser} className="mr-1" /> Pilih Orang Tua
+                  </label>
+                  <select
+                    value={selectedOrangTuaId || ""}
+                    onChange={(e) => handleOrangTuaChange(parseInt(e.target.value))}
+                    className="w-full px-4 py-2.5 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                  >
+                    {orangTuaList.map((ot) => (
+                      <option key={ot.id} value={ot.id}>
+                        {ot.nama_lengkap} - {ot.email}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-            {/* Dropdown anak (orang_tua) */}
-            {userRole === "orang_tua" && displayAnakList.length > 0 && (
+                {/* Dropdown Anak (Super Admin) */}
+                {superAdminAnakList.length > 0 && (
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-blue-700 mb-1">
+                      <FontAwesomeIcon icon={fas.faBaby} className="mr-1" /> Pilih Anak
+                    </label>
+                    <div className="relative">
+                      <button
+                        onClick={() => setSuperAdminShowAnakDropdown(!superAdminShowAnakDropdown)}
+                        className="w-full flex items-center justify-between px-4 py-2.5 bg-white border border-blue-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                      >
+                        <div className="flex items-center gap-3">
+                          {superAdminSelectedAnak ? (
+                            <>
+                              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-sigizi-green to-sigizi-light-green flex items-center justify-center text-white font-bold text-sm">
+                                {superAdminSelectedAnak.nama_anak?.charAt(0).toUpperCase()}
+                              </div>
+                              <div className="text-left">
+                                <p className="font-semibold text-gray-800">{superAdminSelectedAnak.nama_anak}</p>
+                                <p className="text-xs text-gray-500">Lahir: {superAdminSelectedAnak.tanggal_lahir}</p>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <FontAwesomeIcon icon={fas.faBaby} className="text-sigizi-green text-xl" />
+                              <span className="text-gray-700">Pilih Anak</span>
+                            </>
+                          )}
+                        </div>
+                        <FontAwesomeIcon icon={fas.faChevronDown} className="text-gray-400" />
+                      </button>
+
+                      {superAdminShowAnakDropdown && (
+                        <>
+                          <div className="fixed inset-0 z-10" onClick={() => setSuperAdminShowAnakDropdown(false)}></div>
+                          <div className="absolute left-0 mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200 z-20 overflow-hidden">
+                            <div className="p-2 max-h-96 overflow-y-auto">
+                              {superAdminAnakList.map((anak) => {
+                                const isSelected = superAdminSelectedAnak?.id === anak.id;
+                                const lastStatus = anak.riwayat?.slice(-1)[0]?.status_gizi;
+                                const badgeCls = getStatusBadgeClass(lastStatus);
+                                return (
+                                  <button
+                                    key={anak.id}
+                                    onClick={() => handleSuperAdminAnakChange(anak)}
+                                    className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all mb-1 ${isSelected ? "bg-sigizi-green/10 border border-sigizi-green/20" : "hover:bg-gray-50"}`}
+                                  >
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm ${isSelected ? "bg-sigizi-green" : "bg-gray-400"}`}>
+                                      {anak.nama_anak?.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div className="flex-1 text-left">
+                                      <p className="font-semibold text-gray-800">{anak.nama_anak}</p>
+                                      <div className="flex items-center gap-2 text-xs mt-0.5">
+                                        <span className="text-gray-500">{anak.tanggal_lahir}</span>
+                                        {lastStatus && (<span className={`font-medium px-1.5 py-0.5 rounded ${badgeCls}`}>{lastStatus}</span>)}
+                                      </div>
+                                    </div>
+                                    {isSelected && <FontAwesomeIcon icon={fas.faCheckCircle} className="text-sigizi-green text-sm" />}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-blue-600 mt-2">
+                <FontAwesomeIcon icon={fas.faInfoCircle} className="mr-1" />
+                Pemilihan anak hanya untuk tampilan saat ini, tidak tersimpan antar menu
+              </p>
+            </div>
+          )}
+
+          {/* ========================================== */}
+          {/* ORANG TUA: Dropdown Anak */}
+          {/* ========================================== */}
+          {userRole === "orang_tua" && displayAnakList.length > 0 && (
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Pilih Anak</label>
               <div className="relative">
-                <button onClick={() => setShowAnakDropdown(!showAnakDropdown)} className="flex items-center gap-3 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-sigizi-green transition">
-                  {displayAnakData ? (
-                    <>
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sigizi-green to-sigizi-light-green flex items-center justify-center text-white font-bold text-sm">
-                        {displayAnakData.nama_anak?.charAt(0).toUpperCase()}
-                      </div>
-                      <span className="font-medium text-gray-700">{displayAnakData.nama_anak}</span>
-                      <FontAwesomeIcon icon={fas.faChevronDown} className="text-gray-400 text-sm ml-1" />
-                    </>
-                  ) : (
-                    <>
-                      <FontAwesomeIcon icon={fas.faBaby} className="text-sigizi-green" />
-                      <span className="text-gray-700">Pilih Anak</span>
-                      <FontAwesomeIcon icon={fas.faChevronDown} className="text-gray-400 text-sm" />
-                    </>
-                  )}
+                <button
+                  onClick={() => setShowAnakDropdown(!showAnakDropdown)}
+                  className="w-full md:w-80 flex items-center justify-between px-4 py-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-sigizi-green transition"
+                >
+                  <div className="flex items-center gap-3">
+                    {displayAnakData ? (
+                      <>
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-sigizi-green to-sigizi-light-green flex items-center justify-center text-white font-bold text-sm">
+                          {displayAnakData.nama_anak?.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="text-left">
+                          <p className="font-semibold text-gray-800">{displayAnakData.nama_anak}</p>
+                          <p className="text-xs text-gray-500">Lahir: {displayAnakData.tanggal_lahir}</p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <FontAwesomeIcon icon={fas.faBaby} className="text-sigizi-green text-xl" />
+                        <span className="text-gray-700">Pilih Anak</span>
+                      </>
+                    )}
+                  </div>
+                  <FontAwesomeIcon icon={fas.faChevronDown} className="text-gray-400" />
                 </button>
+
                 {showAnakDropdown && (
                   <>
                     <div className="fixed inset-0 z-10" onClick={() => setShowAnakDropdown(false)}></div>
-                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-20 overflow-hidden">
+                    <div className="absolute left-0 mt-2 w-80 md:w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-20 overflow-hidden">
                       <div className="p-2 max-h-96 overflow-y-auto">
                         {displayAnakList.map((anak) => {
                           const isSelected = selectedAnakId === anak.id;
                           const lastStatus = anak.riwayat?.slice(-1)[0]?.status_gizi;
-                          const badgeCls = statusBadgeClass[lastStatus] || "bg-gray-100 text-gray-700";
+                          const badgeCls = getStatusBadgeClass(lastStatus);
                           return (
-                            <button key={anak.id} onClick={() => { updateSelectedAnak(anak.id, anak, currentUserId); setShowAnakDropdown(false); }} className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all mb-1 ${isSelected ? "bg-sigizi-green/10 border border-sigizi-green/20" : "hover:bg-gray-50"}`}>
+                            <button
+                              key={anak.id}
+                              onClick={() => { updateSelectedAnak(anak.id, anak, currentUserId); setShowAnakDropdown(false); }}
+                              className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all mb-1 ${isSelected ? "bg-sigizi-green/10 border border-sigizi-green/20" : "hover:bg-gray-50"}`}
+                            >
                               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm ${isSelected ? "bg-sigizi-green" : "bg-gray-400"}`}>
                                 {anak.nama_anak?.charAt(0).toUpperCase()}
                               </div>
@@ -676,70 +818,15 @@ export default function OrangTuaDashboard() {
                   </>
                 )}
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Dropdown anak (super admin) */}
-            {userRole === "super_admin" && superAdminAnakList.length > 0 && (
-              <div className="relative">
-                <button onClick={() => setShowAnakDropdown(!showAnakDropdown)} className="flex items-center gap-3 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition">
-                  {superAdminSelectedAnak ? (
-                    <>
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sigizi-green to-sigizi-light-green flex items-center justify-center text-white font-bold text-sm">
-                        {superAdminSelectedAnak.nama_anak?.charAt(0).toUpperCase()}
-                      </div>
-                      <span className="font-medium text-gray-700">{superAdminSelectedAnak.nama_anak}</span>
-                      <FontAwesomeIcon icon={fas.faChevronDown} className="text-gray-400 text-sm ml-1" />
-                    </>
-                  ) : (
-                    <><FontAwesomeIcon icon={fas.faBaby} className="text-sigizi-green" /><span className="text-gray-700">Pilih Anak</span></>
-                  )}
-                </button>
-                {showAnakDropdown && (
-                  <>
-                    <div className="fixed inset-0 z-10" onClick={() => setShowAnakDropdown(false)}></div>
-                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-20 overflow-hidden">
-                      <div className="p-2 max-h-96 overflow-y-auto">
-                        {superAdminAnakList.map((anak) => {
-                          const isSelected = superAdminSelectedAnak?.id === anak.id;
-                          const lastStatus = anak.riwayat?.slice(-1)[0]?.status_gizi;
-                          const badgeCls = statusBadgeClass[lastStatus] || "bg-gray-100 text-gray-700";
-                          return (
-                            <button key={anak.id} onClick={() => { setSuperAdminSelectedAnak(anak); setShowAnakDropdown(false); }} className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all mb-1 ${isSelected ? "bg-sigizi-green/10 border border-sigizi-green/20" : "hover:bg-gray-50"}`}>
-                              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm ${isSelected ? "bg-sigizi-green" : "bg-gray-400"}`}>
-                                {anak.nama_anak?.charAt(0).toUpperCase()}
-                              </div>
-                              <div className="flex-1 text-left">
-                                <p className="font-semibold text-gray-800">{anak.nama_anak}</p>
-                                <div className="flex items-center gap-2 text-xs mt-0.5">
-                                  <span className="text-gray-500">{anak.tanggal_lahir}</span>
-                                  {lastStatus && (<span className={`font-medium px-1.5 py-0.5 rounded ${badgeCls}`}>{lastStatus}</span>)}
-                                </div>
-                              </div>
-                              {isSelected && <FontAwesomeIcon icon={fas.faCheckCircle} className="text-sigizi-green text-sm" />}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
-        </header>
-
-        <main className="p-6 overflow-y-auto">
-          {/* Info Super Admin */}
+          {/* Info Super Admin (selected user) */}
           {userRole === "super_admin" && selectedOrangTua && (
-            <div className="mb-6 bg-blue-50 rounded-xl p-4 border border-blue-200">
-              <div className="flex items-center gap-3">
-                <FontAwesomeIcon icon={fas.faUserShield} className="text-blue-600 text-xl" />
-                <div>
-                  <p className="text-sm text-blue-800">Mode Super Admin</p>
-                  <p className="font-semibold text-blue-900">Menampilkan data untuk: {selectedOrangTua.nama_lengkap}</p>
-                  <p className="text-xs text-blue-600 mt-1">*Pemilihan anak hanya untuk tampilan saat ini, tidak tersimpan antar menu</p>
-                </div>
-              </div>
+            <div className="mb-6">
+              <p className="text-sm text-blue-600 mb-2">
+                Menampilkan data untuk: <strong>{selectedOrangTua.nama_lengkap}</strong>
+              </p>
             </div>
           )}
 
@@ -829,6 +916,15 @@ export default function OrangTuaDashboard() {
             <DataDiriOrangTua 
               user={user} 
               profilData={profilData} 
+              navigate={navigate} 
+            />
+          )}
+
+          {/* ══ KARTU DATA DIRI ORANG TUA - MODE SUPER ADMIN ══ */}
+          {userRole === "super_admin" && selectedOrangTua && (
+            <DataDiriOrangTua 
+              user={selectedOrangTua} 
+              profilData={superAdminProfilData} 
               navigate={navigate} 
             />
           )}

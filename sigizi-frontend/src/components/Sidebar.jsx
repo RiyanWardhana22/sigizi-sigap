@@ -64,7 +64,7 @@ export default function Sidebar({ handleLogout }) {
       roles: ["super_admin", "dinas_kesehatan"],
     },
     {
-      name: "Data Anak & Gizi",
+      name: "Data Orangtua & Anak",
       icon: <FaBaby />,
       path: "/dashboard/anak",
       roles: ["super_admin", "dinas_kesehatan", "orang_tua"],
