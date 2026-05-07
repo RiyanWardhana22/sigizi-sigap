@@ -18,25 +18,18 @@ export function AnakProvider({ children }) {
   const [currentUserId, setCurrentUserId] = useState(null);
   const [currentUserRole, setCurrentUserRole] = useState(null);
 
-  // Load saved selection from localStorage (only for orang_tua)
+  // Load user role on mount only — jangan restore selectedAnak di sini,
+  // biar updateAnakList yang handle setelah data anak berhasil di-fetch.
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
       const parsedUser = JSON.parse(userData);
       setCurrentUserRole(parsedUser.role);
-      
-      // Only restore selection for orang_tua role
-      if (parsedUser.role === "orang_tua") {
-        const savedAnakId = localStorage.getItem('selectedAnakId');
-        const savedUserId = localStorage.getItem('currentUserId');
-        if (savedAnakId && savedUserId === currentUserId?.toString()) {
-          setSelectedAnakId(parseInt(savedAnakId));
-        }
-      }
+      setCurrentUserId(parsedUser.id);
     }
-  }, [currentUserId]);
+  }, []);
 
-  // Save to localStorage when selection changes (only for orang_tua)
+  // Simpan pilihan anak ke localStorage hanya untuk orang_tua
   useEffect(() => {
     if (selectedAnakId && currentUserId && currentUserRole === "orang_tua") {
       localStorage.setItem('selectedAnakId', selectedAnakId.toString());
@@ -58,15 +51,19 @@ export function AnakProvider({ children }) {
   };
 
   const updateAnakList = (list, userId, userRole) => {
+    // FIX: Selalu reset state dulu sebelum menentukan pilihan baru.
+    // Ini mencegah data anak user sebelumnya "bocor" ke user baru.
     setAnakList(list);
     setCurrentUserId(userId);
     setCurrentUserRole(userRole);
-    
-    // Only auto-select first anak for orang_tua role
+    setSelectedAnakId(null);
+    setSelectedAnakData(null);
+
     if (userRole === "orang_tua") {
+      // Coba restore pilihan anak yang tersimpan, tapi hanya jika userId cocok
       const savedAnakId = localStorage.getItem('selectedAnakId');
       const savedUserId = localStorage.getItem('currentUserId');
-      
+
       if (savedAnakId && savedUserId === userId?.toString()) {
         const foundAnak = list.find(a => a.id === parseInt(savedAnakId));
         if (foundAnak) {
@@ -75,17 +72,27 @@ export function AnakProvider({ children }) {
           return;
         }
       }
-      
-      // Otherwise select first anak if available
-      if (list.length > 0 && !selectedAnakId) {
+
+      // Jika tidak ada simpanan yang cocok, pilih anak pertama (jika ada)
+      if (list.length > 0) {
         setSelectedAnakId(list[0].id);
         setSelectedAnakData(list[0]);
       }
-    } else {
-      // For super_admin, don't auto-select any anak
-      setSelectedAnakId(null);
-      setSelectedAnakData(null);
+      // Jika list kosong, state tetap null — tidak ada anak yang ditampilkan
     }
+    // Untuk super_admin atau role lain: state sudah di-reset ke null di atas
+  };
+
+  // FIX: Fungsi logout yang bersih — hapus data anak dari localStorage
+  // agar tidak bocor ke sesi/akun berikutnya.
+  const handleLogoutCleanup = () => {
+    setSelectedAnakId(null);
+    setSelectedAnakData(null);
+    setAnakList([]);
+    setCurrentUserId(null);
+    setCurrentUserRole(null);
+    localStorage.removeItem('selectedAnakId');
+    localStorage.removeItem('currentUserId');
   };
 
   const resetForSuperAdmin = () => {
@@ -104,7 +111,8 @@ export function AnakProvider({ children }) {
       updateSelectedAnak,
       clearSelectedAnak,
       updateAnakList,
-      resetForSuperAdmin
+      resetForSuperAdmin,
+      handleLogoutCleanup,  // expose agar dipanggil saat logout
     }}>
       {children}
     </AnakContext.Provider>

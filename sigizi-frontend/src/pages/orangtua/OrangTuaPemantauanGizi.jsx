@@ -15,7 +15,6 @@ import {
   Legend,
   ResponsiveContainer,
   Area,
-  Scatter,
 } from "recharts";
 import {
   whoGrowthData,
@@ -24,6 +23,408 @@ import {
   calculatePercentile,
   calculateZScore,
 } from "./growthReferences";
+
+// ─────────────────────────────────────────────
+// KOMPONEN: MODAL PENJELASAN GRAFIK
+// ─────────────────────────────────────────────
+function PenjelasanGrafikModal({
+  isOpen,
+  onClose,
+  activeMainMenu,
+  activeSubMenu,
+  ageRange,
+}) {
+  if (!isOpen) return null;
+
+  const getPenjelasanContent = () => {
+    // Penjelasan berdasarkan jenis grafik yang aktif
+    if (activeMainMenu === "berat") {
+      if (activeSubMenu === "bb_u") {
+        return {
+          judul: "Grafik Berat Badan menurut Usia (BB/U)",
+          deskripsi:
+            "Grafik ini menunjukkan apakah berat badan anak Anda sudah sesuai dengan usianya.",
+          caraBaca: [
+            {
+              langkah: "1. Lihat Garis Biru",
+              detail:
+                "Garis biru dengan titik-titik menunjukkan pertumbuhan berat badan anak Anda dari waktu ke waktu.",
+            },
+            {
+              langkah: "2. Perhatikan Zona Warna",
+              detail:
+                "Zona hijau berarti berat badan normal. Zona kuning berarti perlu perhatian lebih. Di luar zona berarti perlu konsultasi dokter.",
+            },
+            {
+              langkah: "3. Bandingkan dengan Garis Tengah",
+              detail:
+                "Garis hijau tebal adalah berat badan rata-rata anak seusianya. Semakin dekat ke garis ini, semakin ideal.",
+            },
+          ],
+          tips: "TIPS: Timbang anak secara rutin setiap bulan di Posyandu atau Puskesmas terdekat untuk memantau pertumbuhannya.",
+          warna: "emerald",
+          kondisi: [
+            {
+              status: "Normal",
+              arti: "Berat badan anak Anda ideal, pertahankan pola makan sehat!",
+              warna: "bg-emerald-100 text-emerald-700 border-emerald-200",
+            },
+            {
+              status: "Kurang",
+              arti: "Berat badan anak di bawah rata-rata, tingkatkan asupan gizi seimbang.",
+              warna: "bg-amber-100 text-amber-700 border-amber-200",
+            },
+            {
+              status: "Berlebih",
+              arti: "Berat badan anak di atas rata-rata, kurangi makanan tinggi gula dan lemak.",
+              warna: "bg-red-100 text-red-700 border-red-200",
+            },
+          ],
+        };
+      } else if (activeSubMenu === "bb_tb") {
+        return {
+          judul: "Grafik Berat Badan menurut Tinggi Badan (BB/TB)",
+          deskripsi:
+            "Grafik ini menunjukkan apakah berat badan anak Anda sudah proporsional dengan tinggi badannya.",
+          caraBaca: [
+            {
+              langkah: "1. Lihat Garis Biru",
+              detail:
+                "Garis biru dengan titik-titik menunjukkan data berat dan tinggi anak Anda dari waktu ke waktu.",
+            },
+            {
+              langkah: "2. Perhatikan Zona Warna",
+              detail:
+                "Zona hijau berarti berat badan proporsional dengan tinggi. Zona kuning berarti perlu perhatian. Di luar zona berarti perlu konsultasi dokter.",
+            },
+            {
+              langkah: "3. Bandingkan dengan Garis Tengah",
+              detail:
+                "Garis hijau tebal adalah berat badan rata-rata untuk tinggi tersebut. Semakin dekat, semakin proporsional.",
+            },
+          ],
+          tips: "TIPS: Pastikan anak mendapatkan makanan bergizi seimbang dengan porsi yang sesuai, tidak kurang dan tidak berlebihan.",
+          warna: "emerald",
+          kondisi: [
+            {
+              status: "Normal",
+              arti: "Berat badan proporsional dengan tinggi badan, pertahankan!",
+              warna: "bg-emerald-100 text-emerald-700 border-emerald-200",
+            },
+            {
+              status: "Kurus",
+              arti: "Berat badan kurang untuk tinggi badannya, tingkatkan asupan protein dan kalori sehat.",
+              warna: "bg-amber-100 text-amber-700 border-amber-200",
+            },
+            {
+              status: "Gemuk",
+              arti: "Berat badan berlebih untuk tinggi badannya, atur pola makan dan aktivitas fisik.",
+              warna: "bg-red-100 text-red-700 border-red-200",
+            },
+          ],
+        };
+      } else if (activeSubMenu === "imt_u") {
+        return {
+          judul: "Grafik Indeks Massa Tubuh menurut Usia (IMT/U)",
+          deskripsi:
+            "Grafik ini menunjukkan status gizi anak secara keseluruhan berdasarkan perbandingan berat dan tinggi badan.",
+          caraBaca: [
+            {
+              langkah: "1. Lihat Garis Biru",
+              detail:
+                "Garis biru menunjukkan nilai IMT anak Anda. IMT dihitung dari berat badan dibagi tinggi badan.",
+            },
+            {
+              langkah: "2. Perhatikan Zona Warna",
+              detail:
+                "Zona hijau berarti status gizi normal. Zona kuning berarti perlu perhatian. Di luar zona berarti perlu tindakan segera.",
+            },
+            {
+              langkah: "3. Pahami Arti Status Gizi",
+              detail:
+                "IMT/U adalah indikator paling lengkap untuk menilai status gizi anak secara keseluruhan.",
+            },
+          ],
+          tips: "TIPS: Status gizi anak dipengaruhi oleh banyak faktor: asupan makanan, aktivitas fisik, kebersihan lingkungan, dan akses layanan kesehatan.",
+          warna: "emerald",
+          kondisi: [
+            {
+              status: "Gizi Baik",
+              arti: "Status gizi anak normal, pertahankan pola hidup sehat!",
+              warna: "bg-emerald-100 text-emerald-700 border-emerald-200",
+            },
+            {
+              status: "Gizi Kurang",
+              arti: "Anak perlu perbaikan gizi, konsultasikan ke petugas kesehatan.",
+              warna: "bg-amber-100 text-amber-700 border-amber-200",
+            },
+            {
+              status: "Gizi Lebih",
+              arti: "Anak kelebihan gizi, atur pola makan dan tingkatkan aktivitas fisik.",
+              warna: "bg-red-100 text-red-700 border-red-200",
+            },
+          ],
+        };
+      }
+    } else if (activeMainMenu === "tinggi") {
+      return {
+        judul: "Grafik Tinggi Badan menurut Usia (TB/U)",
+        deskripsi:
+          "Grafik ini menunjukkan apakah tinggi badan anak Anda sudah sesuai dengan usianya. Tinggi badan yang tidak sesuai bisa menjadi tanda stunting.",
+        caraBaca: [
+          {
+            langkah: "1. Lihat Garis Biru",
+            detail:
+              "Garis biru dengan titik-titik menunjukkan pertumbuhan tinggi badan anak Anda dari waktu ke waktu.",
+          },
+          {
+            langkah: "2. Perhatikan Zona Warna",
+            detail:
+              "Zona hijau berarti tinggi badan normal. Zona kuning berarti perlu perhatian lebih karena berisiko stunting.",
+          },
+          {
+            langkah: "3. Waspadai Stunting",
+            detail:
+              "Jika tinggi anak berada di zona kuning atau di bawahnya, segera konsultasikan ke Puskesmas. Stunting harus dicegah sejak dini!",
+          },
+        ],
+        tips: "TIPS: Stunting adalah kondisi gagal tumbuh akibat kekurangan gizi kronis. Cegah dengan memberikan ASI eksklusif 6 bulan, MPASI bergizi, dan rutin ke Posyandu.",
+        warna: "blue",
+        kondisi: [
+          {
+            status: "Normal",
+            arti: "Tinggi badan anak sesuai dengan usianya, pertumbuhan baik!",
+            warna: "bg-emerald-100 text-emerald-700 border-emerald-200",
+          },
+          {
+            status: "Pendek",
+            arti: "Tinggi badan di bawah rata-rata, waspadai risiko stunting. Perbaiki asupan gizi.",
+            warna: "bg-amber-100 text-amber-700 border-amber-200",
+          },
+          {
+            status: "Sangat Pendek",
+            arti: "Anak berisiko tinggi stunting. SEGERA konsultasikan ke dokter atau Puskesmas!",
+            warna: "bg-red-100 text-red-700 border-red-200",
+          },
+        ],
+      };
+    } else if (activeMainMenu === "lingkar_kepala") {
+      return {
+        judul: "Grafik Lingkar Kepala menurut Usia (LK/U)",
+        deskripsi:
+          "Grafik ini menunjukkan apakah ukuran lingkar kepala anak Anda sesuai dengan usianya. Lingkar kepala berkaitan dengan perkembangan otak anak.",
+        caraBaca: [
+          {
+            langkah: "1. Lihat Garis Biru",
+            detail:
+              "Garis biru menunjukkan ukuran lingkar kepala anak Anda dari waktu ke waktu.",
+          },
+          {
+            langkah: "2. Perhatikan Zona Warna",
+            detail:
+              "Zona hijau berarti lingkar kepala normal. Zona kuning berarti perlu pemantauan lebih lanjut.",
+          },
+          {
+            langkah: "3. Pentingnya Pemantauan",
+            detail:
+              "Lingkar kepala yang tidak normal bisa menjadi tanda masalah perkembangan otak. Rutin ukur di Posyandu!",
+          },
+        ],
+        tips: "TIPS: Ukur lingkar kepala anak setiap bulan di tahun pertama, lalu setiap 3 bulan hingga usia 2 tahun. Gunakan pita ukur yang sama setiap kali mengukur.",
+        warna: "purple",
+        kondisi: [
+          {
+            status: "Normal",
+            arti: "Lingkar kepala sesuai usia, perkembangan otak berjalan baik!",
+            warna: "bg-emerald-100 text-emerald-700 border-emerald-200",
+          },
+          {
+            status: "Kecil",
+            arti: "Lingkar kepala di bawah rata-rata, konsultasikan ke dokter untuk evaluasi.",
+            warna: "bg-amber-100 text-amber-700 border-amber-200",
+          },
+          {
+            status: "Besar",
+            arti: "Lingkar kepala di atas rata-rata, perlu pemeriksaan lebih lanjut oleh dokter.",
+            warna: "bg-red-100 text-red-700 border-red-200",
+          },
+        ],
+      };
+    }
+    return null;
+  };
+
+  const content = getPenjelasanContent();
+  if (!content) return null;
+
+  const headerColors = {
+    emerald: "from-emerald-500 to-emerald-600",
+    blue: "from-blue-500 to-blue-600",
+    purple: "from-purple-500 to-purple-600",
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+      <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+        {/* Header */}
+        <div
+          className={`bg-gradient-to-r ${headerColors[content.warna] || headerColors.emerald} px-6 py-5 text-white`}
+        >
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-bold">{content.judul}</h3>
+            <button
+              onClick={onClose}
+              className="bg-white/20 hover:bg-white/30 p-2 rounded-xl transition"
+            >
+              <FontAwesomeIcon icon={fas.faTimes} className="text-white" />
+            </button>
+          </div>
+          <p className="text-sm text-white/80 mt-2">{content.deskripsi}</p>
+        </div>
+
+        {/* Body */}
+        <div className="p-6 space-y-6">
+          {/* Cara Membaca Grafik */}
+          <div>
+            <h4 className="font-bold text-gray-800 text-lg flex items-center gap-2 mb-4">
+              <span className="bg-blue-100 p-2 rounded-lg">
+                <FontAwesomeIcon icon={fas.faEye} className="text-blue-600" />
+              </span>
+              Cara Membaca Grafik Ini
+            </h4>
+            <div className="space-y-3">
+              {content.caraBaca.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"
+                >
+                  <div className="flex-shrink-0 w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+                    <span className="text-emerald-600 font-bold text-sm">
+                      {index + 1}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-800">{item.langkah}</p>
+                    <p className="text-sm text-gray-600 mt-1">{item.detail}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Arti Warna / Status */}
+          <div>
+            <h4 className="font-bold text-gray-800 text-lg flex items-center gap-2 mb-4">
+              <span className="bg-amber-100 p-2 rounded-lg">
+                <FontAwesomeIcon
+                  icon={fas.faPalette}
+                  className="text-amber-600"
+                />
+              </span>
+              Arti Status Gizi pada Grafik
+            </h4>
+            <div className="space-y-3">
+              {content.kondisi.map((item, index) => (
+                <div
+                  key={index}
+                  className={`p-4 rounded-xl border ${item.warna}`}
+                >
+                  <p className="font-bold">{item.status}</p>
+                  <p className="text-sm mt-1">{item.arti}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Tips */}
+          <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl p-5 border border-emerald-200">
+            <p className="text-sm text-gray-700">{content.tips}</p>
+          </div>
+
+          {/* Zona Warna pada Grafik */}
+          <div>
+            <h4 className="font-bold text-gray-800 text-lg flex items-center gap-2 mb-4">
+              <span className="bg-emerald-100 p-2 rounded-lg">
+                <FontAwesomeIcon
+                  icon={fas.faChartPie}
+                  className="text-emerald-600"
+                />
+              </span>
+              Arti Zona Warna
+            </h4>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="text-center p-4 bg-emerald-50 rounded-xl border border-emerald-200">
+                <div
+                  className="w-full h-8 rounded-md mb-2"
+                  style={{
+                    backgroundColor: "#bbf7d0",
+                    border: "1px solid #22c55e",
+                  }}
+                ></div>
+                <p className="font-bold text-emerald-700 text-sm">Zona Hijau</p>
+                <p className="text-xs text-gray-500 mt-1">Pertumbuhan Normal</p>
+              </div>
+              <div className="text-center p-4 bg-amber-50 rounded-xl border border-amber-200">
+                <div
+                  className="w-full h-8 rounded-md mb-2"
+                  style={{
+                    backgroundColor: "#fef3c7",
+                    border: "1px solid #f59e0b",
+                  }}
+                ></div>
+                <p className="font-bold text-amber-700 text-sm">Zona Kuning</p>
+                <p className="text-xs text-gray-500 mt-1">Perlu Perhatian</p>
+              </div>
+              <div className="text-center p-4 bg-gray-50 rounded-xl border border-gray-200">
+                <div
+                  className="w-full h-8 rounded-md mb-2"
+                  style={{
+                    backgroundColor: "#e5e7eb",
+                    border: "1px solid #9ca3af",
+                  }}
+                ></div>
+                <p className="font-bold text-gray-600 text-sm">Di Luar Zona</p>
+                <p className="text-xs text-gray-500 mt-1">Segera Konsultasi</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Info Tambahan */}
+          <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
+            <div className="flex items-start gap-3">
+              <FontAwesomeIcon
+                icon={fas.faInfoCircle}
+                className="text-blue-500 text-lg mt-0.5"
+              />
+              <div>
+                <p className="font-bold text-blue-800 text-sm">
+                  Penting untuk Diingat!
+                </p>
+                <p className="text-sm text-blue-700 mt-1">
+                  Grafik ini menggunakan standar WHO (Organisasi Kesehatan
+                  Dunia) untuk anak 0-5 tahun dan standar CDC untuk anak 5-18
+                  tahun. Setiap anak memiliki pola pertumbuhan yang berbeda.
+                  Konsultasikan dengan tenaga kesehatan untuk evaluasi lebih
+                  lanjut.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
+          <button
+            onClick={onClose}
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold transition shadow-md"
+          >
+            Saya Mengerti
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function OrangTuaPemantauanGizi() {
   const navigate = useNavigate();
@@ -47,6 +448,9 @@ export default function OrangTuaPemantauanGizi() {
   const [ageRange, setAgeRange] = useState("0-60");
   const [showAgeDropdown, setShowAgeDropdown] = useState(false);
 
+  // State untuk modal penjelasan grafik
+  const [showPenjelasanGrafik, setShowPenjelasanGrafik] = useState(false);
+
   const [orangTuaList, setOrangTuaList] = useState([]);
   const [selectedOrangTuaId, setSelectedOrangTuaId] = useState(null);
   const [superAdminAnakList, setSuperAdminAnakList] = useState([]);
@@ -59,10 +463,10 @@ export default function OrangTuaPemantauanGizi() {
   const API_URL = import.meta.env.VITE_API_BASE_URL;
 
   // Konstanta untuk validasi data
-  const MAX_VALID_WEIGHT = 150; // Maksimum berat badan normal untuk anak (kg)
-  const MAX_VALID_HEIGHT = 200; // Maksimum tinggi badan normal (cm)
-  const MAX_VALID_IMT = 50; // Maksimum IMT normal
-  const MAX_VALID_LK = 70; // Maksimum lingkar kepala (cm)
+  const MAX_VALID_WEIGHT = 150;
+  const MAX_VALID_HEIGHT = 200;
+  const MAX_VALID_IMT = 50;
+  const MAX_VALID_LK = 70;
 
   // Mapping rentang umur dengan konfigurasi lengkap
   const ageRangeConfig = {
@@ -174,7 +578,6 @@ export default function OrangTuaPemantauanGizi() {
     }
   }, [superAdminSelectedAnak, userRole]);
 
-  // Reset ageRange when switching to Lingkar Kepala menu
   useEffect(() => {
     if (activeMainMenu === "lingkar_kepala") {
       const validLKRanges = ["0-2", "0-12", "0-60"];
@@ -197,7 +600,6 @@ export default function OrangTuaPemantauanGizi() {
     try {
       const response = await fetch(`${API_URL}/get_users.php`);
       const data = await response.json();
-
       if (data.status === "success") {
         const orangTua = data.data.filter((u) => u.role === "orang_tua");
         setOrangTuaList(orangTua);
@@ -221,7 +623,6 @@ export default function OrangTuaPemantauanGizi() {
         `${API_URL}/get_riwayat_anak.php?user_id=${userId}`,
       );
       const data = await response.json();
-
       if (data.status === "success") {
         const processedAnakList = data.data.map((anak) => ({
           ...anak,
@@ -243,7 +644,6 @@ export default function OrangTuaPemantauanGizi() {
                 new Date(a.tanggal_pengukuran) - new Date(b.tanggal_pengukuran),
             ),
         }));
-
         if (role === "orang_tua") {
           updateAnakList(processedAnakList, userId, role);
         } else {
@@ -274,12 +674,9 @@ export default function OrangTuaPemantauanGizi() {
       setData([]);
       return;
     }
-
     const birthDate = new Date(anak.tanggal_lahir);
-
     const formattedData = anak.riwayat
       .filter((r) => {
-        // Filter data yang tidak valid (nilai terlalu besar atau negatif)
         const isValidWeight =
           r.berat_badan > 0 && r.berat_badan < MAX_VALID_WEIGHT;
         const isValidHeight =
@@ -287,23 +684,15 @@ export default function OrangTuaPemantauanGizi() {
         const isValidLK =
           !r.lingkar_kepala ||
           (r.lingkar_kepala > 0 && r.lingkar_kepala < MAX_VALID_LK);
-
-        if (!isValidWeight || !isValidHeight) {
-          console.warn(
-            `Data tidak valid untuk anak ${anak.nama_anak}: Berat=${r.berat_badan}, Tinggi=${r.tinggi_badan}`,
-          );
-        }
         return isValidWeight && isValidHeight && isValidLK;
       })
       .map((r) => {
         const measurementDate = new Date(r.tanggal_pengukuran);
         const ageInMonths = calculateAgeInMonths(birthDate, measurementDate);
-
         const imt =
           r.tinggi_badan > 0
             ? r.berat_badan / Math.pow(r.tinggi_badan / 100, 2)
             : null;
-
         return {
           tanggal: r.tanggal_pengukuran,
           usiaBulan: ageInMonths,
@@ -355,54 +744,43 @@ export default function OrangTuaPemantauanGizi() {
   ) => {
     const isMale = jenisKelamin === "L";
     const isWHO = ageRangeConfig[ageRange]?.isWHO !== false;
-
     if (isWHO) {
       const data = whoGrowthData[indicator];
       if (!data) return null;
       const genderData = isMale ? data.laki : data.perempuan;
       if (!genderData) return null;
-
       const ages = Object.keys(genderData)
         .map(Number)
         .sort((a, b) => a - b);
-
       const lower = ages.filter((a) => a <= usiaBulan).at(-1);
       const upper = ages.find((a) => a > usiaBulan);
-
       if (lower === undefined) return genderData[ages[0]]?.[percentileKey];
       if (upper === undefined) return genderData[ages.at(-1)]?.[percentileKey];
-
       const v1 = genderData[lower]?.[percentileKey];
       const v2 = genderData[upper]?.[percentileKey];
       if (v1 == null || v2 == null) return v1 ?? v2;
-
       return v1 + ((v2 - v1) * (usiaBulan - lower)) / (upper - lower);
     } else {
       const data = cdcGrowthData[indicator];
       if (!data) return null;
       const genderData = isMale ? data.laki : data.perempuan;
       if (!genderData) return null;
-
       const ageInYears = usiaBulan / 12;
       const ages = Object.keys(genderData)
         .map(Number)
         .sort((a, b) => a - b);
-
       const lower = ages.filter((a) => a <= ageInYears).at(-1);
       const upper = ages.find((a) => a > ageInYears);
-
       if (lower === undefined) return genderData[ages[0]]?.[percentileKey];
       if (upper === undefined) return genderData[ages.at(-1)]?.[percentileKey];
-
       const v1 = genderData[lower]?.[percentileKey];
       const v2 = genderData[upper]?.[percentileKey];
       if (v1 == null || v2 == null) return v1 ?? v2;
-
       return v1 + ((v2 - v1) * (ageInYears - lower)) / (upper - lower);
     }
   };
 
-  // Membuat data referensi lengkap - menyimpan NILAI ABSOLUT setiap batas zona
+  // Membuat data referensi lengkap
   const generateFullReferenceData = (jenisKelamin, indicator) => {
     const isWHO = ageRangeConfig[ageRange]?.isWHO !== false;
     let config;
@@ -423,12 +801,9 @@ export default function OrangTuaPemantauanGizi() {
     }
 
     const referenceData = [];
-
     for (const usia of referenceAges) {
       const dataPoint = { usiaBulan: usia, usiaTahun: usia / 12 };
-
       if (isWHO) {
-        // Map indicator ke key WHO: 'berat'→'bb_u', 'tinggi'→'tb_u', 'imt'→'imt_u'
         const whoIndicator =
           indicator === "berat"
             ? "bb_u"
@@ -437,7 +812,6 @@ export default function OrangTuaPemantauanGizi() {
               : indicator === "imt"
                 ? "imt_u"
                 : indicator;
-        // Simpan nilai absolut setiap batas SD
         const sdNeg3 = getReferenceValue(
           usia,
           jenisKelamin,
@@ -453,22 +827,16 @@ export default function OrangTuaPemantauanGizi() {
         const sd0 = getReferenceValue(usia, jenisKelamin, whoIndicator, "0sd");
         const sd2 = getReferenceValue(usia, jenisKelamin, whoIndicator, "2sd");
         const sd3 = getReferenceValue(usia, jenisKelamin, whoIndicator, "3sd");
-
         if (sdNeg3 != null) dataPoint.sdNeg3 = sdNeg3;
         if (sdNeg2 != null) dataPoint.sdNeg2 = sdNeg2;
         if (sd0 != null) dataPoint.sd0 = sd0;
         if (sd2 != null) dataPoint.sd2 = sd2;
         if (sd3 != null) dataPoint.sd3 = sd3;
-
-        // Untuk Area berpasangan: simpan [lower, upper] tiap zona sebagai nilai absolut
-        // zona merah bawah: dari sdNeg3 ke sdNeg2
         if (sdNeg3 != null && sdNeg2 != null) {
           dataPoint.zonaMerahBawahMin = sdNeg3;
           dataPoint.zonaMerahBawahMax = sdNeg2;
           dataPoint.zonaMerahBawahDiff = sdNeg2 - sdNeg3;
         }
-        // zona kuning bawah: dari sdNeg2 ke -1sd → tidak ada -1sd, langsung ke sdNeg2
-        // WHO: Kuning = -3sd s.d -2sd, dan 2sd s.d 3sd; Hijau = -2sd s.d 2sd
         if (sdNeg2 != null && sd2 != null) {
           dataPoint.zonaHijauMin = sdNeg2;
           dataPoint.zonaHijauMax = sd2;
@@ -480,8 +848,6 @@ export default function OrangTuaPemantauanGizi() {
           dataPoint.zonaMerahAtasDiff = sd3 - sd2;
         }
       } else {
-        // CDC: simpan nilai absolut setiap persentil
-        // Map indicator ke key CDC: 'berat'→'bb_u', 'tinggi'→'tb_u', 'imt'→'imt_u'
         const cdcIndicator =
           indicator === "berat"
             ? "bb_u"
@@ -494,16 +860,13 @@ export default function OrangTuaPemantauanGizi() {
         const p85 = getReferenceValue(usia, jenisKelamin, cdcIndicator, "p85");
         const p90 = getReferenceValue(usia, jenisKelamin, cdcIndicator, "p90");
         const p95 = getReferenceValue(usia, jenisKelamin, cdcIndicator, "p95");
-
         if (p3 != null) dataPoint.baseP3 = p3;
         if (p5 != null) dataPoint.baseP5 = p5;
         if (p50 != null) dataPoint.baseP50 = p50;
         if (p85 != null) dataPoint.baseP85 = p85;
         if (p90 != null) dataPoint.baseP90 = p90;
         if (p95 != null) dataPoint.baseP95 = p95;
-
         if (indicator === "berat") {
-          // Hijau = p5 - p90, Kuning = p3-p5 dan p90-p95
           if (p3 != null && p5 != null) {
             dataPoint.zonaKuningBawahMin = p3;
             dataPoint.zonaKuningBawahDiff = p5 - p3;
@@ -517,7 +880,6 @@ export default function OrangTuaPemantauanGizi() {
             dataPoint.zonaKuningAtasDiff = p95 - p90;
           }
         } else if (indicator === "imt") {
-          // Hijau = p5 - p85, Kuning = p3-p5 dan p85-p95
           if (p3 != null && p5 != null) {
             dataPoint.zonaKuningBawahMin = p3;
             dataPoint.zonaKuningBawahDiff = p5 - p3;
@@ -531,17 +893,14 @@ export default function OrangTuaPemantauanGizi() {
             dataPoint.zonaKuningAtasDiff = p95 - p85;
           }
         } else {
-          // tinggi CDC: Hijau = p3-p95
           if (p3 != null && p95 != null) {
             dataPoint.zonaHijauMin = p3;
             dataPoint.zonaHijauDiff = p95 - p3;
           }
         }
       }
-
       referenceData.push(dataPoint);
     }
-
     return referenceData;
   };
 
@@ -555,16 +914,13 @@ export default function OrangTuaPemantauanGizi() {
     jenisKelamin,
   }) => {
     if (!active || !payload || !payload.length) return null;
-
     const isWHO = ageRangeConfig[ageRange]?.isWHO !== false;
     const usiaTahun = (label / 12).toFixed(1);
     const usiaBulan = label;
-
     const childData = payload.find(
       (p) => p.dataKey === "nilai" || p.name === "Data Anak",
     );
     const childValue = childData?.value;
-
     let statusGizi = "-";
     let persentilAtauZScore = "-";
 
@@ -656,26 +1012,24 @@ export default function OrangTuaPemantauanGizi() {
 
     const statusColor =
       statusGizi === "Normal"
-        ? "text-green-600"
+        ? "text-emerald-600"
         : statusGizi.includes("Kurang") ||
             statusGizi.includes("Pendek") ||
             statusGizi.includes("Kurus")
-          ? "text-yellow-600"
-          : "text-orange-600";
+          ? "text-amber-600"
+          : "text-red-600";
 
     return (
-      <div className="bg-white rounded-xl shadow-lg p-4 border border-gray-100 min-w-[200px]">
-        <p className="text-sm font-semibold text-gray-700 mb-2">
+      <div className="bg-white rounded-2xl shadow-xl p-5 border border-gray-100 min-w-[220px]">
+        <p className="text-sm font-bold text-gray-500 mb-2">
           {ageRange === "60-216"
             ? `Usia ${usiaTahun} Tahun`
             : `Usia ${usiaBulan} Bulan`}
         </p>
-        <p className="text-lg font-bold text-gray-800">
+        <p className="text-2xl font-bold text-gray-800">
           {childValue && childValue < 1000 ? childValue.toFixed(1) : "-"} {unit}
         </p>
-        <p className={`text-sm font-medium ${statusColor} mt-1`}>
-          {statusGizi}
-        </p>
+        <p className={`text-sm font-bold ${statusColor} mt-2`}>{statusGizi}</p>
         <p className="text-xs text-gray-400 mt-1">{persentilAtauZScore}</p>
       </div>
     );
@@ -690,12 +1044,16 @@ export default function OrangTuaPemantauanGizi() {
 
     if (!anak) {
       return (
-        <div className="text-center py-12 text-gray-500">
-          <FontAwesomeIcon
-            icon={fas.faChartLine}
-            className="text-4xl mb-3 opacity-30"
-          />
-          <p>Pilih anak terlebih dahulu</p>
+        <div className="text-center py-16">
+          <div className="bg-gray-100 p-6 rounded-full inline-flex mb-4">
+            <FontAwesomeIcon
+              icon={fas.faChartLine}
+              className="text-5xl text-gray-400"
+            />
+          </div>
+          <p className="text-gray-500 font-medium">
+            Pilih anak terlebih dahulu
+          </p>
         </div>
       );
     }
@@ -709,20 +1067,21 @@ export default function OrangTuaPemantauanGizi() {
 
     if (!config) {
       return (
-        <div className="text-center py-12 text-yellow-500">
-          <FontAwesomeIcon
-            icon={fas.faExclamationTriangle}
-            className="text-4xl mb-3 opacity-50"
-          />
-          <p>Konfigurasi grafik tidak tersedia</p>
+        <div className="text-center py-16">
+          <div className="bg-amber-100 p-6 rounded-full inline-flex mb-4">
+            <FontAwesomeIcon
+              icon={fas.faExclamationTriangle}
+              className="text-5xl text-amber-400"
+            />
+          </div>
+          <p className="text-amber-600 font-medium">
+            Konfigurasi grafik tidak tersedia
+          </p>
         </div>
       );
     }
 
-    // Generate data referensi
     const referenceData = generateFullReferenceData(jenisKelamin, indicator);
-
-    // Filter data anak yang valid (nilai tidak terlalu besar)
     const childPoints = displayGrowthData
       .filter((point) => {
         const value = point[indicator];
@@ -740,19 +1099,15 @@ export default function OrangTuaPemantauanGizi() {
       }));
 
     const latestChildPoint = childPoints.slice(-1)[0];
-
-    // MERGE data anak ke referenceData
     const mergedData = referenceData.map((refPoint) => {
       const exactMatch = childPoints.find(
         (cp) => cp.usiaBulan === refPoint.usiaBulan,
       );
-      if (exactMatch) {
-        return { ...refPoint, nilai: exactMatch.nilai };
-      }
-      return { ...refPoint, nilai: null };
+      return exactMatch
+        ? { ...refPoint, nilai: exactMatch.nilai }
+        : { ...refPoint, nilai: null };
     });
 
-    // Dynamic Y domain dengan batasan aman
     let yDomain;
     if (indicator === "berat") {
       yDomain = [...config.yDomain.bb_u];
@@ -767,7 +1122,6 @@ export default function OrangTuaPemantauanGizi() {
       yDomain = [0, 100];
     }
 
-    // Adjust Y domain based on child data dengan batasan aman
     if (childPoints.length > 0) {
       const validValues = childPoints
         .map((p) => p.nilai)
@@ -783,28 +1137,23 @@ export default function OrangTuaPemantauanGizi() {
       if (validValues.length > 0) {
         const minChildValue = Math.min(...validValues);
         const maxChildValue = Math.max(...validValues);
-
         if (
           minChildValue < yDomain[0] &&
           minChildValue <
             (indicator === "berat" ? MAX_VALID_WEIGHT : MAX_VALID_HEIGHT)
-        ) {
+        )
           yDomain[0] = Math.max(0, minChildValue - 2);
-        }
         if (
           maxChildValue > yDomain[1] &&
           maxChildValue <
             (indicator === "berat" ? MAX_VALID_WEIGHT : MAX_VALID_HEIGHT)
-        ) {
+        )
           yDomain[1] = Math.min(
             indicator === "berat" ? MAX_VALID_WEIGHT : MAX_VALID_HEIGHT,
             maxChildValue + 5,
           );
-        }
       }
     }
-
-    // Pastikan Y domain tidak negatif dan tidak terlalu besar
     yDomain[0] = Math.max(0, yDomain[0]);
     yDomain[1] = Math.min(
       indicator === "berat"
@@ -814,8 +1163,6 @@ export default function OrangTuaPemantauanGizi() {
           : MAX_VALID_IMT,
       yDomain[1],
     );
-
-    // Jika Y domain masih tidak masuk akal, gunakan default yang aman
     if (
       yDomain[0] >= yDomain[1] ||
       yDomain[1] > (indicator === "berat" ? MAX_VALID_WEIGHT : MAX_VALID_HEIGHT)
@@ -828,10 +1175,10 @@ export default function OrangTuaPemantauanGizi() {
     return (
       <div>
         {/* Info Card */}
-        <div className="mb-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-5">
-          <div className="flex flex-wrap justify-between items-center gap-4">
+        <div className="mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+          <div className="flex flex-wrap justify-between items-center gap-6">
             <div>
-              <p className="text-sm text-gray-500 font-medium">
+              <p className="text-sm text-gray-500 font-bold uppercase tracking-wider">
                 {indicator === "berat"
                   ? "Berat Badan"
                   : indicator === "tinggi"
@@ -839,41 +1186,55 @@ export default function OrangTuaPemantauanGizi() {
                     : "IMT"}{" "}
                 Terakhir
               </p>
-              <p className="text-3xl font-bold text-gray-800">
+              <p className="text-4xl font-bold text-gray-800 mt-2">
                 {latestChildPoint && latestChildPoint.nilai < MAX_VALID_WEIGHT
                   ? latestChildPoint.nilai.toFixed(1)
                   : "-"}{" "}
-                <span className="text-lg font-normal text-gray-500">
+                <span className="text-xl font-normal text-gray-500">
                   {unit}
                 </span>
               </p>
               {latestChildPoint &&
                 latestChildPoint.nilai < MAX_VALID_WEIGHT && (
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-sm text-gray-400 mt-1 font-medium">
                     Usia: {Math.floor(latestChildPoint.usiaBulan / 12)} Tahun{" "}
                     {latestChildPoint.usiaBulan % 12} Bulan
                   </p>
                 )}
             </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-500 font-medium">
-                Standar Referensi
-              </p>
-              <span
-                className={`px-3 py-1 rounded-full text-sm font-semibold ${isWHO ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"}`}
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <p className="text-sm text-gray-500 font-bold uppercase tracking-wider">
+                  Standar Referensi
+                </p>
+                <span
+                  className={`inline-block mt-2 px-4 py-2 rounded-xl text-sm font-bold ${
+                    isWHO
+                      ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
+                      : "bg-blue-100 text-blue-700 border border-blue-200"
+                  }`}
+                >
+                  {isWHO ? "WHO" : "CDC"} -{" "}
+                  {indicator === "berat"
+                    ? "BB/U"
+                    : indicator === "tinggi"
+                      ? "TB/U"
+                      : "IMT/U"}
+                </span>
+              </div>
+              {/* Tombol Bantuan "?" */}
+              <button
+                onClick={() => setShowPenjelasanGrafik(true)}
+                className="bg-white border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 text-gray-500 hover:text-blue-600 w-12 h-12 rounded-xl flex items-center justify-center transition-all shadow-sm font-bold text-lg"
+                title="Klik untuk melihat penjelasan grafik"
               >
-                {isWHO ? "WHO" : "CDC"} -{" "}
-                {indicator === "berat"
-                  ? "BB/U"
-                  : indicator === "tinggi"
-                    ? "TB/U"
-                    : "IMT/U"}
-              </span>
+                ?
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Chart dengan ComposedChart */}
+        {/* Chart */}
         <div style={{ height: "520px", width: "100%" }}>
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart
@@ -885,7 +1246,6 @@ export default function OrangTuaPemantauanGizi() {
                 stroke="#e5e7eb"
                 strokeDasharray="3 3"
               />
-
               <XAxis
                 type="number"
                 dataKey="usiaBulan"
@@ -907,7 +1267,6 @@ export default function OrangTuaPemantauanGizi() {
                 axisLine={{ stroke: "#e5e7eb" }}
                 tickLine={{ stroke: "#e5e7eb" }}
               />
-
               <YAxis
                 domain={yDomain}
                 label={{
@@ -926,7 +1285,6 @@ export default function OrangTuaPemantauanGizi() {
                   return value.toFixed(1);
                 }}
               />
-
               <Tooltip
                 content={(props) => (
                   <CustomTooltip
@@ -942,7 +1300,6 @@ export default function OrangTuaPemantauanGizi() {
                   strokeDasharray: "3 3",
                 }}
               />
-
               <Legend
                 verticalAlign="top"
                 height={40}
@@ -950,17 +1307,8 @@ export default function OrangTuaPemantauanGizi() {
                 wrapperStyle={{ fontSize: "11px", paddingBottom: "10px" }}
               />
 
-              {/* =====================================================
-                  ZONA WARNA WHO: -3SD s.d -2SD (Kuning), -2SD s.d 2SD (Hijau), 2SD s.d 3SD (Kuning)
-                  Teknik: stackId dengan baseValue absolut:
-                    Layer 1 (transparan baseline): dari 0 ke sdNeg3
-                    Layer 2 (kuning bawah): dari sdNeg3 ke sdNeg2 → diff = zonaMerahBawahDiff
-                    Layer 3 (hijau): dari sdNeg2 ke sd2 → diff = zonaHijauDiff
-                    Layer 4 (kuning atas): dari sd2 ke sd3 → diff = zonaMerahAtasDiff
-                  ===================================================== */}
               {isWHO && (
                 <>
-                  {/* Layer transparan: mendorong stack ke nilai absolut sdNeg3 */}
                   <Area
                     type="monotone"
                     dataKey="sdNeg3"
@@ -972,7 +1320,6 @@ export default function OrangTuaPemantauanGizi() {
                     dot={false}
                     activeDot={false}
                   />
-                  {/* Kuning bawah: -3SD sampai -2SD */}
                   <Area
                     type="monotone"
                     dataKey="zonaMerahBawahDiff"
@@ -987,7 +1334,6 @@ export default function OrangTuaPemantauanGizi() {
                     dot={false}
                     activeDot={false}
                   />
-                  {/* Hijau: -2SD sampai +2SD */}
                   <Area
                     type="monotone"
                     dataKey="zonaHijauDiff"
@@ -1002,7 +1348,6 @@ export default function OrangTuaPemantauanGizi() {
                     dot={false}
                     activeDot={false}
                   />
-                  {/* Kuning atas: +2SD sampai +3SD */}
                   <Area
                     type="monotone"
                     dataKey="zonaMerahAtasDiff"
@@ -1020,13 +1365,8 @@ export default function OrangTuaPemantauanGizi() {
                 </>
               )}
 
-              {/* =====================================================
-                  ZONA WARNA CDC BB/U & IMT/U: p3-p5 (kuning), p5-p90/p85 (hijau), p90/p85-p95 (kuning)
-                  ZONA WARNA CDC TB/U: p3-p95 (hijau)
-                  ===================================================== */}
               {!isWHO && (
                 <>
-                  {/* Baseline transparan: mendorong ke nilai p3 */}
                   <Area
                     type="monotone"
                     dataKey="baseP3"
@@ -1039,7 +1379,6 @@ export default function OrangTuaPemantauanGizi() {
                     activeDot={false}
                   />
                   {indicator !== "tinggi" && (
-                    /* Kuning bawah: p3 sampai p5 */
                     <Area
                       type="monotone"
                       dataKey="zonaKuningBawahDiff"
@@ -1048,14 +1387,13 @@ export default function OrangTuaPemantauanGizi() {
                       strokeWidth={1}
                       fill="#fef3c7"
                       fillOpacity={0.85}
-                      name={`Zona Perhatian (p3–p5)`}
+                      name="Zona Perhatian (p3–p5)"
                       legendType="square"
                       isAnimationActive={false}
                       dot={false}
                       activeDot={false}
                     />
                   )}
-                  {/* Hijau: p5-p90 (berat), p5-p85 (imt), p3-p95 (tinggi) */}
                   <Area
                     type="monotone"
                     dataKey="zonaHijauDiff"
@@ -1077,7 +1415,6 @@ export default function OrangTuaPemantauanGizi() {
                     activeDot={false}
                   />
                   {indicator !== "tinggi" && (
-                    /* Kuning atas: p90-p95 (berat) atau p85-p95 (imt) */
                     <Area
                       type="monotone"
                       dataKey="zonaKuningAtasDiff"
@@ -1100,7 +1437,6 @@ export default function OrangTuaPemantauanGizi() {
                 </>
               )}
 
-              {/* Garis batas zona WHO — tipis, putus-putus */}
               {isWHO && (
                 <>
                   <Line
@@ -1154,7 +1490,6 @@ export default function OrangTuaPemantauanGizi() {
                 </>
               )}
 
-              {/* Garis batas zona CDC — tipis, putus-putus */}
               {!isWHO && (
                 <>
                   <Line
@@ -1226,7 +1561,6 @@ export default function OrangTuaPemantauanGizi() {
                 </>
               )}
 
-              {/* Garis Median */}
               <Line
                 type="natural"
                 dataKey={isWHO ? "sd0" : "baseP50"}
@@ -1240,7 +1574,6 @@ export default function OrangTuaPemantauanGizi() {
                 isAnimationActive={false}
               />
 
-              {/* Garis data anak */}
               <Line
                 type="monotone"
                 dataKey="nilai"
@@ -1277,13 +1610,13 @@ export default function OrangTuaPemantauanGizi() {
         </div>
 
         {/* Keterangan zona warna */}
-        <div className="flex flex-wrap justify-center gap-4 mt-4 text-xs">
-          <div className="flex items-center gap-1.5">
+        <div className="flex flex-wrap justify-center gap-6 mt-6 pt-6 border-t border-gray-100">
+          <div className="flex items-center gap-2">
             <div
-              className="w-4 h-4 rounded border border-green-400"
+              className="w-5 h-5 rounded-md border border-emerald-400"
               style={{ backgroundColor: "#bbf7d0" }}
             ></div>
-            <span className="text-gray-600 font-medium">
+            <span className="text-xs text-gray-600 font-bold">
               {isWHO
                 ? "Normal (-2SD s.d +2SD)"
                 : indicator === "tinggi"
@@ -1294,12 +1627,12 @@ export default function OrangTuaPemantauanGizi() {
             </span>
           </div>
           {(isWHO || indicator !== "tinggi") && (
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
               <div
-                className="w-4 h-4 rounded border border-yellow-400"
+                className="w-5 h-5 rounded-md border border-amber-400"
                 style={{ backgroundColor: "#fef3c7" }}
               ></div>
-              <span className="text-gray-600 font-medium">
+              <span className="text-xs text-gray-600 font-bold">
                 {isWHO
                   ? "Perhatian (-3SD s.d -2SD / +2SD s.d +3SD)"
                   : indicator === "berat"
@@ -1308,31 +1641,31 @@ export default function OrangTuaPemantauanGizi() {
               </span>
             </div>
           )}
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <div
-              className="w-6 h-0.5 rounded"
+              className="w-8 h-0.5 rounded"
               style={{
                 backgroundColor: isWHO ? "#15803d" : "#2563eb",
                 borderTop: isWHO ? "none" : "2px dashed",
               }}
             ></div>
-            <span className="text-gray-600 font-medium">
+            <span className="text-xs text-gray-600 font-bold">
               {isWHO ? "Median (0 SD)" : "Median (P50)"}
             </span>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <div
-              className="w-6 h-0.5"
+              className="w-8 h-0.5"
               style={{ borderTop: "2px dashed #f59e0b" }}
             ></div>
-            <span className="text-gray-600 font-medium">Batas Zona</span>
+            <span className="text-xs text-gray-600 font-bold">Batas Zona</span>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <div
-              className="w-4 h-4 rounded-full border-2 border-white shadow"
+              className="w-5 h-5 rounded-full border-2 border-white shadow-md"
               style={{ backgroundColor: "#1d4ed8" }}
             ></div>
-            <span className="text-gray-600 font-medium">
+            <span className="text-xs text-gray-600 font-bold">
               Pertumbuhan Si Kecil
             </span>
           </div>
@@ -1349,7 +1682,7 @@ export default function OrangTuaPemantauanGizi() {
   const renderTBUChart = () =>
     renderGrowthChart("tinggi", "Tinggi Badan (cm)", "cm");
 
-  // Helper: interpolasi nilai WHO WFH berdasarkan tinggi (cm)
+  // Helper: interpolasi nilai WHO WFH
   const getWFHReferenceValue = (heightCm, jenisKelamin, key) => {
     const genderData =
       jenisKelamin === "L" ? whoWFHData.laki : whoWFHData.perempuan;
@@ -1367,27 +1700,29 @@ export default function OrangTuaPemantauanGizi() {
     return v1 + ((v2 - v1) * (heightCm - lower)) / (upper - lower);
   };
 
-  // Render BB/TB chart dengan zona warna WHO WFH
+  // Render BB/TB chart
   const renderBBTBChart = () => {
     const displayGrowthData =
       userRole === "orang_tua" ? growthData : superAdminGrowthData;
     const anak =
       userRole === "orang_tua" ? selectedAnakData : superAdminSelectedAnak;
-
     if (!anak) {
       return (
-        <div className="text-center py-12 text-gray-500">
-          <FontAwesomeIcon
-            icon={fas.faChartLine}
-            className="text-4xl mb-3 opacity-30"
-          />
-          <p>Pilih anak terlebih dahulu</p>
+        <div className="text-center py-16">
+          <div className="bg-gray-100 p-6 rounded-full inline-flex mb-4">
+            <FontAwesomeIcon
+              icon={fas.faChartLine}
+              className="text-5xl text-gray-400"
+            />
+          </div>
+          <p className="text-gray-500 font-medium">
+            Pilih anak terlebih dahulu
+          </p>
         </div>
       );
     }
 
     const jenisKelamin = anak.jenis_kelamin;
-
     const childPoints = displayGrowthData
       .filter(
         (p) =>
@@ -1402,10 +1737,7 @@ export default function OrangTuaPemantauanGizi() {
         tanggal: p.tanggal,
         usiaBulan: p.usiaBulan,
       }));
-
     const latestData = childPoints[childPoints.length - 1];
-
-    // Tentukan rentang tinggi untuk reference data
     const allHeights = childPoints.map((p) => p.tinggi);
     const minHeight =
       allHeights.length > 0
@@ -1415,8 +1747,6 @@ export default function OrangTuaPemantauanGizi() {
       allHeights.length > 0
         ? Math.min(120, Math.ceil(Math.max(...allHeights)) + 2)
         : 120;
-
-    // Generate reference data per 1 cm
     const refHeights = [];
     for (let h = minHeight; h <= maxHeight; h++) refHeights.push(h);
 
@@ -1426,24 +1756,17 @@ export default function OrangTuaPemantauanGizi() {
       const sd0 = getWFHReferenceValue(h, jenisKelamin, "0sd");
       const sd2 = getWFHReferenceValue(h, jenisKelamin, "2sd");
       const sd3 = getWFHReferenceValue(h, jenisKelamin, "3sd");
-
       const dp = { tinggi: h, sdNeg3, sdNeg2, sd0, sd2, sd3 };
-
-      // Zone diffs untuk stack area
       if (sdNeg3 != null && sdNeg2 != null)
         dp.zonaKuningBawahDiff = sdNeg2 - sdNeg3;
       if (sdNeg2 != null && sd2 != null) dp.zonaHijauDiff = sd2 - sdNeg2;
       if (sd2 != null && sd3 != null) dp.zonaKuningAtasDiff = sd3 - sd2;
-
-      // Merge child data point jika ada pengukuran di tinggi ini (±0.5 cm)
       const match = childPoints.find((cp) => Math.abs(cp.tinggi - h) < 0.5);
       dp.berat = match ? match.berat : null;
       dp.tanggal = match ? match.tanggal : null;
-
       return dp;
     });
 
-    // Tambahkan child points yang tidak ter-merge (tinggi presisi)
     const mergedData = [...referenceData];
     childPoints.forEach((cp) => {
       const alreadyIn = mergedData.some((d) => d.tinggi === cp.tinggi);
@@ -1472,7 +1795,6 @@ export default function OrangTuaPemantauanGizi() {
     });
     mergedData.sort((a, b) => a.tinggi - b.tinggi);
 
-    // Y domain dari WHO reference
     const allSd3 = mergedData.map((d) => d.sd3).filter(Boolean);
     const allSdNeg3 = mergedData.map((d) => d.sdNeg3).filter(Boolean);
     const allBerats = childPoints.map((p) => p.berat);
@@ -1482,54 +1804,49 @@ export default function OrangTuaPemantauanGizi() {
     );
     const yMax = Math.ceil(Math.max(...allSd3, ...allBerats)) + 2;
 
-    // Tooltip BB/TB
     const BBTBTooltip = ({ active, payload, label }) => {
       if (!active || !payload || !payload.length) return null;
       const childEntry = payload.find(
         (p) => p.dataKey === "berat" && p.value != null,
       );
       const sd0Entry = payload.find((p) => p.dataKey === "sd0");
-      const sdNeg2Entry = payload.find((p) => p.dataKey === "sdNeg2");
-      const sd2Entry = payload.find((p) => p.dataKey === "sd2");
-
       let status = null;
-      let statusColor = "text-green-600";
+      let statusColor = "text-emerald-600";
       if (childEntry?.value) {
         const berat = childEntry.value;
         const sdNeg3 = payload.find((p) => p.dataKey === "sdNeg3")?.value;
-        const sdNeg2 = sdNeg2Entry?.value;
-        const sd2v = sd2Entry?.value;
+        const sdNeg2 = payload.find((p) => p.dataKey === "sdNeg2")?.value;
+        const sd2v = payload.find((p) => p.dataKey === "sd2")?.value;
         const sd3 = payload.find((p) => p.dataKey === "sd3")?.value;
         if (sdNeg3 != null && berat < sdNeg3) {
           status = "Sangat Kurus (< -3SD)";
           statusColor = "text-red-600";
         } else if (sdNeg2 != null && berat < sdNeg2) {
           status = "Kurus (-3SD s.d -2SD)";
-          statusColor = "text-yellow-600";
+          statusColor = "text-amber-600";
         } else if (sd2v != null && berat <= sd2v) {
           status = "Normal (-2SD s.d +2SD)";
-          statusColor = "text-green-600";
+          statusColor = "text-emerald-600";
         } else if (sd3 != null && berat <= sd3) {
           status = "Gemuk (+2SD s.d +3SD)";
-          statusColor = "text-yellow-600";
+          statusColor = "text-amber-600";
         } else {
           status = "Obesitas (> +3SD)";
           statusColor = "text-red-600";
         }
       }
-
       return (
-        <div className="bg-white rounded-xl shadow-lg p-4 border border-gray-100 min-w-[200px]">
-          <p className="text-sm font-semibold text-gray-700 mb-2">
+        <div className="bg-white rounded-2xl shadow-xl p-5 border border-gray-100 min-w-[220px]">
+          <p className="text-sm font-bold text-gray-500 mb-2">
             Tinggi: {label} cm
           </p>
           {childEntry?.value && (
             <>
-              <p className="text-lg font-bold text-gray-800">
+              <p className="text-2xl font-bold text-gray-800">
                 {childEntry.value.toFixed(1)} kg
               </p>
               {status && (
-                <p className={`text-sm font-medium ${statusColor} mt-1`}>
+                <p className={`text-sm font-bold ${statusColor} mt-2`}>
                   {status}
                 </p>
               )}
@@ -1546,43 +1863,52 @@ export default function OrangTuaPemantauanGizi() {
 
     return (
       <div>
-        {/* Info Card */}
-        <div className="mb-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-5">
-          <div className="flex flex-wrap justify-between items-center gap-4">
+        <div className="mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+          <div className="flex flex-wrap justify-between items-center gap-6">
             <div>
-              <p className="text-sm text-gray-500 font-medium">Data Terbaru</p>
-              <p className="text-2xl font-bold text-gray-800">
+              <p className="text-sm text-gray-500 font-bold uppercase tracking-wider">
+                Data Terbaru
+              </p>
+              <p className="text-3xl font-bold text-gray-800 mt-2">
                 {latestData?.tinggi?.toFixed(1) || "-"} cm /{" "}
                 {latestData?.berat?.toFixed(1) || "-"} kg
               </p>
               {latestData && (
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-sm text-gray-400 mt-1 font-medium">
                   Usia: {Math.floor(latestData.usiaBulan / 12)} Tahun{" "}
                   {latestData.usiaBulan % 12} Bulan
                 </p>
               )}
             </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-500 font-medium">
-                Standar Referensi
-              </p>
-              <span className="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-700">
-                WHO - BB/TB
-              </span>
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <p className="text-sm text-gray-500 font-bold uppercase tracking-wider">
+                  Standar Referensi
+                </p>
+                <span className="inline-block mt-2 px-4 py-2 rounded-xl text-sm font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
+                  WHO - BB/TB
+                </span>
+              </div>
+              <button
+                onClick={() => setShowPenjelasanGrafik(true)}
+                className="bg-white border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 text-gray-500 hover:text-blue-600 w-12 h-12 rounded-xl flex items-center justify-center transition-all shadow-sm font-bold text-lg"
+                title="Klik untuk melihat penjelasan grafik"
+              >
+                ?
+              </button>
             </div>
           </div>
         </div>
 
-        <div className="mb-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-500">
+        <div className="mb-5 p-4 bg-blue-50 rounded-2xl text-sm text-gray-600 flex items-center gap-3 border border-blue-100">
           <FontAwesomeIcon
             icon={fas.faInfoCircle}
-            className="mr-2 text-blue-400"
+            className="text-blue-500 text-lg"
           />
           Grafik Berat Badan vs Tinggi Badan - Membandingkan berat dengan tinggi
           aktual anak
         </div>
 
-        {/* Chart */}
         <div style={{ height: "520px", width: "100%" }}>
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart
@@ -1639,8 +1965,6 @@ export default function OrangTuaPemantauanGizi() {
                 wrapperStyle={{ fontSize: "11px", paddingBottom: "10px" }}
               />
 
-              {/* === ZONA WARNA WHO WFH (stacked area) === */}
-              {/* Layer transparan: baseline ke sdNeg3 */}
               <Area
                 type="monotone"
                 dataKey="sdNeg3"
@@ -1652,7 +1976,6 @@ export default function OrangTuaPemantauanGizi() {
                 dot={false}
                 activeDot={false}
               />
-              {/* Kuning bawah: -3SD → -2SD */}
               <Area
                 type="monotone"
                 dataKey="zonaKuningBawahDiff"
@@ -1667,7 +1990,6 @@ export default function OrangTuaPemantauanGizi() {
                 dot={false}
                 activeDot={false}
               />
-              {/* Hijau: -2SD → +2SD */}
               <Area
                 type="monotone"
                 dataKey="zonaHijauDiff"
@@ -1682,7 +2004,6 @@ export default function OrangTuaPemantauanGizi() {
                 dot={false}
                 activeDot={false}
               />
-              {/* Kuning atas: +2SD → +3SD */}
               <Area
                 type="monotone"
                 dataKey="zonaKuningAtasDiff"
@@ -1698,7 +2019,6 @@ export default function OrangTuaPemantauanGizi() {
                 activeDot={false}
               />
 
-              {/* Garis batas zona */}
               <Line
                 type="monotone"
                 dataKey="sdNeg3"
@@ -1748,7 +2068,6 @@ export default function OrangTuaPemantauanGizi() {
                 isAnimationActive={false}
               />
 
-              {/* Garis Median */}
               <Line
                 type="natural"
                 dataKey="sd0"
@@ -1760,8 +2079,6 @@ export default function OrangTuaPemantauanGizi() {
                 legendType="line"
                 isAnimationActive={false}
               />
-
-              {/* Garis data anak */}
               <Line
                 type="monotone"
                 dataKey="berat"
@@ -1797,67 +2114,71 @@ export default function OrangTuaPemantauanGizi() {
           </ResponsiveContainer>
         </div>
 
-        {/* Keterangan zona */}
-        <div className="flex flex-wrap justify-center gap-4 mt-4 text-xs">
-          <div className="flex items-center gap-1.5">
+        <div className="flex flex-wrap justify-center gap-6 mt-6 pt-6 border-t border-gray-100">
+          <div className="flex items-center gap-2">
             <div
-              className="w-4 h-4 rounded border border-green-400"
+              className="w-5 h-5 rounded-md border border-emerald-400"
               style={{ backgroundColor: "#bbf7d0" }}
             ></div>
-            <span className="text-gray-600 font-medium">
+            <span className="text-xs text-gray-600 font-bold">
               Normal (-2SD s.d +2SD)
             </span>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <div
-              className="w-4 h-4 rounded border border-yellow-400"
+              className="w-5 h-5 rounded-md border border-amber-400"
               style={{ backgroundColor: "#fef3c7" }}
             ></div>
-            <span className="text-gray-600 font-medium">
+            <span className="text-xs text-gray-600 font-bold">
               Perhatian (-3SD s.d -2SD / +2SD s.d +3SD)
             </span>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <div
-              className="w-6 h-0.5 rounded"
+              className="w-8 h-0.5 rounded"
               style={{ backgroundColor: "#15803d" }}
             ></div>
-            <span className="text-gray-600 font-medium">Median (0 SD)</span>
+            <span className="text-xs text-gray-600 font-bold">
+              Median (0 SD)
+            </span>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <div
-              className="w-6 h-0.5"
+              className="w-8 h-0.5"
               style={{ borderTop: "2px dashed #f59e0b" }}
             ></div>
-            <span className="text-gray-600 font-medium">Batas Zona</span>
+            <span className="text-xs text-gray-600 font-bold">Batas Zona</span>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <div
-              className="w-4 h-4 rounded-full border-2 border-white shadow"
+              className="w-5 h-5 rounded-full border-2 border-white shadow-md"
               style={{ backgroundColor: "#1d4ed8" }}
             ></div>
-            <span className="text-gray-600 font-medium">Data Anak</span>
+            <span className="text-xs text-gray-600 font-bold">Data Anak</span>
           </div>
         </div>
       </div>
     );
   };
 
-  // Render LK/U chart with safety checks
+  // Render LK/U chart
   const renderLKUChart = () => {
     const displayGrowthData =
       userRole === "orang_tua" ? growthData : superAdminGrowthData;
     const anak =
       userRole === "orang_tua" ? selectedAnakData : superAdminSelectedAnak;
-
     if (!anak) {
       return (
-        <div className="text-center py-12 text-gray-500">
-          <FontAwesomeIcon
-            icon={fas.faChartLine}
-            className="text-4xl mb-3 opacity-30"
-          />
-          <p>Pilih anak terlebih dahulu</p>
+        <div className="text-center py-16">
+          <div className="bg-gray-100 p-6 rounded-full inline-flex mb-4">
+            <FontAwesomeIcon
+              icon={fas.faChartLine}
+              className="text-5xl text-gray-400"
+            />
+          </div>
+          <p className="text-gray-500 font-medium">
+            Pilih anak terlebih dahulu
+          </p>
         </div>
       );
     }
@@ -1865,25 +2186,25 @@ export default function OrangTuaPemantauanGizi() {
     const config = lkAgeRangeConfig[ageRange];
     if (!config) {
       return (
-        <div className="text-center py-12 text-yellow-500">
-          <FontAwesomeIcon
-            icon={fas.faExclamationTriangle}
-            className="text-4xl mb-3 opacity-50"
-          />
-          <p>Memuat ulang grafik...</p>
+        <div className="text-center py-16">
+          <div className="bg-amber-100 p-6 rounded-full inline-flex mb-4">
+            <FontAwesomeIcon
+              icon={fas.faExclamationTriangle}
+              className="text-5xl text-amber-400"
+            />
+          </div>
+          <p className="text-amber-600 font-medium">Memuat ulang grafik...</p>
         </div>
       );
     }
 
     const jenisKelamin = anak.jenis_kelamin;
-
     const referenceAges = [];
     for (let age = config.min; age <= config.max + 0.01; age += config.step) {
       referenceAges.push(Math.round(age * 10) / 10);
     }
-    if (referenceAges[referenceAges.length - 1] !== config.max) {
+    if (referenceAges[referenceAges.length - 1] !== config.max)
       referenceAges.push(config.max);
-    }
 
     const referenceData = [];
     for (const usia of referenceAges) {
@@ -1893,14 +2214,11 @@ export default function OrangTuaPemantauanGizi() {
       const sd0 = getReferenceValue(usia, jenisKelamin, "lk_u", "0sd");
       const sd2 = getReferenceValue(usia, jenisKelamin, "lk_u", "2sd");
       const sd3 = getReferenceValue(usia, jenisKelamin, "lk_u", "3sd");
-
       if (sdNeg3 != null) dataPoint.sdNeg3 = sdNeg3;
       if (sdNeg2 != null) dataPoint.sdNeg2 = sdNeg2;
       if (sd0 != null) dataPoint.sd0 = sd0;
       if (sd2 != null) dataPoint.sd2 = sd2;
       if (sd3 != null) dataPoint.sd3 = sd3;
-
-      // Simpan nilai absolut batas zona — sama seperti WHO pada grafik utama
       if (sdNeg3 != null && sdNeg2 != null) {
         dataPoint.zonaKuningBawahMin = sdNeg3;
         dataPoint.zonaKuningBawahDiff = sdNeg2 - sdNeg3;
@@ -1933,14 +2251,12 @@ export default function OrangTuaPemantauanGizi() {
       const exactMatch = childPoints.find(
         (cp) => cp.usiaBulan === refPoint.usiaBulan,
       );
-      if (exactMatch) {
-        return { ...refPoint, nilai: exactMatch.nilai };
-      }
-      return { ...refPoint, nilai: null };
+      return exactMatch
+        ? { ...refPoint, nilai: exactMatch.nilai }
+        : { ...refPoint, nilai: null };
     });
 
     const latestChildPoint = childPoints.slice(-1)[0];
-
     let yDomain = [...config.yDomain];
     if (childPoints.length > 0) {
       const minValue = Math.min(...childPoints.map((p) => p.nilai));
@@ -1948,28 +2264,34 @@ export default function OrangTuaPemantauanGizi() {
       if (minValue < yDomain[0]) yDomain[0] = Math.max(0, minValue - 2);
       if (maxValue > yDomain[1]) yDomain[1] = maxValue + 2;
     }
-
     yDomain[1] = Math.min(yDomain[1], MAX_VALID_LK);
 
     return (
       <div>
-        <div className="mb-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-5">
-          <div className="flex flex-wrap justify-between items-center gap-4">
+        <div className="mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+          <div className="flex flex-wrap justify-between items-center gap-6">
             <div>
-              <p className="text-sm text-gray-500 font-medium">
+              <p className="text-sm text-gray-500 font-bold uppercase tracking-wider">
                 Lingkar Kepala Terakhir
               </p>
-              <p className="text-3xl font-bold text-gray-800">
+              <p className="text-4xl font-bold text-gray-800 mt-2">
                 {latestChildPoint?.nilai?.toFixed(1) || "-"}{" "}
-                <span className="text-lg font-normal text-gray-500">cm</span>
+                <span className="text-xl font-normal text-gray-500">cm</span>
               </p>
               {latestChildPoint && (
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-sm text-gray-400 mt-1 font-medium">
                   Usia: {Math.floor(latestChildPoint.usiaBulan / 12)} Tahun{" "}
                   {latestChildPoint.usiaBulan % 12} Bulan
                 </p>
               )}
             </div>
+            <button
+              onClick={() => setShowPenjelasanGrafik(true)}
+              className="bg-white border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 text-gray-500 hover:text-blue-600 w-12 h-12 rounded-xl flex items-center justify-center transition-all shadow-sm font-bold text-lg"
+              title="Klik untuk melihat penjelasan grafik"
+            >
+              ?
+            </button>
           </div>
         </div>
 
@@ -2011,22 +2333,21 @@ export default function OrangTuaPemantauanGizi() {
               <Tooltip
                 contentStyle={{
                   backgroundColor: "white",
-                  borderRadius: "12px",
+                  borderRadius: "16px",
                   border: "1px solid #e5e7eb",
+                  boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
                 }}
                 formatter={(value, name, props) => {
-                  if (name === "Data Anak") {
+                  if (name === "Data Anak")
                     return [
                       `${value?.toFixed(1)} cm`,
                       props.payload?.tanggal || "Data Anak",
                     ];
-                  }
                   return [`${value?.toFixed(1)} cm`, name];
                 }}
               />
               <Legend verticalAlign="top" height={36} />
 
-              {/* Baseline transparan ke sdNeg3 */}
               <Area
                 type="monotone"
                 dataKey="sdNeg3"
@@ -2038,7 +2359,6 @@ export default function OrangTuaPemantauanGizi() {
                 dot={false}
                 activeDot={false}
               />
-              {/* Kuning bawah: -3SD sampai -2SD */}
               <Area
                 type="monotone"
                 dataKey="zonaKuningBawahDiff"
@@ -2053,7 +2373,6 @@ export default function OrangTuaPemantauanGizi() {
                 dot={false}
                 activeDot={false}
               />
-              {/* Hijau: -2SD sampai +2SD */}
               <Area
                 type="monotone"
                 dataKey="zonaHijauDiff"
@@ -2068,7 +2387,6 @@ export default function OrangTuaPemantauanGizi() {
                 dot={false}
                 activeDot={false}
               />
-              {/* Kuning atas: +2SD sampai +3SD */}
               <Area
                 type="monotone"
                 dataKey="zonaKuningAtasDiff"
@@ -2084,7 +2402,6 @@ export default function OrangTuaPemantauanGizi() {
                 activeDot={false}
               />
 
-              {/* Garis batas zona — tipis putus-putus */}
               <Line
                 type="monotone"
                 dataKey="sdNeg3"
@@ -2145,7 +2462,6 @@ export default function OrangTuaPemantauanGizi() {
                 legendType="line"
                 isAnimationActive={false}
               />
-
               <Line
                 type="monotone"
                 dataKey="nilai"
@@ -2210,7 +2526,6 @@ export default function OrangTuaPemantauanGizi() {
     let years = today.getFullYear() - birth.getFullYear();
     let months = today.getMonth() - birth.getMonth();
     let days = today.getDate() - birth.getDate();
-
     if (days < 0) {
       months--;
       const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
@@ -2226,35 +2541,38 @@ export default function OrangTuaPemantauanGizi() {
   const formatAge = (age) => {
     if (!age) return "-";
     const parts = [];
-    if (age.years > 0) parts.push(`${age.years} Tahun`);
-    if (age.months > 0) parts.push(`${age.months} Bulan`);
-    if (age.days > 0) parts.push(`${age.days} Hari`);
+    if (age.years > 0) parts.push(`${age.years} Thn`);
+    if (age.months > 0) parts.push(`${age.months} Bln`);
+    if (age.days > 0) parts.push(`${age.days} Hr`);
     return parts.length === 0 ? "< 1 Hari" : parts.join(" ");
   };
 
   const getAvailableAgeRanges = () => {
-    if (activeMainMenu === "lingkar_kepala") {
-      return ["0-2", "0-12", "0-60"];
-    } else if (activeSubMenu === "bb_tb") {
-      return [];
-    } else {
-      return ["0-2", "0-12", "0-60", "60-216"];
-    }
+    if (activeMainMenu === "lingkar_kepala") return ["0-2", "0-12", "0-60"];
+    else if (activeSubMenu === "bb_tb") return [];
+    else return ["0-2", "0-12", "0-60", "60-216"];
   };
 
   const getCurrentConfig = () => {
-    if (activeMainMenu === "lingkar_kepala") {
-      return lkAgeRangeConfig[ageRange];
-    }
+    if (activeMainMenu === "lingkar_kepala") return lkAgeRangeConfig[ageRange];
     return ageRangeConfig[ageRange];
   };
 
   if (loading) {
     return (
-      <div className="flex min-h-screen bg-gray-50">
+      <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-emerald-50">
         <Sidebar handleLogout={handleLogout} />
         <div className="flex-1 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sigizi-green mx-auto"></div>
+          <div className="text-center">
+            <div className="relative">
+              <div className="animate-spin rounded-full h-16 w-16 border-4 border-emerald-200 border-t-emerald-600 mx-auto"></div>
+              <FontAwesomeIcon
+                icon={fas.faChartLine}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-emerald-600 text-xl"
+              />
+            </div>
+            <p className="mt-6 text-gray-600 font-medium">Memuat data...</p>
+          </div>
         </div>
       </div>
     );
@@ -2275,36 +2593,42 @@ export default function OrangTuaPemantauanGizi() {
     availableRanges.length > 0 && activeSubMenu !== "bb_tb";
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-emerald-50">
       <Sidebar handleLogout={handleLogout} />
 
       <div className="flex-1 flex flex-col">
-        <header className="bg-white shadow px-6 py-4 sticky top-0 z-10">
-          <div className="flex items-center gap-3">
-            <FontAwesomeIcon
-              icon={fas.faChartLine}
-              className="text-2xl text-sigizi-green"
-            />
-            <h1 className="text-xl font-bold text-gray-800">
-              Pemantauan Tumbuh Kembang
-            </h1>
+        <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-emerald-100 px-8 py-6 sticky top-0 z-20">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">
+                Pemantauan Tumbuh Kembang
+              </h1>
+              <p className="text-gray-500 text-sm mt-0.5">
+                Pantau pertumbuhan anak berdasarkan standar WHO & CDC
+              </p>
+            </div>
           </div>
         </header>
 
-        <main className="p-6 overflow-y-auto">
+        <main className="p-8 overflow-y-auto">
           {/* Super Admin Mode */}
           {userRole === "super_admin" && orangTuaList.length > 0 && (
-            <div className="mb-6 bg-blue-50 rounded-xl p-4 border border-blue-200">
-              <div className="flex items-center gap-3 mb-3">
-                <FontAwesomeIcon icon={fas.faUsers} className="text-blue-600" />
-                <h3 className="font-semibold text-blue-800">
+            <div className="mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="bg-blue-100 p-2 rounded-xl">
+                  <FontAwesomeIcon
+                    icon={fas.faUsers}
+                    className="text-blue-600 text-lg"
+                  />
+                </div>
+                <h3 className="font-bold text-blue-800 text-lg">
                   Mode Super Admin
                 </h3>
               </div>
               <select
                 value={selectedOrangTuaId || ""}
                 onChange={(e) => handleOrangTuaChange(parseInt(e.target.value))}
-                className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                className="w-full px-5 py-3 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm font-medium"
               >
                 {orangTuaList.map((ot) => (
                   <option key={ot.id} value={ot.id}>
@@ -2317,29 +2641,31 @@ export default function OrangTuaPemantauanGizi() {
 
           {/* Child Selection */}
           {displayAnakList.length > 0 ? (
-            <div className="mb-6">
-              <div className="relative w-full md:w-80">
+            <div className="mb-8">
+              <label className="block text-sm font-bold text-gray-700 mb-2">
+                Pilih Anak
+              </label>
+              <div className="relative w-full md:w-96">
                 <button
                   onClick={() => {
-                    if (userRole === "orang_tua") {
+                    if (userRole === "orang_tua")
                       setShowAnakDropdown(!showAnakDropdown);
-                    } else {
+                    else
                       setSuperAdminShowAnakDropdown(
                         !superAdminShowAnakDropdown,
                       );
-                    }
                   }}
-                  className="w-full flex items-center justify-between px-4 py-3 bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-gray-50 transition"
+                  className="w-full flex items-center justify-between px-5 py-3.5 bg-white border border-gray-200 rounded-2xl shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sigizi-green to-sigizi-light-green flex items-center justify-center text-white font-bold">
+                  <div className="flex items-center gap-4">
+                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white font-bold text-lg">
                       {displayAnakData?.nama_anak?.charAt(0).toUpperCase()}
                     </div>
                     <div className="text-left">
-                      <p className="font-semibold text-gray-800">
+                      <p className="font-bold text-gray-800">
                         {displayAnakData?.nama_anak || "Pilih Anak"}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm text-gray-500">
                         {formattedAge} •{" "}
                         {displayAnakData?.jenis_kelamin === "L"
                           ? "Laki-laki"
@@ -2353,82 +2679,62 @@ export default function OrangTuaPemantauanGizi() {
                   />
                 </button>
 
-                {userRole === "orang_tua" && showAnakDropdown && (
+                {(userRole === "orang_tua" && showAnakDropdown) ||
+                (userRole === "super_admin" && superAdminShowAnakDropdown) ? (
                   <>
                     <div
                       className="fixed inset-0 z-10"
-                      onClick={() => setShowAnakDropdown(false)}
+                      onClick={() => {
+                        if (userRole === "orang_tua")
+                          setShowAnakDropdown(false);
+                        else setSuperAdminShowAnakDropdown(false);
+                      }}
                     ></div>
-                    <div className="absolute left-0 mt-2 w-full bg-white rounded-xl shadow-lg border border-gray-100 z-20 overflow-hidden">
-                      {displayAnakList.map((anak) => (
-                        <button
-                          key={anak.id}
-                          onClick={() => handleAnakChange(anak.id)}
-                          className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition border-b border-gray-100 last:border-0"
-                        >
-                          <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold">
-                            {anak.nama_anak?.charAt(0).toUpperCase()}
-                          </div>
-                          <div className="flex-1 text-left">
-                            <p className="font-medium text-gray-800">
-                              {anak.nama_anak}
-                            </p>
-                            <p className="text-xs text-gray-400">
-                              Lahir: {anak.tanggal_lahir}
-                            </p>
-                          </div>
-                          {displaySelectedAnakId === anak.id && (
-                            <FontAwesomeIcon
-                              icon={fas.faCheckCircle}
-                              className="text-sigizi-green"
-                            />
-                          )}
-                        </button>
-                      ))}
+                    <div className="absolute left-0 mt-2 w-full bg-white rounded-2xl shadow-xl border border-gray-200 z-20 overflow-hidden">
+                      <div className="p-2 max-h-96 overflow-y-auto">
+                        {displayAnakList.map((anak) => {
+                          const isSelected = displaySelectedAnakId === anak.id;
+                          return (
+                            <button
+                              key={anak.id}
+                              onClick={() => {
+                                if (userRole === "orang_tua")
+                                  handleAnakChange(anak.id);
+                                else handleSuperAdminAnakChange(anak);
+                              }}
+                              className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all mb-1 ${isSelected ? "bg-emerald-50 border border-emerald-200" : "hover:bg-gray-50"}`}
+                            >
+                              <div
+                                className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold ${isSelected ? "bg-gradient-to-br from-emerald-500 to-emerald-600" : "bg-gray-400"}`}
+                              >
+                                {anak.nama_anak?.charAt(0).toUpperCase()}
+                              </div>
+                              <div className="flex-1 text-left">
+                                <p className="font-bold text-gray-800">
+                                  {anak.nama_anak}
+                                </p>
+                                <p className="text-xs text-gray-400">
+                                  Lahir: {anak.tanggal_lahir}
+                                </p>
+                              </div>
+                              {isSelected && (
+                                <FontAwesomeIcon
+                                  icon={fas.faCheckCircle}
+                                  className="text-emerald-600"
+                                />
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
                   </>
-                )}
-
-                {userRole === "super_admin" && superAdminShowAnakDropdown && (
-                  <>
-                    <div
-                      className="fixed inset-0 z-10"
-                      onClick={() => setSuperAdminShowAnakDropdown(false)}
-                    ></div>
-                    <div className="absolute left-0 mt-2 w-full bg-white rounded-xl shadow-lg border border-gray-100 z-20 overflow-hidden">
-                      {displayAnakList.map((anak) => (
-                        <button
-                          key={anak.id}
-                          onClick={() => handleSuperAdminAnakChange(anak)}
-                          className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition border-b border-gray-100 last:border-0"
-                        >
-                          <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold">
-                            {anak.nama_anak?.charAt(0).toUpperCase()}
-                          </div>
-                          <div className="flex-1 text-left">
-                            <p className="font-medium text-gray-800">
-                              {anak.nama_anak}
-                            </p>
-                            <p className="text-xs text-gray-400">
-                              Lahir: {anak.tanggal_lahir}
-                            </p>
-                          </div>
-                          {displaySelectedAnakId === anak.id && (
-                            <FontAwesomeIcon
-                              icon={fas.faCheckCircle}
-                              className="text-sigizi-green"
-                            />
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
+                ) : null}
               </div>
             </div>
           ) : (
-            <div className="mb-6 bg-yellow-50 rounded-xl p-4 text-center">
-              <p className="text-gray-600">
+            <div className="mb-8 bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl p-8 text-center border border-amber-200">
+              <p className="text-gray-600 font-medium">
                 Belum ada data anak. Silakan tambahkan data anak terlebih
                 dahulu.
               </p>
@@ -2437,43 +2743,28 @@ export default function OrangTuaPemantauanGizi() {
 
           {/* Main Navigation Tabs */}
           {displayAnakData && (
-            <div className="mb-6">
-              <div className="flex gap-2 p-1 bg-gray-100 rounded-xl">
+            <div className="mb-8">
+              <div className="flex gap-2 p-1.5 bg-gray-100 rounded-2xl">
                 <button
                   onClick={() => {
                     setActiveMainMenu("berat");
                     setActiveSubMenu("bb_u");
                   }}
-                  className={`flex-1 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
-                    activeMainMenu === "berat"
-                      ? "bg-white text-sigizi-green shadow-sm"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
+                  className={`flex-1 py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${activeMainMenu === "berat" ? "bg-white text-emerald-600 shadow-md" : "text-gray-500 hover:text-gray-700"}`}
                 >
-                  <FontAwesomeIcon icon={fas.faWeightScale} />
-                  Berat
+                  <FontAwesomeIcon icon={fas.faWeightScale} /> Berat
                 </button>
                 <button
                   onClick={() => setActiveMainMenu("tinggi")}
-                  className={`flex-1 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
-                    activeMainMenu === "tinggi"
-                      ? "bg-white text-sigizi-green shadow-sm"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
+                  className={`flex-1 py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${activeMainMenu === "tinggi" ? "bg-white text-emerald-600 shadow-md" : "text-gray-500 hover:text-gray-700"}`}
                 >
-                  <FontAwesomeIcon icon={fas.faRuler} />
-                  Tinggi
+                  <FontAwesomeIcon icon={fas.faRuler} /> Tinggi
                 </button>
                 <button
                   onClick={() => setActiveMainMenu("lingkar_kepala")}
-                  className={`flex-1 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
-                    activeMainMenu === "lingkar_kepala"
-                      ? "bg-white text-sigizi-green shadow-sm"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
+                  className={`flex-1 py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${activeMainMenu === "lingkar_kepala" ? "bg-white text-emerald-600 shadow-md" : "text-gray-500 hover:text-gray-700"}`}
                 >
-                  <FontAwesomeIcon icon={fas.faBrain} />
-                  Lingkar Kepala
+                  <FontAwesomeIcon icon={fas.faBrain} /> Lingkar Kepala
                 </button>
               </div>
             </div>
@@ -2482,39 +2773,27 @@ export default function OrangTuaPemantauanGizi() {
           {/* Sub Menu untuk Berat */}
           {displayAnakData && activeMainMenu === "berat" && (
             <div className="mb-6">
-              <div className="flex gap-2">
+              <div className="flex gap-2 p-1 bg-gray-100 rounded-xl">
                 <button
                   onClick={() => setActiveSubMenu("bb_u")}
-                  className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition border ${
-                    activeSubMenu === "bb_u"
-                      ? "border-sigizi-green bg-green-50 text-sigizi-green"
-                      : "border-gray-200 text-gray-500 hover:border-gray-300"
-                  }`}
+                  className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition border ${activeSubMenu === "bb_u" ? "border-emerald-500 bg-emerald-50 text-emerald-600" : "border-transparent text-gray-500 hover:text-gray-700"}`}
                 >
                   BB/U
                 </button>
                 <button
                   onClick={() => setActiveSubMenu("bb_tb")}
-                  className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition border ${
-                    activeSubMenu === "bb_tb"
-                      ? "border-sigizi-green bg-green-50 text-sigizi-green"
-                      : "border-gray-200 text-gray-500 hover:border-gray-300"
-                  }`}
+                  className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition border ${activeSubMenu === "bb_tb" ? "border-emerald-500 bg-emerald-50 text-emerald-600" : "border-transparent text-gray-500 hover:text-gray-700"}`}
                 >
                   BB/TB
                 </button>
                 <button
                   onClick={() => setActiveSubMenu("imt_u")}
-                  className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition border ${
-                    activeSubMenu === "imt_u"
-                      ? "border-sigizi-green bg-green-50 text-sigizi-green"
-                      : "border-gray-200 text-gray-500 hover:border-gray-300"
-                  }`}
+                  className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition border ${activeSubMenu === "imt_u" ? "border-emerald-500 bg-emerald-50 text-emerald-600" : "border-transparent text-gray-500 hover:text-gray-700"}`}
                 >
                   IMT/U
                 </button>
               </div>
-              <p className="text-center text-xs text-gray-400 mt-2">
+              <p className="text-center text-xs text-gray-400 mt-2 font-medium">
                 {activeSubMenu === "bb_u" && "Berat Badan Sesuai Usia"}
                 {activeSubMenu === "bb_tb" && "Berat Badan vs Tinggi Badan"}
                 {activeSubMenu === "imt_u" && "Indeks Massa Tubuh Sesuai Usia"}
@@ -2528,14 +2807,16 @@ export default function OrangTuaPemantauanGizi() {
               <div className="relative">
                 <button
                   onClick={() => setShowAgeDropdown(!showAgeDropdown)}
-                  className="w-full flex items-center justify-between px-4 py-3 bg-white border border-gray-200 rounded-xl shadow-sm"
+                  className="w-full flex items-center justify-between px-5 py-3.5 bg-white border border-gray-200 rounded-2xl shadow-sm hover:bg-gray-50 transition"
                 >
                   <div className="flex items-center gap-3">
-                    <FontAwesomeIcon
-                      icon={fas.faCalendarAlt}
-                      className="text-sigizi-green"
-                    />
-                    <span className="font-medium text-gray-700">
+                    <div className="bg-emerald-100 p-2 rounded-xl">
+                      <FontAwesomeIcon
+                        icon={fas.faCalendarAlt}
+                        className="text-emerald-600"
+                      />
+                    </div>
+                    <span className="font-bold text-gray-700">
                       {getCurrentConfig()?.label || "Pilih Rentang Usia"}
                     </span>
                   </div>
@@ -2551,7 +2832,7 @@ export default function OrangTuaPemantauanGizi() {
                       className="fixed inset-0 z-10"
                       onClick={() => setShowAgeDropdown(false)}
                     ></div>
-                    <div className="absolute left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 z-20 overflow-hidden">
+                    <div className="absolute left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-gray-200 z-20 overflow-hidden">
                       {availableRanges.map((range) => {
                         const config =
                           activeMainMenu === "lingkar_kepala"
@@ -2565,19 +2846,17 @@ export default function OrangTuaPemantauanGizi() {
                               setAgeRange(range);
                               setShowAgeDropdown(false);
                             }}
-                            className={`w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition border-b border-gray-100 last:border-0 ${
-                              ageRange === range ? "bg-green-50" : ""
-                            }`}
+                            className={`w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition border-b border-gray-100 last:border-0 ${ageRange === range ? "bg-emerald-50" : ""}`}
                           >
-                            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
                               <FontAwesomeIcon
                                 icon={fas[config.icon] || fas.faChild}
-                                className="text-sigizi-green text-sm"
+                                className="text-emerald-600"
                               />
                             </div>
                             <div className="flex-1 text-left">
                               <p
-                                className={`font-medium ${ageRange === range ? "text-sigizi-green" : "text-gray-700"}`}
+                                className={`font-bold ${ageRange === range ? "text-emerald-600" : "text-gray-700"}`}
                               >
                                 {config.label}
                               </p>
@@ -2590,7 +2869,7 @@ export default function OrangTuaPemantauanGizi() {
                             {ageRange === range && (
                               <FontAwesomeIcon
                                 icon={fas.faCheckCircle}
-                                className="text-sigizi-green"
+                                className="text-emerald-600"
                               />
                             )}
                           </button>
@@ -2605,12 +2884,38 @@ export default function OrangTuaPemantauanGizi() {
 
           {/* Chart Container */}
           {displayAnakData && (
-            <div className="bg-white rounded-xl shadow-sm p-5">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-7">
               {renderActiveChart()}
+            </div>
+          )}
+
+          {!displayAnakData && displayAnakList.length > 0 && (
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-12 text-center border border-blue-200">
+              <div className="bg-blue-100 p-6 rounded-full inline-flex mb-4">
+                <FontAwesomeIcon
+                  icon={fas.faChartLine}
+                  className="text-5xl text-blue-400"
+                />
+              </div>
+              <p className="text-gray-600 font-bold text-lg">
+                Pilih anak untuk melihat grafik pertumbuhan
+              </p>
+              <p className="text-gray-500 mt-1">
+                Grafik akan menampilkan data berdasarkan standar WHO dan CDC
+              </p>
             </div>
           )}
         </main>
       </div>
+
+      {/* MODAL PENJELASAN GRAFIK */}
+      <PenjelasanGrafikModal
+        isOpen={showPenjelasanGrafik}
+        onClose={() => setShowPenjelasanGrafik(false)}
+        activeMainMenu={activeMainMenu}
+        activeSubMenu={activeSubMenu}
+        ageRange={ageRange}
+      />
     </div>
   );
 }
