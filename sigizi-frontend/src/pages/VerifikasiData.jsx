@@ -113,6 +113,51 @@ export default function VerifikasiData() {
     return bulan > 0 ? `${bulan} Bulan` : "0 Bulan";
   };
 
+  const statusGiziStyles = {
+    normal: {
+      label: "Normal",
+      bg: "bg-emerald-500/15",
+      text: "text-emerald-600",
+      ring: "ring-emerald-500/30",
+    },
+    "pra-sunting": {
+      label: "Pra-Sunting",
+      bg: "bg-amber-500/15",
+      text: "text-amber-600",
+      ring: "ring-amber-500/30",
+    },
+    stunting: {
+      label: "Stunting",
+      bg: "bg-red-500/15",
+      text: "text-red-600",
+      ring: "ring-red-500/30",
+    },
+    wasting: {
+      label: "Wasting",
+      bg: "bg-orange-500/15",
+      text: "text-orange-600",
+      ring: "ring-orange-500/30",
+    },
+    "gizi lebih": {
+      label: "Gizi Lebih",
+      bg: "bg-purple-500/15",
+      text: "text-purple-600",
+      ring: "ring-purple-500/30",
+    },
+  };
+
+  const getStatusGiziStyle = (status) => {
+    if (!status) return null;
+    return (
+      statusGiziStyles[status.trim().toLowerCase()] || {
+        label: status,
+        bg: "bg-slate-500/15",
+        text: "text-slate-200",
+        ring: "ring-slate-500/30",
+      }
+    );
+  };
+
   const filteredData = dataAnak.filter((item) => {
     const matchSearch =
       item.nama_anak.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -465,9 +510,18 @@ export default function VerifikasiData() {
                       <p className="text-[10px] font-bold text-slate-500 uppercase mb-1">
                         Status Gizi (WHO)
                       </p>
-                      <p className="font-bold text-lg text-emerald-400">
-                        {selectedAnak.status_gizi || "Belum Dianalisis"}
-                      </p>
+                      {(() => {
+                        const style = getStatusGiziStyle(
+                          selectedAnak.status_gizi,
+                        );
+                        return (
+                          <span
+                            className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase ${style.bg} ${style.text} ${style.ring}`}
+                          >
+                            {style.label}
+                          </span>
+                        );
+                      })()}
                     </div>
                     <div className="text-right">
                       <p className="text-[10px] font-bold text-slate-500 uppercase mb-1">
