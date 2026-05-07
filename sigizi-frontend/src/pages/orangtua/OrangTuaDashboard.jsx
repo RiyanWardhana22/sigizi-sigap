@@ -14,7 +14,7 @@ const EDUKASI_DATA = {
     label: "Normal",
     color: "green",
     icon: fas.faCheckCircle,
-    headerBg: "from-green-500 to-emerald-600",
+    headerBg: "from-emerald-500 to-emerald-600",
     pesan: "Status gizi anak Anda normal. Pertahankan pola makan sehat dan terus pantau tumbuh kembangnya!",
     artikel: [
       {
@@ -60,7 +60,7 @@ const EDUKASI_DATA = {
     label: "Pra-Stunting",
     color: "yellow",
     icon: fas.faExclamationTriangle,
-    headerBg: "from-yellow-400 to-amber-500",
+    headerBg: "from-amber-400 to-amber-500",
     pesan: "Anak Anda berisiko stunting. Segera tingkatkan asupan gizi dan konsultasikan ke tenaga kesehatan terdekat.",
     artikel: [
       { id: "a1", judul: "Tanda Awal Anak Berisiko Stunting yang Wajib Diketahui", deskripsi: "Kenali tanda-tanda dini risiko stunting seperti berat badan tidak naik, tinggi badan di bawah grafik, dan sering sakit.", gambar: "https://d1vbn70lmn1nqe.cloudfront.net/prod/wp-content/uploads/2023/01/05124136/Ibu-Harus-Tahu-Ini-Ciri-Ciri-Stunting-pada-Anak-1.jpg.webp", tag: "Deteksi Dini", waktu: "4 menit baca", url: "https://www.halodoc.com/artikel/gejala-stunting" },
@@ -111,66 +111,68 @@ function EdukasiSection({ status }) {
 
   if (!edukasi) {
     return (
-      <div className="bg-white rounded-xl shadow-sm p-8 text-center text-gray-500 mt-6">
-        <FontAwesomeIcon icon={fas.faBookOpen} className="text-4xl mb-3 opacity-30" />
-        <p className="font-medium">Pilih anak untuk melihat konten edukasi yang sesuai</p>
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center mt-8">
+        <div className="bg-gray-100 p-6 rounded-full inline-flex mb-4">
+          <FontAwesomeIcon icon={fas.faBookOpen} className="text-5xl text-gray-400" />
+        </div>
+        <p className="text-gray-500 font-medium">Pilih anak untuk melihat konten edukasi yang sesuai</p>
       </div>
     );
   }
 
   const colorMap = {
-    green: { tabActive: "bg-green-600 text-white", tabInactive: "bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-600", headerGrad: "from-green-500 to-emerald-600", badge: "bg-green-100 text-green-700", cardBorder: "border-green-200 hover:border-green-400", link: "text-green-600 hover:text-green-800", alertBg: "bg-green-50 border-green-300 text-green-800", alertIcon: "text-green-500" },
-    yellow: { tabActive: "bg-amber-500 text-white", tabInactive: "bg-gray-100 text-gray-600 hover:bg-amber-50 hover:text-amber-600", headerGrad: "from-yellow-400 to-amber-500", badge: "bg-yellow-100 text-yellow-700", cardBorder: "border-yellow-200 hover:border-yellow-400", link: "text-amber-600 hover:text-amber-800", alertBg: "bg-amber-50 border-amber-300 text-amber-800", alertIcon: "text-amber-500" },
-    red: { tabActive: "bg-red-600 text-white", tabInactive: "bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-600", headerGrad: "from-red-500 to-rose-600", badge: "bg-red-100 text-red-700", cardBorder: "border-red-200 hover:border-red-400", link: "text-red-600 hover:text-red-800", alertBg: "bg-red-50 border-red-300 text-red-800", alertIcon: "text-red-500" },
+    green: { tabActive: "bg-emerald-600 text-white shadow-md shadow-emerald-200", tabInactive: "bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600", headerGrad: "from-emerald-500 to-emerald-600", badge: "bg-emerald-100 text-emerald-700", cardBorder: "border-emerald-200 hover:border-emerald-400", link: "text-emerald-600 hover:text-emerald-800", alertBg: "bg-emerald-50 border-emerald-200 text-emerald-800", alertIcon: "text-emerald-500" },
+    yellow: { tabActive: "bg-amber-500 text-white shadow-md shadow-amber-200", tabInactive: "bg-gray-100 text-gray-600 hover:bg-amber-50 hover:text-amber-600", headerGrad: "from-amber-400 to-amber-500", badge: "bg-amber-100 text-amber-700", cardBorder: "border-amber-200 hover:border-amber-400", link: "text-amber-600 hover:text-amber-800", alertBg: "bg-amber-50 border-amber-200 text-amber-800", alertIcon: "text-amber-500" },
+    red: { tabActive: "bg-red-600 text-white shadow-md shadow-red-200", tabInactive: "bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-600", headerGrad: "from-red-500 to-rose-600", badge: "bg-red-100 text-red-700", cardBorder: "border-red-200 hover:border-red-400", link: "text-red-600 hover:text-red-800", alertBg: "bg-red-50 border-red-200 text-red-800", alertIcon: "text-red-500" },
   };
   const c = colorMap[edukasi.color];
 
   return (
-    <div className="bg-white rounded-xl shadow-sm overflow-hidden mt-6">
-      <div className={`bg-gradient-to-r ${c.headerGrad} p-5 text-white`}>
-        <div className="flex items-start gap-3">
-          <div className="bg-white/20 p-2.5 rounded-lg mt-0.5">
-            <FontAwesomeIcon icon={fas.faGraduationCap} className="text-xl" />
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mt-8 transition-all duration-300">
+      <div className={`bg-gradient-to-r ${c.headerGrad} p-6 text-white`}>
+        <div className="flex items-start gap-4">
+          <div className="bg-white/20 p-3 rounded-xl">
+            <FontAwesomeIcon icon={fas.faGraduationCap} className="text-2xl" />
           </div>
           <div>
-            <h3 className="text-lg font-bold">Edukasi Gizi untuk Orang Tua</h3>
-            <p className="text-sm opacity-90 mt-0.5">
+            <h3 className="text-xl font-bold">Edukasi Gizi untuk Orang Tua</h3>
+            <p className="text-sm opacity-90 mt-1">
               Konten disesuaikan dengan status gizi anak:{" "}
-              <span className="font-semibold bg-white/20 px-2 py-0.5 rounded-full">{edukasi.label}</span>
+              <span className="font-bold bg-white/20 px-3 py-1 rounded-full ml-1">{edukasi.label}</span>
             </p>
           </div>
         </div>
       </div>
 
-      <div className="p-5">
-        <div className={`flex items-start gap-3 p-4 rounded-lg border mb-5 ${c.alertBg}`}>
-          <FontAwesomeIcon icon={edukasi.icon} className={`${c.alertIcon} text-xl mt-0.5 flex-shrink-0`} />
-          <p className="text-sm font-medium">{edukasi.pesan}</p>
+      <div className="p-6">
+        <div className={`flex items-start gap-4 p-5 rounded-2xl border mb-6 ${c.alertBg}`}>
+          <FontAwesomeIcon icon={edukasi.icon} className={`${c.alertIcon} text-2xl mt-0.5 flex-shrink-0`} />
+          <p className="font-medium">{edukasi.pesan}</p>
         </div>
 
-        <div className="flex gap-2 mb-5">
-          <button onClick={() => setActiveTab("artikel")} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === "artikel" ? c.tabActive : c.tabInactive}`}>
+        <div className="flex gap-2 mb-6 p-1.5 bg-gray-100 rounded-xl">
+          <button onClick={() => setActiveTab("artikel")} className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === "artikel" ? c.tabActive : c.tabInactive}`}>
             <FontAwesomeIcon icon={fas.faNewspaper} /> Artikel
           </button>
-          <button onClick={() => setActiveTab("video")} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === "video" ? c.tabActive : c.tabInactive}`}>
+          <button onClick={() => setActiveTab("video")} className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === "video" ? c.tabActive : c.tabInactive}`}>
             <FontAwesomeIcon icon={fas.faPlayCircle} /> Video
           </button>
         </div>
 
         {activeTab === "artikel" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {edukasi.artikel.map((item) => (
-              <a key={item.id} href={item.url} target="_blank" rel="noopener noreferrer" className={`group flex flex-col rounded-xl border-2 overflow-hidden transition-all duration-200 ${c.cardBorder} hover:shadow-md`}>
-                <div className="relative overflow-hidden h-36 bg-gray-100">
-                  <img src={item.gambar} alt={item.judul} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onError={(e) => { e.target.style.display = "none"; }} />
-                  <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <span className={`absolute top-2 left-2 text-xs font-semibold px-2 py-0.5 rounded-full shadow-sm ${c.badge}`}>{item.tag}</span>
+              <a key={item.id} href={item.url} target="_blank" rel="noopener noreferrer" className={`group flex flex-col rounded-2xl border-2 overflow-hidden transition-all duration-300 ${c.cardBorder} hover:shadow-xl hover:-translate-y-1`}>
+                <div className="relative overflow-hidden h-44 bg-gray-100">
+                  <img src={item.gambar} alt={item.judul} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onError={(e) => { e.target.style.display = "none"; }} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <span className={`absolute top-3 left-3 text-xs font-bold px-3 py-1 rounded-full shadow-md ${c.badge}`}>{item.tag}</span>
                 </div>
-                <div className="flex flex-col gap-2 p-3 flex-1">
-                  <p className="font-semibold text-gray-800 text-sm leading-snug group-hover:underline line-clamp-2">{item.judul}</p>
-                  <p className="text-xs text-gray-500 line-clamp-2 flex-1">{item.deskripsi}</p>
-                  <div className="flex items-center justify-between pt-1 border-t border-gray-100 mt-auto">
-                    <span className={`text-xs font-medium flex items-center gap-1 ${c.link}`}>
+                <div className="flex flex-col gap-2 p-4 flex-1">
+                  <p className="font-bold text-gray-800 leading-snug group-hover:text-emerald-600 transition-colors line-clamp-2">{item.judul}</p>
+                  <p className="text-sm text-gray-500 line-clamp-2 flex-1">{item.deskripsi}</p>
+                  <div className="flex items-center justify-between pt-3 border-t border-gray-100 mt-auto">
+                    <span className={`text-xs font-bold flex items-center gap-1.5 ${c.link}`}>
                       <FontAwesomeIcon icon={fas.faArrowUpRightFromSquare} className="text-xs" /> Baca Artikel
                     </span>
                     <div className="flex items-center gap-1.5 text-xs text-gray-400">
@@ -184,22 +186,22 @@ function EdukasiSection({ status }) {
         )}
 
         {activeTab === "video" && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {edukasi.video.map((item) => (
-              <a key={item.id} href={item.url} target="_blank" rel="noopener noreferrer" className={`group flex flex-col rounded-xl border-2 overflow-hidden transition-all duration-200 ${c.cardBorder} hover:shadow-md`}>
+              <a key={item.id} href={item.url} target="_blank" rel="noopener noreferrer" className={`group flex flex-col rounded-2xl border-2 overflow-hidden transition-all duration-300 ${c.cardBorder} hover:shadow-xl hover:-translate-y-1`}>
                 <div className="relative overflow-hidden">
-                  <img src={item.thumbnail} alt={item.judul} className="w-full object-cover aspect-video bg-gray-200 group-hover:scale-105 transition-transform duration-300" />
-                  <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="bg-white/90 rounded-full w-12 h-12 flex items-center justify-center">
-                      <FontAwesomeIcon icon={fas.faPlay} className="text-gray-800 text-lg ml-1" />
+                  <img src={item.thumbnail} alt={item.judul} className="w-full object-cover aspect-video bg-gray-200 group-hover:scale-110 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="bg-white/95 rounded-full w-14 h-14 flex items-center justify-center shadow-lg">
+                      <FontAwesomeIcon icon={fas.faPlay} className="text-gray-800 text-xl ml-1" />
                     </div>
                   </div>
-                  <span className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-1.5 py-0.5 rounded">{item.durasi}</span>
+                  <span className="absolute bottom-2 right-2 bg-black/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-md font-medium">{item.durasi}</span>
                 </div>
-                <div className="p-3 flex flex-col gap-2">
-                  <p className="text-sm font-semibold text-gray-800 leading-snug group-hover:underline line-clamp-2">{item.judul}</p>
+                <div className="p-4 flex flex-col gap-2">
+                  <p className="font-bold text-gray-800 leading-snug group-hover:text-emerald-600 transition-colors line-clamp-2">{item.judul}</p>
                   <div className="flex items-center justify-between">
-                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${c.badge}`}>{item.tag}</span>
+                    <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${c.badge}`}>{item.tag}</span>
                     <span className="text-xs text-gray-400 flex items-center gap-1">
                       <FontAwesomeIcon icon={fas.faYoutube} className="text-red-500" /> YouTube
                     </span>
@@ -219,7 +221,6 @@ function EdukasiSection({ status }) {
 // KOMPONEN: KARTU DATA DIRI ORANG TUA
 // ─────────────────────────────────────────────
 function DataDiriOrangTua({ user, profilData, navigate }) {
-  // Fungsi untuk menghitung usia dari tanggal lahir
   const calculateAge = (tanggalLahir) => {
     if (!tanggalLahir) return null;
     const birth = new Date(tanggalLahir);
@@ -232,7 +233,6 @@ function DataDiriOrangTua({ user, profilData, navigate }) {
     return years;
   };
 
-  // Format tanggal ke format Indonesia
   const formatTanggal = (tanggal) => {
     if (!tanggal) return "-";
     const date = new Date(tanggal);
@@ -241,208 +241,162 @@ function DataDiriOrangTua({ user, profilData, navigate }) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm overflow-hidden mb-6 border border-gray-100">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-green-600 to-green-700 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-white/20 p-2 rounded-lg">
-              <FontAwesomeIcon icon={fas.faUser} className="text-lg" />
-            </div>
-            <div>
-              <h2 className="text-lg font-bold">Data Diri Orang Tua</h2>
-              <p className="text-xs opacity-80">Informasi identitas dan sosial ekonomi</p>
-            </div>
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8 transition-all duration-300">
+      <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 px-7 py-5">
+        <div className="flex items-center gap-3">
+          <div className="bg-white/20 p-2.5 rounded-xl">
+            <FontAwesomeIcon icon={fas.faUser} className="text-white text-lg" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-white">Data Diri Orang Tua</h2>
+            <p className="text-emerald-100 text-sm">Informasi identitas dan sosial ekonomi</p>
           </div>
         </div>
       </div>
 
-      {/* Body - Layout 2 Kolom */}
-      <div className="p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="p-7">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Kolom Kiri - Identitas */}
-          <div className="space-y-1">
-            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2 pb-2 border-b border-gray-100">
-              <FontAwesomeIcon icon={fas.faIdCard} className="text-blue-500" />
+          <div>
+            <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4 flex items-center gap-2 pb-3 border-b-2 border-emerald-100">
+              <FontAwesomeIcon icon={fas.faIdCard} className="text-emerald-500" />
               Identitas Diri
             </h3>
             
-            <div className="space-y-1">
-              {/* Nama */}
-              <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-blue-50/50 transition-colors group">
-                <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                  <FontAwesomeIcon icon={fas.faUser} className="text-blue-600 text-sm" />
+            <div className="space-y-3">
+              <div className="flex items-center gap-4 p-4 rounded-xl hover:bg-emerald-50 transition-colors group">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
+                  <FontAwesomeIcon icon={fas.faUser} className="text-emerald-600" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-400">Nama Lengkap</p>
-                  <p className="font-semibold text-gray-800 text-sm truncate">{user.nama_lengkap}</p>
+                  <p className="text-xs text-gray-400 font-medium">Nama Lengkap</p>
+                  <p className="font-bold text-gray-800 truncate">{user.nama_lengkap}</p>
                 </div>
               </div>
 
-              {/* Email */}
-              <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-blue-50/50 transition-colors group">
-                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center group-hover:bg-gray-200 transition-colors">
-                  <FontAwesomeIcon icon={fas.faEnvelope} className="text-gray-500 text-sm" />
+              <div className="flex items-center gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors group">
+                <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-gray-200 transition-colors">
+                  <FontAwesomeIcon icon={fas.faEnvelope} className="text-gray-500" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-400">Email</p>
-                  <p className="font-semibold text-gray-800 text-sm truncate">{user.email}</p>
+                  <p className="text-xs text-gray-400 font-medium">Email</p>
+                  <p className="font-bold text-gray-800 truncate">{user.email}</p>
                 </div>
               </div>
 
-              {/* Tanggal Lahir */}
-              <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-green-50/50 transition-colors group">
-                <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center group-hover:bg-green-200 transition-colors">
-                  <FontAwesomeIcon icon={fas.faCalendar} className="text-green-600 text-sm" />
+              <div className="flex items-center gap-4 p-4 rounded-xl hover:bg-emerald-50 transition-colors group">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
+                  <FontAwesomeIcon icon={fas.faCalendar} className="text-emerald-600" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-400">Tanggal Lahir</p>
+                  <p className="text-xs text-gray-400 font-medium">Tanggal Lahir</p>
                   <div className="flex items-center gap-2">
-                    <p className="font-semibold text-gray-800 text-sm">
-                      {profilData?.tanggal_lahir ? formatTanggal(profilData.tanggal_lahir) : "-"}
-                    </p>
+                    <p className="font-bold text-gray-800">{profilData?.tanggal_lahir ? formatTanggal(profilData.tanggal_lahir) : "-"}</p>
                     {profilData?.tanggal_lahir && (
-                      <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">
-                        {calculateAge(profilData.tanggal_lahir)} tahun
+                      <span className="text-xs bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-bold">
+                        {calculateAge(profilData.tanggal_lahir)} thn
                       </span>
                     )}
                   </div>
                 </div>
               </div>
 
-              {/* Domisili */}
-              <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-orange-50/50 transition-colors group">
-                <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center group-hover:bg-orange-200 transition-colors">
-                  <FontAwesomeIcon icon={fas.faLocationDot} className="text-orange-600 text-sm" />
+              <div className="flex items-center gap-4 p-4 rounded-xl hover:bg-orange-50 transition-colors group">
+                <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center group-hover:bg-orange-200 transition-colors">
+                  <FontAwesomeIcon icon={fas.faLocationDot} className="text-orange-600" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-400">Domisili</p>
-                  <p className="font-semibold text-gray-800 text-sm truncate">
-                    {profilData?.nama_kabupaten || "-"}
-                  </p>
+                  <p className="text-xs text-gray-400 font-medium">Domisili</p>
+                  <p className="font-bold text-gray-800 truncate">{profilData?.nama_kabupaten || "-"}</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Kolom Kanan - Sosial Ekonomi */}
-          <div className="space-y-1">
-            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2 pb-2 border-b border-gray-100">
+          <div>
+            <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4 flex items-center gap-2 pb-3 border-b-2 border-teal-100">
               <FontAwesomeIcon icon={fas.faChartPie} className="text-teal-500" />
               Sosial Ekonomi
             </h3>
             
             {profilData && profilData.profil_lengkap ? (
-              <div className="space-y-1">
-                {/* Penghasilan */}
-                <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-emerald-50/50 transition-colors group">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
-                    <FontAwesomeIcon icon={fas.faMoneyBillWave} className="text-emerald-600 text-sm" />
+              <div className="space-y-3">
+                <div className="flex items-center gap-4 p-4 rounded-xl hover:bg-emerald-50 transition-colors group">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
+                    <FontAwesomeIcon icon={fas.faMoneyBillWave} className="text-emerald-600" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-gray-400">Penghasilan per Bulan</p>
-                    <p className="font-semibold text-gray-800 text-sm">
-                      Rp {profilData.penghasilan_range}
-                    </p>
+                    <p className="text-xs text-gray-400 font-medium">Penghasilan per Bulan</p>
+                    <p className="font-bold text-gray-800">Rp {profilData.penghasilan_range}</p>
                   </div>
                 </div>
 
-                {/* Pendidikan Ibu */}
-                <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-indigo-50/50 transition-colors group">
-                  <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
-                    <FontAwesomeIcon icon={fas.faGraduationCap} className="text-indigo-600 text-sm" />
+                <div className="flex items-center gap-4 p-4 rounded-xl hover:bg-indigo-50 transition-colors group">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
+                    <FontAwesomeIcon icon={fas.faGraduationCap} className="text-indigo-600" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-gray-400">Pendidikan Terakhir Ibu</p>
-                    <p className="font-semibold text-gray-800 text-sm">
-                      {profilData.pendidikan_ibu || "-"}
-                    </p>
+                    <p className="text-xs text-gray-400 font-medium">Pendidikan Ibu</p>
+                    <p className="font-bold text-gray-800">{profilData.pendidikan_ibu || "-"}</p>
                   </div>
                 </div>
 
-                {/* Sanitasi */}
-                <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50/50 transition-colors group">
-                  <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center group-hover:bg-gray-200 transition-colors">
-                    <FontAwesomeIcon icon={fas.faToilet} className="text-gray-600 text-sm" />
+                <div className="flex items-center gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors group">
+                  <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-gray-200 transition-colors">
+                    <FontAwesomeIcon icon={fas.faToilet} className="text-gray-600" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-gray-400">Kondisi Sanitasi</p>
-                    <div className="flex items-center gap-2">
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
-                        profilData.sanitasi === "Baik" 
-                          ? "bg-green-100 text-green-700" 
-                          : "bg-red-100 text-red-700"
-                      }`}>
-                        <FontAwesomeIcon 
-                          icon={profilData.sanitasi === "Baik" ? fas.faCheckCircle : fas.faExclamationCircle} 
-                          className="text-xs" 
-                        />
-                        {profilData.sanitasi}
-                      </span>
-                    </div>
+                    <p className="text-xs text-gray-400 font-medium">Sanitasi</p>
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
+                      profilData.sanitasi === "Baik" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"
+                    }`}>
+                      <FontAwesomeIcon icon={profilData.sanitasi === "Baik" ? fas.faCheckCircle : fas.faExclamationCircle} />
+                      {profilData.sanitasi}
+                    </span>
                   </div>
                 </div>
 
-                {/* Kualitas Air */}
-                <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-cyan-50/50 transition-colors group">
-                  <div className="w-8 h-8 rounded-lg bg-cyan-100 flex items-center justify-center group-hover:bg-cyan-200 transition-colors">
-                    <FontAwesomeIcon icon={fas.faDroplet} className="text-cyan-600 text-sm" />
+                <div className="flex items-center gap-4 p-4 rounded-xl hover:bg-cyan-50 transition-colors group">
+                  <div className="w-10 h-10 rounded-xl bg-cyan-100 flex items-center justify-center group-hover:bg-cyan-200 transition-colors">
+                    <FontAwesomeIcon icon={fas.faDroplet} className="text-cyan-600" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-gray-400">Kualitas Air</p>
-                    <div className="flex items-center gap-2">
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
-                        profilData.kualitas_air === "Bersih" 
-                          ? "bg-cyan-100 text-cyan-700" 
-                          : "bg-orange-100 text-orange-700"
-                      }`}>
-                        <FontAwesomeIcon 
-                          icon={profilData.kualitas_air === "Bersih" ? fas.faCheckCircle : fas.faExclamationCircle} 
-                          className="text-xs" 
-                        />
-                        {profilData.kualitas_air}
-                      </span>
-                    </div>
+                    <p className="text-xs text-gray-400 font-medium">Kualitas Air</p>
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
+                      profilData.kualitas_air === "Bersih" ? "bg-cyan-100 text-cyan-700" : "bg-orange-100 text-orange-700"
+                    }`}>
+                      <FontAwesomeIcon icon={profilData.kualitas_air === "Bersih" ? fas.faCheckCircle : fas.faExclamationCircle} />
+                      {profilData.kualitas_air}
+                    </span>
                   </div>
                 </div>
 
-                {/* Akses Kesehatan */}
-                <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-purple-50/50 transition-colors group">
-                  <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center group-hover:bg-purple-200 transition-colors">
-                    <FontAwesomeIcon icon={fas.faHospital} className="text-purple-600 text-sm" />
+                <div className="flex items-center gap-4 p-4 rounded-xl hover:bg-purple-50 transition-colors group">
+                  <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center group-hover:bg-purple-200 transition-colors">
+                    <FontAwesomeIcon icon={fas.faHospital} className="text-purple-600" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-gray-400">Akses Layanan Kesehatan</p>
-                    <div className="flex items-center gap-2">
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
-                        profilData.akses_kesehatan === "Mudah" 
-                          ? "bg-purple-100 text-purple-700" 
-                          : "bg-rose-100 text-rose-700"
-                      }`}>
-                        <FontAwesomeIcon 
-                          icon={profilData.akses_kesehatan === "Mudah" ? fas.faCheckCircle : fas.faExclamationCircle} 
-                          className="text-xs" 
-                        />
-                        {profilData.akses_kesehatan}
-                      </span>
-                    </div>
+                    <p className="text-xs text-gray-400 font-medium">Akses Kesehatan</p>
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
+                      profilData.akses_kesehatan === "Mudah" ? "bg-purple-100 text-purple-700" : "bg-rose-100 text-rose-700"
+                    }`}>
+                      <FontAwesomeIcon icon={profilData.akses_kesehatan === "Mudah" ? fas.faCheckCircle : fas.faExclamationCircle} />
+                      {profilData.akses_kesehatan}
+                    </span>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="flex items-start gap-3 p-4 bg-amber-50 rounded-lg border border-amber-200">
-                <FontAwesomeIcon icon={fas.faCircleExclamation} className="text-amber-500 text-lg mt-0.5" />
+              <div className="flex items-start gap-4 p-5 bg-amber-50 rounded-2xl border border-amber-200">
+                <FontAwesomeIcon icon={fas.faCircleExclamation} className="text-amber-500 text-xl mt-0.5" />
                 <div>
-                  <p className="font-medium text-amber-800 text-sm">Data sosial ekonomi belum lengkap</p>
-                  <p className="text-xs text-amber-700 mt-1">
+                  <p className="font-bold text-amber-800">Data sosial ekonomi belum lengkap</p>
+                  <p className="text-sm text-amber-700 mt-1">
                     Silakan lengkapi data diri Anda di menu{" "}
-                    <button
-                      onClick={() => navigate("/orangtua/data-anak")}
-                      className="underline font-medium hover:text-amber-900"
-                    >
+                    <button onClick={() => navigate("/orangtua/data-anak")} className="underline font-bold hover:text-amber-900">
                       Data Anak
                     </button>
-                    {" "}untuk mendapatkan analisis yang lebih akurat.
                   </p>
                 </div>
               </div>
@@ -476,12 +430,8 @@ export default function OrangTuaDashboard() {
   const [showAnakDropdown, setShowAnakDropdown] = useState(false);
   const [stats, setStats] = useState({ totalAnak: 0, normal: 0, stunting: 0, giziKurang: 0 });
   const [latestMeasurement, setLatestMeasurement] = useState(null);
-
-  // Profil orang tua
   const [profilData, setProfilData] = useState(null);
   const [superAdminProfilData, setSuperAdminProfilData] = useState(null);
-
-  // Super Admin
   const [orangTuaList, setOrangTuaList] = useState([]);
   const [selectedOrangTuaId, setSelectedOrangTuaId] = useState(null);
   const [superAdminSelectedAnak, setSuperAdminSelectedAnak] = useState(null);
@@ -490,12 +440,12 @@ export default function OrangTuaDashboard() {
 
   const getStatusBadgeClass = (status) => {
     const statusBadgeClass = {
-      Normal: "bg-green-100 text-green-800",
-      Stunting: "bg-red-100 text-red-800",
-      "Pra-stunting": "bg-yellow-100 text-yellow-800",
-      Wasting: "bg-orange-100 text-orange-800",
-      "Gizi Lebih": "bg-blue-100 text-blue-800",
-      "Gizi Berlebih": "bg-purple-100 text-purple-800",
+      Normal: "bg-emerald-100 text-emerald-700",
+      Stunting: "bg-red-100 text-red-700",
+      "Pra-stunting": "bg-amber-100 text-amber-700",
+      Wasting: "bg-orange-100 text-orange-700",
+      "Gizi Lebih": "bg-blue-100 text-blue-700",
+      "Gizi Berlebih": "bg-purple-100 text-purple-700",
     };
     return statusBadgeClass[status] || "bg-gray-100 text-gray-700";
   };
@@ -526,7 +476,6 @@ export default function OrangTuaDashboard() {
     }
   }, [selectedAnakData, superAdminSelectedAnak, userRole]);
 
-  // ── API: Ambil profil orang tua ─────────────────────────────
   const fetchProfil = async (userId, role = "orang_tua") => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/profil_orangtua.php?user_id=${userId}`);
@@ -622,12 +571,15 @@ export default function OrangTuaDashboard() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen bg-gray-50">
+      <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-emerald-50">
         <Sidebar handleLogout={handleLogout} />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sigizi-green mx-auto"></div>
-            <p className="mt-4 text-gray-600">Memuat data...</p>
+            <div className="relative">
+              <div className="animate-spin rounded-full h-16 w-16 border-4 border-emerald-200 border-t-emerald-600 mx-auto"></div>
+              <FontAwesomeIcon icon={fas.faBaby} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-emerald-600 text-xl" />
+            </div>
+            <p className="mt-6 text-gray-600 font-medium">Memuat data...</p>
           </div>
         </div>
       </div>
@@ -639,79 +591,73 @@ export default function OrangTuaDashboard() {
   const displayAnakList = userRole === "orang_tua" ? anakList : superAdminAnakList;
   const currentStatusGizi = latestMeasurement?.status_gizi || null;
 
-  const statusBadgeClass = {
-    Normal: "bg-green-100 text-green-800",
-    Stunting: "bg-red-100 text-red-800",
-    "Pra-stunting": "bg-yellow-100 text-yellow-800",
-    Wasting: "bg-orange-100 text-orange-800",
-    "Gizi Lebih": "bg-blue-100 text-blue-800",
-    "Gizi Berlebih": "bg-purple-100 text-purple-800",
-  };
-
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-emerald-50">
       <Sidebar handleLogout={handleLogout} />
 
       <div className="flex-1 flex flex-col">
-        <header className="bg-white shadow px-6 py-4 flex flex-wrap justify-between items-center gap-4">
-          <div className="flex items-center gap-3">
-            <FontAwesomeIcon icon={fas.faHouse} className="text-2xl text-sigizi-green" />
-            <h1 className="text-xl font-bold text-gray-800">Dashboard Orang Tua</h1>
+        <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-emerald-100 px-8 py-6 sticky top-0 z-20">
+          <div className="flex items-center gap-4">
+            <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 p-3 rounded-2xl shadow-lg shadow-emerald-200">
+              <FontAwesomeIcon icon={fas.faHouse} className="text-2xl text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">Dashboard Orang Tua</h1>
+              <p className="text-gray-500 text-sm mt-0.5">Pantau status gizi dan tumbuh kembang anak</p>
+            </div>
           </div>
         </header>
 
-        <main className="p-6 overflow-y-auto">
-          {/* SUPER ADMIN: Info + Dropdown Orang Tua */}
+        <main className="p-8 overflow-y-auto">
+          {/* SUPER ADMIN: Info + Dropdown */}
           {userRole === "super_admin" && orangTuaList.length > 0 && (
-            <div className="mb-6 bg-blue-50 rounded-xl p-4 border border-blue-200">
-              <div className="flex items-center gap-3 mb-3">
-                <FontAwesomeIcon icon={fas.faUsers} className="text-blue-600" />
-                <h3 className="font-semibold text-blue-800">Mode Super Admin</h3>
+            <div className="mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="bg-blue-100 p-2 rounded-xl">
+                  <FontAwesomeIcon icon={fas.faUsers} className="text-blue-600 text-lg" />
+                </div>
+                <h3 className="font-bold text-blue-800 text-lg">Mode Super Admin</h3>
               </div>
               <div className="flex flex-col lg:flex-row gap-4">
-                {/* Dropdown Orang Tua */}
                 <div className="flex-1">
-                  <label className="block text-sm font-medium text-blue-700 mb-1">
-                    <FontAwesomeIcon icon={fas.faUser} className="mr-1" /> Pilih Orang Tua
+                  <label className="block text-sm font-bold text-blue-700 mb-2">
+                    <FontAwesomeIcon icon={fas.faUser} className="mr-2" /> Pilih Orang Tua
                   </label>
                   <select
                     value={selectedOrangTuaId || ""}
                     onChange={(e) => handleOrangTuaChange(parseInt(e.target.value))}
-                    className="w-full px-4 py-2.5 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm"
                   >
                     {orangTuaList.map((ot) => (
-                      <option key={ot.id} value={ot.id}>
-                        {ot.nama_lengkap} - {ot.email}
-                      </option>
+                      <option key={ot.id} value={ot.id}>{ot.nama_lengkap} - {ot.email}</option>
                     ))}
                   </select>
                 </div>
 
-                {/* Dropdown Anak (Super Admin) */}
                 {superAdminAnakList.length > 0 && (
                   <div className="flex-1">
-                    <label className="block text-sm font-medium text-blue-700 mb-1">
-                      <FontAwesomeIcon icon={fas.faBaby} className="mr-1" /> Pilih Anak
+                    <label className="block text-sm font-bold text-blue-700 mb-2">
+                      <FontAwesomeIcon icon={fas.faBaby} className="mr-2" /> Pilih Anak
                     </label>
                     <div className="relative">
                       <button
                         onClick={() => setSuperAdminShowAnakDropdown(!superAdminShowAnakDropdown)}
-                        className="w-full flex items-center justify-between px-4 py-2.5 bg-white border border-blue-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                        className="w-full flex items-center justify-between px-4 py-3 bg-white border border-blue-200 rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm"
                       >
                         <div className="flex items-center gap-3">
                           {superAdminSelectedAnak ? (
                             <>
-                              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-sigizi-green to-sigizi-light-green flex items-center justify-center text-white font-bold text-sm">
+                              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white font-bold">
                                 {superAdminSelectedAnak.nama_anak?.charAt(0).toUpperCase()}
                               </div>
                               <div className="text-left">
-                                <p className="font-semibold text-gray-800">{superAdminSelectedAnak.nama_anak}</p>
+                                <p className="font-bold text-gray-800">{superAdminSelectedAnak.nama_anak}</p>
                                 <p className="text-xs text-gray-500">Lahir: {superAdminSelectedAnak.tanggal_lahir}</p>
                               </div>
                             </>
                           ) : (
                             <>
-                              <FontAwesomeIcon icon={fas.faBaby} className="text-sigizi-green text-xl" />
+                              <FontAwesomeIcon icon={fas.faBaby} className="text-emerald-600 text-xl" />
                               <span className="text-gray-700">Pilih Anak</span>
                             </>
                           )}
@@ -722,7 +668,7 @@ export default function OrangTuaDashboard() {
                       {superAdminShowAnakDropdown && (
                         <>
                           <div className="fixed inset-0 z-10" onClick={() => setSuperAdminShowAnakDropdown(false)}></div>
-                          <div className="absolute left-0 mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200 z-20 overflow-hidden">
+                          <div className="absolute left-0 mt-2 w-full bg-white rounded-2xl shadow-xl border border-gray-200 z-20 overflow-hidden">
                             <div className="p-2 max-h-96 overflow-y-auto">
                               {superAdminAnakList.map((anak) => {
                                 const isSelected = superAdminSelectedAnak?.id === anak.id;
@@ -732,19 +678,19 @@ export default function OrangTuaDashboard() {
                                   <button
                                     key={anak.id}
                                     onClick={() => handleSuperAdminAnakChange(anak)}
-                                    className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all mb-1 ${isSelected ? "bg-sigizi-green/10 border border-sigizi-green/20" : "hover:bg-gray-50"}`}
+                                    className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all mb-1 ${isSelected ? "bg-emerald-50 border border-emerald-200" : "hover:bg-gray-50"}`}
                                   >
-                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm ${isSelected ? "bg-sigizi-green" : "bg-gray-400"}`}>
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold ${isSelected ? "bg-gradient-to-br from-emerald-500 to-emerald-600" : "bg-gray-400"}`}>
                                       {anak.nama_anak?.charAt(0).toUpperCase()}
                                     </div>
                                     <div className="flex-1 text-left">
-                                      <p className="font-semibold text-gray-800">{anak.nama_anak}</p>
+                                      <p className="font-bold text-gray-800">{anak.nama_anak}</p>
                                       <div className="flex items-center gap-2 text-xs mt-0.5">
                                         <span className="text-gray-500">{anak.tanggal_lahir}</span>
-                                        {lastStatus && (<span className={`font-medium px-1.5 py-0.5 rounded ${badgeCls}`}>{lastStatus}</span>)}
+                                        {lastStatus && (<span className={`font-bold px-2 py-0.5 rounded-full ${badgeCls}`}>{lastStatus}</span>)}
                                       </div>
                                     </div>
-                                    {isSelected && <FontAwesomeIcon icon={fas.faCheckCircle} className="text-sigizi-green text-sm" />}
+                                    {isSelected && <FontAwesomeIcon icon={fas.faCheckCircle} className="text-emerald-600" />}
                                   </button>
                                 );
                               })}
@@ -756,8 +702,8 @@ export default function OrangTuaDashboard() {
                   </div>
                 )}
               </div>
-              <p className="text-xs text-blue-600 mt-2">
-                <FontAwesomeIcon icon={fas.faInfoCircle} className="mr-1" />
+              <p className="text-xs text-blue-500 mt-3 flex items-center gap-1">
+                <FontAwesomeIcon icon={fas.faInfoCircle} />
                 Pemilihan anak hanya untuk tampilan saat ini, tidak tersimpan antar menu
               </p>
             </div>
@@ -765,28 +711,28 @@ export default function OrangTuaDashboard() {
 
           {/* ORANG TUA: Dropdown Anak */}
           {userRole === "orang_tua" && displayAnakList.length > 0 && (
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Pilih Anak</label>
+            <div className="mb-8">
+              <label className="block text-sm font-bold text-gray-700 mb-2">Pilih Anak</label>
               <div className="relative">
                 <button
                   onClick={() => setShowAnakDropdown(!showAnakDropdown)}
-                  className="w-full md:w-80 flex items-center justify-between px-4 py-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-sigizi-green transition"
+                  className="w-full md:w-96 flex items-center justify-between px-5 py-3.5 bg-white border border-gray-200 rounded-2xl hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition shadow-sm"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-4">
                     {displayAnakData ? (
                       <>
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-sigizi-green to-sigizi-light-green flex items-center justify-center text-white font-bold text-sm">
+                        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white font-bold text-lg">
                           {displayAnakData.nama_anak?.charAt(0).toUpperCase()}
                         </div>
                         <div className="text-left">
-                          <p className="font-semibold text-gray-800">{displayAnakData.nama_anak}</p>
-                          <p className="text-xs text-gray-500">Lahir: {displayAnakData.tanggal_lahir}</p>
+                          <p className="font-bold text-gray-800">{displayAnakData.nama_anak}</p>
+                          <p className="text-sm text-gray-500">Lahir: {displayAnakData.tanggal_lahir}</p>
                         </div>
                       </>
                     ) : (
                       <>
-                        <FontAwesomeIcon icon={fas.faBaby} className="text-sigizi-green text-xl" />
-                        <span className="text-gray-700">Pilih Anak</span>
+                        <FontAwesomeIcon icon={fas.faBaby} className="text-emerald-600 text-2xl" />
+                        <span className="text-gray-700 font-medium">Pilih Anak</span>
                       </>
                     )}
                   </div>
@@ -796,7 +742,7 @@ export default function OrangTuaDashboard() {
                 {showAnakDropdown && (
                   <>
                     <div className="fixed inset-0 z-10" onClick={() => setShowAnakDropdown(false)}></div>
-                    <div className="absolute left-0 mt-2 w-80 md:w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-20 overflow-hidden">
+                    <div className="absolute left-0 mt-2 w-96 bg-white rounded-2xl shadow-xl border border-gray-200 z-20 overflow-hidden">
                       <div className="p-2 max-h-96 overflow-y-auto">
                         {displayAnakList.map((anak) => {
                           const isSelected = selectedAnakId === anak.id;
@@ -806,19 +752,19 @@ export default function OrangTuaDashboard() {
                             <button
                               key={anak.id}
                               onClick={() => { updateSelectedAnak(anak.id, anak, currentUserId); setShowAnakDropdown(false); }}
-                              className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all mb-1 ${isSelected ? "bg-sigizi-green/10 border border-sigizi-green/20" : "hover:bg-gray-50"}`}
+                              className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all mb-1 ${isSelected ? "bg-emerald-50 border border-emerald-200" : "hover:bg-gray-50"}`}
                             >
-                              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm ${isSelected ? "bg-sigizi-green" : "bg-gray-400"}`}>
+                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold ${isSelected ? "bg-gradient-to-br from-emerald-500 to-emerald-600" : "bg-gray-400"}`}>
                                 {anak.nama_anak?.charAt(0).toUpperCase()}
                               </div>
                               <div className="flex-1 text-left">
-                                <p className="font-semibold text-gray-800">{anak.nama_anak}</p>
+                                <p className="font-bold text-gray-800">{anak.nama_anak}</p>
                                 <div className="flex items-center gap-2 text-xs mt-0.5">
                                   <span className="text-gray-500">{anak.tanggal_lahir}</span>
-                                  {lastStatus && (<span className={`font-medium px-1.5 py-0.5 rounded ${badgeCls}`}>{lastStatus}</span>)}
+                                  {lastStatus && (<span className={`font-bold px-2 py-0.5 rounded-full ${badgeCls}`}>{lastStatus}</span>)}
                                 </div>
                               </div>
-                              {isSelected && <FontAwesomeIcon icon={fas.faCheckCircle} className="text-sigizi-green text-sm" />}
+                              {isSelected && <FontAwesomeIcon icon={fas.faCheckCircle} className="text-emerald-600" />}
                             </button>
                           );
                         })}
@@ -830,81 +776,85 @@ export default function OrangTuaDashboard() {
             </div>
           )}
 
-          {/* Info Super Admin (selected user) */}
           {userRole === "super_admin" && selectedOrangTua && (
-            <div className="mb-6">
-              <p className="text-sm text-blue-600 mb-2">
+            <div className="mb-8">
+              <p className="text-sm text-blue-600 bg-blue-50 px-4 py-3 rounded-xl border border-blue-200">
                 Menampilkan data untuk: <strong>{selectedOrangTua.nama_lengkap}</strong>
               </p>
             </div>
           )}
 
           {/* Statistik Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-            <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-sigizi-green">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 border-l-4 border-emerald-500 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
-                <div><p className="text-gray-500 text-sm">Total Anak</p><p className="text-2xl font-bold">{stats.totalAnak}</p></div>
-                <FontAwesomeIcon icon={fas.faBaby} className="text-3xl text-sigizi-green opacity-50" />
+                <div>
+                  <p className="text-gray-500 text-sm font-medium">Total Anak</p>
+                  <p className="text-3xl font-bold text-gray-800 mt-1">{stats.totalAnak}</p>
+                </div>
+                <div className="bg-emerald-100 p-4 rounded-2xl">
+                  <FontAwesomeIcon icon={fas.faBaby} className="text-2xl text-emerald-600" />
+                </div>
               </div>
             </div>
-            <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-500">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 border-l-4 border-emerald-500 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
-                <div><p className="text-gray-500 text-sm">Status Normal</p><p className="text-2xl font-bold text-green-600">{stats.normal}</p></div>
-                <FontAwesomeIcon icon={fas.faCheckCircle} className="text-3xl text-green-500 opacity-50" />
+                <div>
+                  <p className="text-gray-500 text-sm font-medium">Status Normal</p>
+                  <p className="text-3xl font-bold text-emerald-600 mt-1">{stats.normal}</p>
+                </div>
+                <div className="bg-emerald-100 p-4 rounded-2xl">
+                  <FontAwesomeIcon icon={fas.faCheckCircle} className="text-2xl text-emerald-600" />
+                </div>
               </div>
             </div>
-            <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-yellow-500">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 border-l-4 border-amber-500 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
-                <div><p className="text-gray-500 text-sm">Gizi Kurang</p><p className="text-2xl font-bold text-yellow-600">{stats.giziKurang}</p></div>
-                <FontAwesomeIcon icon={fas.faExclamationTriangle} className="text-3xl text-yellow-500 opacity-50" />
+                <div>
+                  <p className="text-gray-500 text-sm font-medium">Gizi Kurang</p>
+                  <p className="text-3xl font-bold text-amber-600 mt-1">{stats.giziKurang}</p>
+                </div>
+                <div className="bg-amber-100 p-4 rounded-2xl">
+                  <FontAwesomeIcon icon={fas.faExclamationTriangle} className="text-2xl text-amber-600" />
+                </div>
               </div>
             </div>
-            <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-red-500">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 border-l-4 border-red-500 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
-                <div><p className="text-gray-500 text-sm">Stunting</p><p className="text-2xl font-bold text-red-600">{stats.stunting}</p></div>
-                <FontAwesomeIcon icon={fas.faChild} className="text-3xl text-red-500 opacity-50" />
+                <div>
+                  <p className="text-gray-500 text-sm font-medium">Stunting</p>
+                  <p className="text-3xl font-bold text-red-600 mt-1">{stats.stunting}</p>
+                </div>
+                <div className="bg-red-100 p-4 rounded-2xl">
+                  <FontAwesomeIcon icon={fas.faChild} className="text-2xl text-red-600" />
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Pesan kosong */}
-          {displayAnakList.length === 0 && (
-            <div className="bg-yellow-50 rounded-xl p-8 text-center mb-6">
-              <FontAwesomeIcon icon={fas.faBaby} className="text-4xl text-yellow-500 mb-3" />
-              <p className="text-gray-600 font-medium">Belum ada data anak</p>
-              <p className="text-gray-500 text-sm mt-1">Silakan tambah data anak di menu Data Anak</p>
-            </div>
-          )}
-
           {/* Informasi Anak Terpilih */}
           {displayAnakData && (
-            <div className="bg-gradient-to-r from-sigizi-green to-sigizi-light-green text-white rounded-xl p-6 mb-6">
-              <div className="flex justify-between items-start flex-wrap gap-4">
+            <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-2xl p-7 mb-8 shadow-lg shadow-emerald-200">
+              <div className="flex justify-between items-start flex-wrap gap-6">
                 <div>
-                  <h2 className="text-2xl font-bold">{displayAnakData.nama_anak}</h2>
-                  <p className="opacity-90 mt-1">
-                    Lahir: {displayAnakData.tanggal_lahir} |
-                    JK: {displayAnakData.jenis_kelamin === "L" ? "Laki-laki" : "Perempuan"} |
-                    Verifikasi: {displayAnakData.status_verifikasi || "Menunggu"}
+                  <h2 className="text-3xl font-bold">{displayAnakData.nama_anak}</h2>
+                  <p className="opacity-90 mt-2">
+                    Lahir: {displayAnakData.tanggal_lahir} | JK: {displayAnakData.jenis_kelamin === "L" ? "Laki-laki" : "Perempuan"} | Verifikasi: {displayAnakData.status_verifikasi || "Menunggu"}
                   </p>
                   {latestMeasurement && (
-                    <div className="flex flex-wrap gap-3 mt-3">
-                      <div className="flex items-center gap-2 bg-white/20 rounded-lg px-3 py-1.5">
+                    <div className="flex flex-wrap gap-3 mt-4">
+                      <div className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-xl backdrop-blur-sm">
                         <FontAwesomeIcon icon={fas.faWeightScale} />
-                        <span className="font-medium">{latestMeasurement.berat_badan} kg</span>
+                        <span className="font-bold">{latestMeasurement.berat_badan} kg</span>
                       </div>
-                      <div className="flex items-center gap-2 bg-white/20 rounded-lg px-3 py-1.5">
+                      <div className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-xl backdrop-blur-sm">
                         <FontAwesomeIcon icon={fas.faRuler} />
-                        <span className="font-medium">{latestMeasurement.tinggi_badan} cm</span>
+                        <span className="font-bold">{latestMeasurement.tinggi_badan} cm</span>
                       </div>
-                      <div className={`flex items-center gap-2 rounded-lg px-3 py-1.5 font-semibold ${
-                        latestMeasurement.status_gizi === "Normal"
-                          ? "bg-green-500 text-white"
-                          : latestMeasurement.status_gizi === "Stunting"
-                          ? "bg-red-500 text-white"
-                          : latestMeasurement.status_gizi === "Pra-stunting" || latestMeasurement.status_gizi === "Pra-Stunting" || latestMeasurement.status_gizi === "Gizi Berlebih"
-                          ? "bg-yellow-400 text-yellow-900"
-                          : "bg-white/20 text-white"
+                      <div className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold ${
+                        latestMeasurement.status_gizi === "Normal" ? "bg-emerald-500" :
+                        latestMeasurement.status_gizi === "Stunting" ? "bg-red-500" :
+                        "bg-amber-500"
                       }`}>
                         <FontAwesomeIcon icon={fas.faChartLine} />
                         <span>{latestMeasurement.status_gizi}</span>
@@ -914,28 +864,19 @@ export default function OrangTuaDashboard() {
                 </div>
                 <div className="text-right">
                   <p className="text-sm opacity-75">Terakhir diupdate</p>
-                  <p className="font-semibold">{latestMeasurement?.tanggal_pengukuran || "-"}</p>
+                  <p className="font-bold text-lg">{latestMeasurement?.tanggal_pengukuran || "-"}</p>
                 </div>
               </div>
             </div>
           )}
 
-          {/* KARTU DATA DIRI ORANG TUA */}
+          {/* Data Diri Orang Tua */}
           {userRole === "orang_tua" && user && (
-            <DataDiriOrangTua 
-              user={user} 
-              profilData={profilData} 
-              navigate={navigate} 
-            />
+            <DataDiriOrangTua user={user} profilData={profilData} navigate={navigate} />
           )}
 
-          {/* KARTU DATA DIRI ORANG TUA - MODE SUPER ADMIN */}
           {userRole === "super_admin" && selectedOrangTua && (
-            <DataDiriOrangTua 
-              user={selectedOrangTua} 
-              profilData={superAdminProfilData} 
-              navigate={navigate} 
-            />
+            <DataDiriOrangTua user={selectedOrangTua} profilData={superAdminProfilData} navigate={navigate} />
           )}
 
           {/* Edukasi */}
