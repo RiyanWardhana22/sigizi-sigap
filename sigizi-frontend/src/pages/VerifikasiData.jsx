@@ -10,7 +10,7 @@ import {
   FaFilter,
   FaChevronLeft,
   FaChevronRight,
-  FaDatabase,
+  FaUsers,
   FaHourglassHalf,
   FaBaby,
   FaNotesMedical,
@@ -167,7 +167,7 @@ export default function VerifikasiData() {
               {
                 label: "Total Pendaftar",
                 value: stats.total,
-                icon: <FaDatabase />,
+                icon: <FaUsers />,
                 color: "blue",
               },
               {
@@ -431,7 +431,7 @@ export default function VerifikasiData() {
                         label: "Berat",
                         val: selectedAnak.berat_badan,
                         unit: "kg",
-                        icon: <FaDatabase className="text-emerald-500" />,
+                        icon: <FaUsers className="text-emerald-500" />,
                         bg: "bg-emerald-50",
                       },
                       {
