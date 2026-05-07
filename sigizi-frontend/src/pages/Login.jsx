@@ -579,7 +579,7 @@ export default function Login() {
 
   const handleForgotPassword = (e) => {
     e.preventDefault();
-    alert(
+    Swal.fire(
       "Untuk mengatur ulang kata sandi, silakan hubungi Administrator atau kader Posyandu setempat.",
     );
   };

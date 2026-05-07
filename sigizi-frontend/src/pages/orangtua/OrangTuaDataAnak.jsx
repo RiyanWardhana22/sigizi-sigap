@@ -351,7 +351,13 @@ export default function OrangTuaDataAnak() {
       const data = JSON.parse(responseText);
 
       if (data.status === "success") {
-        alert("Data anak berhasil ditambahkan!");
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Data anak berhasil ditambahkan!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
         setFormData({
           nama_anak: "",
           tanggal_lahir: "",
