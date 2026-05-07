@@ -32,6 +32,8 @@ export default function DataAnak() {
   const [filterWilayah, setFilterWilayah] = useState("semua");
   const [searchAnak, setSearchAnak] = useState("");
   const [filterStatusGizi, setFilterStatusGizi] = useState("semua");
+  const [orangTuaPage, setOrangTuaPage] = useState(1);
+  const ITEMS_PER_PAGE = 20;
   const [stats, setStats] = useState({
     totalAnak: 0,
     normal: 0,
@@ -306,6 +308,22 @@ export default function DataAnak() {
     return matchesSearch && matchesWilayah;
   });
 
+  const totalOrangTuaPages = Math.ceil(filteredOrangTua.length / ITEMS_PER_PAGE);
+  const paginatedOrangTua = filteredOrangTua.slice(
+    (orangTuaPage - 1) * ITEMS_PER_PAGE,
+    orangTuaPage * ITEMS_PER_PAGE
+  );
+
+  const handleSearchOrangTuaChange = (e) => {
+    setSearchOrangTua(e.target.value);
+    setOrangTuaPage(1);
+  };
+
+  const handleFilterWilayahChange = (e) => {
+    setFilterWilayah(e.target.value);
+    setOrangTuaPage(1);
+  };
+
   const filteredAnak = anakList.filter((anak) => {
     const matchesSearch = anak.nama_anak
       ?.toLowerCase()
@@ -396,7 +414,7 @@ export default function DataAnak() {
                       type="text"
                       placeholder="Cari nama atau email..."
                       value={searchOrangTua}
-                      onChange={(e) => setSearchOrangTua(e.target.value)}
+                      onChange={(e) => handleSearchOrangTuaChange(e)}
                       className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm bg-white shadow-sm transition-all"
                     />
                   </div>
@@ -407,7 +425,7 @@ export default function DataAnak() {
                   </label>
                   <select
                     value={filterWilayah}
-                    onChange={(e) => setFilterWilayah(e.target.value)}
+                    onChange={(e) => handleFilterWilayahChange(e)}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm bg-white shadow-sm transition-all"
                   >
                     <option value="semua">Semua Domisili</option>
@@ -444,8 +462,8 @@ export default function DataAnak() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                  {filteredOrangTua.length > 0 ? (
-                    filteredOrangTua.map((ot, index) => (
+                  {paginatedOrangTua.length > 0 ? (
+                    paginatedOrangTua.map((ot, index) => (
                       <tr
                         key={ot.id}
                         className={`transition-all duration-200 ${
@@ -455,7 +473,7 @@ export default function DataAnak() {
                         }`}
                       >
                         <td className="px-6 py-4 text-sm text-gray-500 font-medium">
-                          {index + 1}
+                          {(orangTuaPage - 1) * ITEMS_PER_PAGE + index + 1}
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
@@ -532,6 +550,82 @@ export default function DataAnak() {
                 </tbody>
               </table>
             </div>
+
+            {/* Pagination Orang Tua */}
+            {filteredOrangTua.length > 0 && (
+              <div className="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between flex-wrap gap-3">
+                <p className="text-sm text-gray-500">
+                  Menampilkan{" "}
+                  <span className="font-semibold text-gray-700">
+                    {(orangTuaPage - 1) * ITEMS_PER_PAGE + 1}
+                  </span>{" "}
+                  –{" "}
+                  <span className="font-semibold text-gray-700">
+                    {Math.min(orangTuaPage * ITEMS_PER_PAGE, filteredOrangTua.length)}
+                  </span>{" "}
+                  dari{" "}
+                  <span className="font-semibold text-gray-700">
+                    {filteredOrangTua.length}
+                  </span>{" "}
+                  orang tua
+                </p>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setOrangTuaPage((p) => Math.max(p - 1, 1))}
+                    disabled={orangTuaPage === 1}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed border-gray-200 bg-white text-gray-700 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-700"
+                  >
+                    <FontAwesomeIcon icon={fas.faChevronLeft} className="text-xs" />
+                    Previous
+                  </button>
+
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: totalOrangTuaPages }, (_, i) => i + 1)
+                      .filter(
+                        (p) =>
+                          p === 1 ||
+                          p === totalOrangTuaPages ||
+                          Math.abs(p - orangTuaPage) <= 1
+                      )
+                      .reduce((acc, p, idx, arr) => {
+                        if (idx > 0 && p - arr[idx - 1] > 1) {
+                          acc.push("...");
+                        }
+                        acc.push(p);
+                        return acc;
+                      }, [])
+                      .map((item, idx) =>
+                        item === "..." ? (
+                          <span key={`ellipsis-${idx}`} className="px-2 text-gray-400 text-sm">
+                            ...
+                          </span>
+                        ) : (
+                          <button
+                            key={item}
+                            onClick={() => setOrangTuaPage(item)}
+                            className={`w-9 h-9 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                              orangTuaPage === item
+                                ? "bg-emerald-600 text-white shadow-md shadow-emerald-200"
+                                : "bg-white border border-gray-200 text-gray-600 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-700"
+                            }`}
+                          >
+                            {item}
+                          </button>
+                        )
+                      )}
+                  </div>
+
+                  <button
+                    onClick={() => setOrangTuaPage((p) => Math.min(p + 1, totalOrangTuaPages))}
+                    disabled={orangTuaPage === totalOrangTuaPages}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed border-gray-200 bg-white text-gray-700 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-700"
+                  >
+                    Next
+                    <FontAwesomeIcon icon={fas.faChevronRight} className="text-xs" />
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Data Diri Orang Tua Terpilih */}
