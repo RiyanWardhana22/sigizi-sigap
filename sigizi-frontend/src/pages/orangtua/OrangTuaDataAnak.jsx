@@ -76,7 +76,8 @@ export default function OrangTuaDataAnak() {
   const [selectedOrangTuaId, setSelectedOrangTuaId] = useState(null);
   const [superAdminAnakList, setSuperAdminAnakList] = useState([]);
   const [superAdminSelectedAnak, setSuperAdminSelectedAnak] = useState(null);
-  const [superAdminShowAnakDropdown, setSuperAdminShowAnakDropdown] = useState(false);
+  const [superAdminShowAnakDropdown, setSuperAdminShowAnakDropdown] =
+    useState(false);
 
   const [formData, setFormData] = useState({
     nama_anak: "",
@@ -119,7 +120,9 @@ export default function OrangTuaDataAnak() {
 
   const fetchWilayah = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/get_wilayah.php`);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/get_wilayah.php`,
+      );
       const data = await res.json();
       if (data.status === "success") setWilayahList(data.data);
     } catch (e) {
@@ -129,7 +132,9 @@ export default function OrangTuaDataAnak() {
 
   const fetchProfil = async (userId) => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/profil_orangtua.php?user_id=${userId}`);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/profil_orangtua.php?user_id=${userId}`,
+      );
       const data = await res.json();
       if (data.status === "success") {
         setProfilData(data.data);
@@ -159,14 +164,20 @@ export default function OrangTuaDataAnak() {
     setProfilSaving(true);
     setProfilMessage({ type: "", text: "" });
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/profil_orangtua.php`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: user.id, ...profilForm }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/profil_orangtua.php`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: user.id, ...profilForm }),
+        },
+      );
       const data = await res.json();
       if (data.status === "success") {
-        setProfilMessage({ type: "success", text: "Data diri berhasil disimpan!" });
+        setProfilMessage({
+          type: "success",
+          text: "Data diri berhasil disimpan!",
+        });
         setProfilLengkap(true);
         const wilayah = wilayahList.find((w) => w.id == profilForm.wilayah_id);
         setProfilData((prev) => ({
@@ -191,7 +202,9 @@ export default function OrangTuaDataAnak() {
 
   const fetchOrangTuaList = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/get_users.php`);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/get_users.php`,
+      );
       const data = await response.json();
       if (data.status === "success") {
         const orangTua = data.data.filter((u) => u.role === "orang_tua");
@@ -216,8 +229,11 @@ export default function OrangTuaDataAnak() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/get_riwayat_anak.php?user_id=${userId}`);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/get_riwayat_anak.php?user_id=${userId}`,
+      );
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
 
       if (data.status === "success") {
@@ -247,16 +263,25 @@ export default function OrangTuaDataAnak() {
         }
       } else if (data.status === "empty") {
         if (role === "orang_tua") updateAnakList([], userId, role);
-        else { setSuperAdminAnakList([]); setSuperAdminSelectedAnak(null); }
+        else {
+          setSuperAdminAnakList([]);
+          setSuperAdminSelectedAnak(null);
+        }
       } else {
         setError(data.message || "Gagal memuat data anak");
         if (role === "orang_tua") updateAnakList([], userId, role);
-        else { setSuperAdminAnakList([]); setSuperAdminSelectedAnak(null); }
+        else {
+          setSuperAdminAnakList([]);
+          setSuperAdminSelectedAnak(null);
+        }
       }
     } catch (error) {
       setError("Terjadi kesalahan saat memuat data: " + error.message);
       if (role === "orang_tua") updateAnakList([], userId, role);
-      else { setSuperAdminAnakList([]); setSuperAdminSelectedAnak(null); }
+      else {
+        setSuperAdminAnakList([]);
+        setSuperAdminSelectedAnak(null);
+      }
     } finally {
       setLoading(false);
     }
@@ -285,8 +310,10 @@ export default function OrangTuaDataAnak() {
     setAnalysisResult(null);
   };
 
-  const handleInputChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
-  const handleUpdateChange = (e) => setUpdateData({ ...updateData, [e.target.name]: e.target.value });
+  const handleInputChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleUpdateChange = (e) =>
+    setUpdateData({ ...updateData, [e.target.name]: e.target.value });
 
   const handleClickTambahAnak = () => {
     if (userRole === "orang_tua" && !profilLengkap) {
@@ -298,20 +325,28 @@ export default function OrangTuaDataAnak() {
 
   const handleAddAnak = async (e) => {
     e.preventDefault();
-    const targetUserId = userRole === "super_admin" ? selectedOrangTuaId : user.id;
+    const targetUserId =
+      userRole === "super_admin" ? selectedOrangTuaId : user.id;
     const payload = {
       ...formData,
       orang_tua_id: targetUserId,
-      lingkar_kepala: formData.lingkar_kepala && formData.lingkar_kepala.trim() !== "" ? formData.lingkar_kepala : null,
+      lingkar_kepala:
+        formData.lingkar_kepala && formData.lingkar_kepala.trim() !== ""
+          ? formData.lingkar_kepala
+          : null,
     };
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/add_anak.php`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/add_anak.php`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
       const responseText = await response.text();
       const data = JSON.parse(responseText);
 
@@ -326,7 +361,10 @@ export default function OrangTuaDataAnak() {
           lingkar_kepala: "",
         });
         setShowAddForm(false);
-        await fetchData(targetUserId, userRole === "super_admin" ? "super_admin" : "orang_tua");
+        await fetchData(
+          targetUserId,
+          userRole === "super_admin" ? "super_admin" : "orang_tua",
+        );
       } else {
         alert(data.message || "Gagal menambahkan data anak");
       }
@@ -337,9 +375,11 @@ export default function OrangTuaDataAnak() {
 
   const handleUpdatePertumbuhan = async (e) => {
     e.preventDefault();
-    const currentAnakId = userRole === "orang_tua" ? selectedAnakId : superAdminSelectedAnak?.id;
+    const currentAnakId =
+      userRole === "orang_tua" ? selectedAnakId : superAdminSelectedAnak?.id;
     if (!currentAnakId) return;
-    const targetUserId = userRole === "super_admin" ? selectedOrangTuaId : user.id;
+    const targetUserId =
+      userRole === "super_admin" ? selectedOrangTuaId : user.id;
 
     const payload = {
       anak_id: currentAnakId,
@@ -353,20 +393,34 @@ export default function OrangTuaDataAnak() {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/add_pengukuran.php`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/add_pengukuran.php`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(payload),
+        },
+      );
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
       const data = JSON.parse(await response.text());
 
       if (data.status === "success") {
         setAnalysisResult(data.hasil);
         setShowAnalysis(true);
-        setUpdateData({ tinggi_badan: "", berat_badan: "", lingkar_kepala: "" });
+        setUpdateData({
+          tinggi_badan: "",
+          berat_badan: "",
+          lingkar_kepala: "",
+        });
         setShowUpdateForm(false);
-        await fetchData(targetUserId, userRole === "super_admin" ? "super_admin" : "orang_tua");
+        await fetchData(
+          targetUserId,
+          userRole === "super_admin" ? "super_admin" : "orang_tua",
+        );
         setTimeout(() => setShowAnalysis(false), 5000);
       } else {
         alert(data.message || "Gagal mengupdate data pertumbuhan");
@@ -384,7 +438,8 @@ export default function OrangTuaDataAnak() {
   };
 
   const calculateDetailedAge = (birthDate, measurementDate = null) => {
-    if (!birthDate) return { years: 0, months: 0, days: 0, totalMonths: 0, totalDays: 0 };
+    if (!birthDate)
+      return { years: 0, months: 0, days: 0, totalMonths: 0, totalDays: 0 };
     const birth = new Date(birthDate);
     const today = measurementDate ? new Date(measurementDate) : new Date();
     if (isNaN(birth.getTime()) || isNaN(today.getTime()))
@@ -392,9 +447,21 @@ export default function OrangTuaDataAnak() {
     let years = today.getFullYear() - birth.getFullYear();
     let months = today.getMonth() - birth.getMonth();
     let days = today.getDate() - birth.getDate();
-    if (days < 0) { months--; days += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
-    if (months < 0) { years--; months += 12; }
-    return { years, months, days, totalMonths: years * 12 + months, totalDays: Math.floor((today - birth) / 86400000) };
+    if (days < 0) {
+      months--;
+      days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+    }
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+    return {
+      years,
+      months,
+      days,
+      totalMonths: years * 12 + months,
+      totalDays: Math.floor((today - birth) / 86400000),
+    };
   };
 
   const formatAge = (age) => {
@@ -430,12 +497,19 @@ export default function OrangTuaDataAnak() {
     return map[status] || "bg-gray-100 text-gray-700 border-gray-200";
   };
 
-  const displayAnakData = userRole === "orang_tua" ? selectedAnakData : superAdminSelectedAnak;
-  const displayAnakList = userRole === "orang_tua" ? anakList : superAdminAnakList;
-  const displaySelectedAnakId = userRole === "orang_tua" ? selectedAnakId : superAdminSelectedAnak?.id;
-  const ageDetail = displayAnakData ? calculateDetailedAge(displayAnakData.tanggal_lahir) : null;
+  const displayAnakData =
+    userRole === "orang_tua" ? selectedAnakData : superAdminSelectedAnak;
+  const displayAnakList =
+    userRole === "orang_tua" ? anakList : superAdminAnakList;
+  const displaySelectedAnakId =
+    userRole === "orang_tua" ? selectedAnakId : superAdminSelectedAnak?.id;
+  const ageDetail = displayAnakData
+    ? calculateDetailedAge(displayAnakData.tanggal_lahir)
+    : null;
   const formattedAge = ageDetail ? formatAge(ageDetail) : "-";
-  const selectedOrangTua = orangTuaList.find((o) => o.id === selectedOrangTuaId);
+  const selectedOrangTua = orangTuaList.find(
+    (o) => o.id === selectedOrangTuaId,
+  );
 
   if (loading) {
     return (
@@ -445,7 +519,10 @@ export default function OrangTuaDataAnak() {
           <div className="text-center">
             <div className="relative">
               <div className="animate-spin rounded-full h-16 w-16 border-4 border-emerald-200 border-t-emerald-600 mx-auto"></div>
-              <FontAwesomeIcon icon={fas.faBaby} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-emerald-600 text-xl" />
+              <FontAwesomeIcon
+                icon={fas.faBaby}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-emerald-600 text-xl"
+              />
             </div>
             <p className="mt-6 text-gray-600 font-medium">Memuat data...</p>
           </div>
@@ -462,12 +539,11 @@ export default function OrangTuaDataAnak() {
         {/* Header Modern */}
         <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-emerald-100 px-8 py-6 sticky top-0 z-20">
           <div className="flex items-center gap-4">
-            <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 p-3 rounded-2xl shadow-lg shadow-emerald-200">
-              <FontAwesomeIcon icon={fas.faChild} className="text-2xl text-white" />
-            </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-800">Data Anak</h1>
-              <p className="text-gray-500 text-sm mt-0.5">Kelola data anak dan pantau pertumbuhannya</p>
+              <p className="text-gray-500 text-sm mt-0.5">
+                Kelola data anak dan pantau pertumbuhannya
+              </p>
             </div>
           </div>
         </header>
@@ -477,7 +553,10 @@ export default function OrangTuaDataAnak() {
           {error && (
             <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-2xl flex items-center gap-3">
               <div className="bg-red-100 p-2 rounded-xl">
-                <FontAwesomeIcon icon={fas.faExclamationTriangle} className="text-red-500" />
+                <FontAwesomeIcon
+                  icon={fas.faExclamationTriangle}
+                  className="text-red-500"
+                />
               </div>
               <span className="font-medium">{error}</span>
             </div>
@@ -489,13 +568,19 @@ export default function OrangTuaDataAnak() {
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="bg-amber-100 p-2.5 rounded-xl">
-                    <FontAwesomeIcon icon={fas.faCircleExclamation} className="text-amber-600 text-xl" />
+                    <FontAwesomeIcon
+                      icon={fas.faCircleExclamation}
+                      className="text-amber-600 text-xl"
+                    />
                   </div>
-                  <h3 className="font-bold text-amber-800 text-lg">Lengkapi Data Diri Terlebih Dahulu</h3>
+                  <h3 className="font-bold text-amber-800 text-lg">
+                    Lengkapi Data Diri Terlebih Dahulu
+                  </h3>
                 </div>
                 <p className="text-sm text-amber-700 ml-14">
-                  Sebelum menambah data anak, Anda perlu melengkapi data diri meliputi tanggal lahir, domisili,
-                  penghasilan, pendidikan ibu, kondisi sanitasi, kualitas air, dan akses layanan kesehatan.
+                  Sebelum menambah data anak, Anda perlu melengkapi data diri
+                  meliputi tanggal lahir, domisili, penghasilan, pendidikan ibu,
+                  kondisi sanitasi, kualitas air, dan akses layanan kesehatan.
                 </p>
               </div>
               <button
@@ -513,7 +598,10 @@ export default function OrangTuaDataAnak() {
               <div className="flex items-center justify-between mb-5">
                 <h3 className="font-bold text-gray-700 flex items-center gap-3 text-lg">
                   <div className="bg-emerald-100 p-2 rounded-xl">
-                    <FontAwesomeIcon icon={fas.faIdCard} className="text-emerald-600" />
+                    <FontAwesomeIcon
+                      icon={fas.faIdCard}
+                      className="text-emerald-600"
+                    />
                   </div>
                   Data Diri Orang Tua
                 </h3>
@@ -526,20 +614,69 @@ export default function OrangTuaDataAnak() {
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4">
                 {[
-                  { label: "Tanggal Lahir", value: profilData.tanggal_lahir || "-", sub: profilData.tanggal_lahir ? `${calculateOrangTuaAge(profilData.tanggal_lahir)} thn` : null, icon: fas.faCalendar, color: "blue" },
-                  { label: "Domisili", value: profilData.nama_kabupaten || "-", icon: fas.faLocationDot, color: "emerald" },
-                  { label: "Penghasilan/bln", value: `Rp ${profilData.penghasilan_range || "-"}`, icon: fas.faMoneyBillWave, color: "emerald" },
-                  { label: "Pendidikan Ibu", value: profilData.pendidikan_ibu || "-", icon: fas.faGraduationCap, color: "indigo" },
-                  { label: "Sanitasi", value: profilData.sanitasi || "-", icon: fas.faToilet, color: "gray" },
-                  { label: "Kualitas Air", value: profilData.kualitas_air || "-", icon: fas.faDroplet, color: "cyan" },
-                  { label: "Akses Kesehatan", value: profilData.akses_kesehatan || "-", icon: fas.faHospital, color: "purple" },
+                  {
+                    label: "Tanggal Lahir",
+                    value: profilData.tanggal_lahir || "-",
+                    sub: profilData.tanggal_lahir
+                      ? `${calculateOrangTuaAge(profilData.tanggal_lahir)} thn`
+                      : null,
+                    icon: fas.faCalendar,
+                    color: "blue",
+                  },
+                  {
+                    label: "Domisili",
+                    value: profilData.nama_kabupaten || "-",
+                    icon: fas.faLocationDot,
+                    color: "emerald",
+                  },
+                  {
+                    label: "Penghasilan/bln",
+                    value: `Rp ${profilData.penghasilan_range || "-"}`,
+                    icon: fas.faMoneyBillWave,
+                    color: "emerald",
+                  },
+                  {
+                    label: "Pendidikan Ibu",
+                    value: profilData.pendidikan_ibu || "-",
+                    icon: fas.faGraduationCap,
+                    color: "indigo",
+                  },
+                  {
+                    label: "Sanitasi",
+                    value: profilData.sanitasi || "-",
+                    icon: fas.faToilet,
+                    color: "gray",
+                  },
+                  {
+                    label: "Kualitas Air",
+                    value: profilData.kualitas_air || "-",
+                    icon: fas.faDroplet,
+                    color: "cyan",
+                  },
+                  {
+                    label: "Akses Kesehatan",
+                    value: profilData.akses_kesehatan || "-",
+                    icon: fas.faHospital,
+                    color: "purple",
+                  },
                 ].map((item) => (
-                  <div key={item.label} className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-4 border border-gray-100 hover:shadow-md transition-shadow">
+                  <div
+                    key={item.label}
+                    className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-4 border border-gray-100 hover:shadow-md transition-shadow"
+                  >
                     <p className="text-gray-400 text-xs flex items-center gap-1.5 mb-2 font-medium">
-                      <FontAwesomeIcon icon={item.icon} className={`text-${item.color}-500`} /> {item.label}
+                      <FontAwesomeIcon
+                        icon={item.icon}
+                        className={`text-${item.color}-500`}
+                      />{" "}
+                      {item.label}
                     </p>
-                    <p className="font-bold text-gray-700 text-sm">{item.value}</p>
-                    {item.sub && <p className="text-xs text-gray-400 mt-1">{item.sub}</p>}
+                    <p className="font-bold text-gray-700 text-sm">
+                      {item.value}
+                    </p>
+                    {item.sub && (
+                      <p className="text-xs text-gray-400 mt-1">{item.sub}</p>
+                    )}
                   </div>
                 ))}
               </div>
@@ -551,9 +688,14 @@ export default function OrangTuaDataAnak() {
             <div className="mb-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
               <div className="flex items-center gap-3 mb-4">
                 <div className="bg-blue-100 p-2 rounded-xl">
-                  <FontAwesomeIcon icon={fas.faUsers} className="text-blue-600 text-lg" />
+                  <FontAwesomeIcon
+                    icon={fas.faUsers}
+                    className="text-blue-600 text-lg"
+                  />
                 </div>
-                <h3 className="font-bold text-blue-800 text-lg">Mode Super Admin</h3>
+                <h3 className="font-bold text-blue-800 text-lg">
+                  Mode Super Admin
+                </h3>
               </div>
               <select
                 value={selectedOrangTuaId || ""}
@@ -568,7 +710,8 @@ export default function OrangTuaDataAnak() {
               </select>
               <p className="text-xs text-blue-500 mt-3 flex items-center gap-1.5">
                 <FontAwesomeIcon icon={fas.faInfoCircle} />
-                Pemilihan anak hanya untuk tampilan saat ini, tidak tersimpan antar menu
+                Pemilihan anak hanya untuk tampilan saat ini, tidak tersimpan
+                antar menu
               </p>
             </div>
           )}
@@ -579,29 +722,49 @@ export default function OrangTuaDataAnak() {
               <div className="flex justify-between items-start">
                 <div className="flex items-start gap-4">
                   <div className="bg-emerald-100 p-3 rounded-xl">
-                    <FontAwesomeIcon icon={fas.faChartBar} className="text-emerald-600 text-xl" />
+                    <FontAwesomeIcon
+                      icon={fas.faChartBar}
+                      className="text-emerald-600 text-xl"
+                    />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-800 text-lg">Hasil Analisis Gizi</h3>
+                    <h3 className="font-bold text-gray-800 text-lg">
+                      Hasil Analisis Gizi
+                    </h3>
                     <div className="grid grid-cols-3 gap-6 mt-3">
                       <div>
-                        <p className="text-xs text-gray-500 font-medium">Usia</p>
-                        <p className="font-bold text-gray-800">{analysisResult.umur_bulan} bulan</p>
+                        <p className="text-xs text-gray-500 font-medium">
+                          Usia
+                        </p>
+                        <p className="font-bold text-gray-800">
+                          {analysisResult.umur_bulan} bulan
+                        </p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500 font-medium">Z-Score</p>
-                        <p className="font-bold text-emerald-600">{analysisResult.z_score}</p>
+                        <p className="text-xs text-gray-500 font-medium">
+                          Z-Score
+                        </p>
+                        <p className="font-bold text-emerald-600">
+                          {analysisResult.z_score}
+                        </p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500 font-medium">Status Gizi</p>
-                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${getStatusBadge(analysisResult.status_gizi)}`}>
+                        <p className="text-xs text-gray-500 font-medium">
+                          Status Gizi
+                        </p>
+                        <span
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${getStatusBadge(analysisResult.status_gizi)}`}
+                        >
                           {analysisResult.status_gizi}
                         </span>
                       </div>
                     </div>
                   </div>
                 </div>
-                <button onClick={() => setShowAnalysis(false)} className="text-gray-400 hover:text-gray-600 bg-white p-2 rounded-xl shadow-sm">
+                <button
+                  onClick={() => setShowAnalysis(false)}
+                  className="text-gray-400 hover:text-gray-600 bg-white p-2 rounded-xl shadow-sm"
+                >
                   <FontAwesomeIcon icon={fas.faTimes} />
                 </button>
               </div>
@@ -614,12 +777,18 @@ export default function OrangTuaDataAnak() {
               <div className="flex-1 min-w-[300px]">
                 {displayAnakList.length > 0 && (
                   <>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Pilih Anak</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                      Pilih Anak
+                    </label>
                     <div className="relative">
                       <button
                         onClick={() => {
-                          if (userRole === "orang_tua") setShowAnakDropdown(!showAnakDropdown);
-                          else setSuperAdminShowAnakDropdown(!superAdminShowAnakDropdown);
+                          if (userRole === "orang_tua")
+                            setShowAnakDropdown(!showAnakDropdown);
+                          else
+                            setSuperAdminShowAnakDropdown(
+                              !superAdminShowAnakDropdown,
+                            );
                         }}
                         className="w-full flex items-center justify-between px-5 py-3.5 bg-white border border-gray-200 rounded-2xl hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition shadow-sm"
                       >
@@ -627,33 +796,54 @@ export default function OrangTuaDataAnak() {
                           {displayAnakData ? (
                             <>
                               <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white font-bold text-lg">
-                                {displayAnakData.nama_anak?.charAt(0).toUpperCase()}
+                                {displayAnakData.nama_anak
+                                  ?.charAt(0)
+                                  .toUpperCase()}
                               </div>
                               <div className="text-left">
-                                <p className="font-bold text-gray-800">{displayAnakData.nama_anak}</p>
-                                <p className="text-sm text-gray-500">Lahir: {displayAnakData.tanggal_lahir}</p>
+                                <p className="font-bold text-gray-800">
+                                  {displayAnakData.nama_anak}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                  Lahir: {displayAnakData.tanggal_lahir}
+                                </p>
                               </div>
                             </>
                           ) : (
                             <>
-                              <FontAwesomeIcon icon={fas.faBaby} className="text-emerald-600 text-2xl" />
-                              <span className="text-gray-700 font-medium">Pilih Anak</span>
+                              <FontAwesomeIcon
+                                icon={fas.faBaby}
+                                className="text-emerald-600 text-2xl"
+                              />
+                              <span className="text-gray-700 font-medium">
+                                Pilih Anak
+                              </span>
                             </>
                           )}
                         </div>
-                        <FontAwesomeIcon icon={fas.faChevronDown} className="text-gray-400" />
+                        <FontAwesomeIcon
+                          icon={fas.faChevronDown}
+                          className="text-gray-400"
+                        />
                       </button>
 
                       {/* Dropdown orang_tua */}
                       {userRole === "orang_tua" && showAnakDropdown && (
                         <>
-                          <div className="fixed inset-0 z-10" onClick={() => setShowAnakDropdown(false)}></div>
+                          <div
+                            className="fixed inset-0 z-10"
+                            onClick={() => setShowAnakDropdown(false)}
+                          ></div>
                           <div className="absolute left-0 mt-2 w-full bg-white rounded-2xl shadow-xl border border-gray-200 z-20 overflow-hidden">
                             <div className="p-2 max-h-96 overflow-y-auto">
                               {displayAnakList.map((anak) => {
-                                const isSelected = displaySelectedAnakId === anak.id;
-                                const lastStatus = anak.riwayat?.slice(-1)[0]?.status_gizi;
-                                const anakAge = calculateDetailedAge(anak.tanggal_lahir);
+                                const isSelected =
+                                  displaySelectedAnakId === anak.id;
+                                const lastStatus =
+                                  anak.riwayat?.slice(-1)[0]?.status_gizi;
+                                const anakAge = calculateDetailedAge(
+                                  anak.tanggal_lahir,
+                                );
                                 const badgeClass = getStatusBadge(lastStatus);
                                 return (
                                   <button
@@ -661,30 +851,66 @@ export default function OrangTuaDataAnak() {
                                     onClick={() => handleAnakChange(anak.id)}
                                     className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all mb-1 ${isSelected ? "bg-emerald-50 border border-emerald-200" : "hover:bg-gray-50"}`}
                                   >
-                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold ${isSelected ? "bg-gradient-to-br from-emerald-500 to-emerald-600" : "bg-gray-400"}`}>
+                                    <div
+                                      className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold ${isSelected ? "bg-gradient-to-br from-emerald-500 to-emerald-600" : "bg-gray-400"}`}
+                                    >
                                       {anak.nama_anak?.charAt(0).toUpperCase()}
                                     </div>
                                     <div className="flex-1 text-left">
-                                      <p className="font-bold text-gray-800">{anak.nama_anak}</p>
+                                      <p className="font-bold text-gray-800">
+                                        {anak.nama_anak}
+                                      </p>
                                       <div className="flex flex-wrap items-center gap-2 text-xs mt-0.5">
-                                        <span className="text-gray-500">{anak.tanggal_lahir}</span>
+                                        <span className="text-gray-500">
+                                          {anak.tanggal_lahir}
+                                        </span>
                                         <span className="text-gray-300">•</span>
-                                        <span className="text-blue-600 font-bold">{formatAge(anakAge)}</span>
+                                        <span className="text-blue-600 font-bold">
+                                          {formatAge(anakAge)}
+                                        </span>
                                         {lastStatus && (
                                           <>
-                                            <span className="text-gray-300">•</span>
-                                            <span className={`font-bold px-2 py-0.5 rounded-full border ${badgeClass}`}>{lastStatus}</span>
+                                            <span className="text-gray-300">
+                                              •
+                                            </span>
+                                            <span
+                                              className={`font-bold px-2 py-0.5 rounded-full border ${badgeClass}`}
+                                            >
+                                              {lastStatus}
+                                            </span>
                                           </>
                                         )}
                                       </div>
-                                      {anak.riwayat && anak.riwayat.length > 0 && (
-                                        <div className="flex gap-4 text-xs text-gray-500 mt-1 font-medium">
-                                          <span>T: {anak.riwayat[anak.riwayat.length - 1].tinggi_badan} cm</span>
-                                          <span>B: {anak.riwayat[anak.riwayat.length - 1].berat_badan} kg</span>
-                                        </div>
-                                      )}
+                                      {anak.riwayat &&
+                                        anak.riwayat.length > 0 && (
+                                          <div className="flex gap-4 text-xs text-gray-500 mt-1 font-medium">
+                                            <span>
+                                              T:{" "}
+                                              {
+                                                anak.riwayat[
+                                                  anak.riwayat.length - 1
+                                                ].tinggi_badan
+                                              }{" "}
+                                              cm
+                                            </span>
+                                            <span>
+                                              B:{" "}
+                                              {
+                                                anak.riwayat[
+                                                  anak.riwayat.length - 1
+                                                ].berat_badan
+                                              }{" "}
+                                              kg
+                                            </span>
+                                          </div>
+                                        )}
                                     </div>
-                                    {isSelected && <FontAwesomeIcon icon={fas.faCheckCircle} className="text-emerald-600" />}
+                                    {isSelected && (
+                                      <FontAwesomeIcon
+                                        icon={fas.faCheckCircle}
+                                        className="text-emerald-600"
+                                      />
+                                    )}
                                   </button>
                                 );
                               })}
@@ -694,47 +920,82 @@ export default function OrangTuaDataAnak() {
                       )}
 
                       {/* Dropdown super_admin */}
-                      {userRole === "super_admin" && superAdminShowAnakDropdown && (
-                        <>
-                          <div className="fixed inset-0 z-10" onClick={() => setSuperAdminShowAnakDropdown(false)}></div>
-                          <div className="absolute left-0 mt-2 w-full bg-white rounded-2xl shadow-xl border border-gray-200 z-20 overflow-hidden">
-                            <div className="p-2 max-h-96 overflow-y-auto">
-                              {displayAnakList.map((anak) => {
-                                const isSelected = displaySelectedAnakId === anak.id;
-                                const lastStatus = anak.riwayat?.slice(-1)[0]?.status_gizi;
-                                const anakAge = calculateDetailedAge(anak.tanggal_lahir);
-                                const badgeClass = getStatusBadge(lastStatus);
-                                return (
-                                  <button
-                                    key={anak.id}
-                                    onClick={() => handleSuperAdminAnakChange(anak)}
-                                    className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all mb-1 ${isSelected ? "bg-emerald-50 border border-emerald-200" : "hover:bg-gray-50"}`}
-                                  >
-                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold ${isSelected ? "bg-gradient-to-br from-emerald-500 to-emerald-600" : "bg-gray-400"}`}>
-                                      {anak.nama_anak?.charAt(0).toUpperCase()}
-                                    </div>
-                                    <div className="flex-1 text-left">
-                                      <p className="font-bold text-gray-800">{anak.nama_anak}</p>
-                                      <div className="flex flex-wrap items-center gap-2 text-xs mt-0.5">
-                                        <span className="text-gray-500">{anak.tanggal_lahir}</span>
-                                        <span className="text-gray-300">•</span>
-                                        <span className="text-blue-600 font-bold">{formatAge(anakAge)}</span>
-                                        {lastStatus && (
-                                          <>
-                                            <span className="text-gray-300">•</span>
-                                            <span className={`font-bold px-2 py-0.5 rounded-full border ${badgeClass}`}>{lastStatus}</span>
-                                          </>
-                                        )}
+                      {userRole === "super_admin" &&
+                        superAdminShowAnakDropdown && (
+                          <>
+                            <div
+                              className="fixed inset-0 z-10"
+                              onClick={() =>
+                                setSuperAdminShowAnakDropdown(false)
+                              }
+                            ></div>
+                            <div className="absolute left-0 mt-2 w-full bg-white rounded-2xl shadow-xl border border-gray-200 z-20 overflow-hidden">
+                              <div className="p-2 max-h-96 overflow-y-auto">
+                                {displayAnakList.map((anak) => {
+                                  const isSelected =
+                                    displaySelectedAnakId === anak.id;
+                                  const lastStatus =
+                                    anak.riwayat?.slice(-1)[0]?.status_gizi;
+                                  const anakAge = calculateDetailedAge(
+                                    anak.tanggal_lahir,
+                                  );
+                                  const badgeClass = getStatusBadge(lastStatus);
+                                  return (
+                                    <button
+                                      key={anak.id}
+                                      onClick={() =>
+                                        handleSuperAdminAnakChange(anak)
+                                      }
+                                      className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all mb-1 ${isSelected ? "bg-emerald-50 border border-emerald-200" : "hover:bg-gray-50"}`}
+                                    >
+                                      <div
+                                        className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold ${isSelected ? "bg-gradient-to-br from-emerald-500 to-emerald-600" : "bg-gray-400"}`}
+                                      >
+                                        {anak.nama_anak
+                                          ?.charAt(0)
+                                          .toUpperCase()}
                                       </div>
-                                    </div>
-                                    {isSelected && <FontAwesomeIcon icon={fas.faCheckCircle} className="text-emerald-600" />}
-                                  </button>
-                                );
-                              })}
+                                      <div className="flex-1 text-left">
+                                        <p className="font-bold text-gray-800">
+                                          {anak.nama_anak}
+                                        </p>
+                                        <div className="flex flex-wrap items-center gap-2 text-xs mt-0.5">
+                                          <span className="text-gray-500">
+                                            {anak.tanggal_lahir}
+                                          </span>
+                                          <span className="text-gray-300">
+                                            •
+                                          </span>
+                                          <span className="text-blue-600 font-bold">
+                                            {formatAge(anakAge)}
+                                          </span>
+                                          {lastStatus && (
+                                            <>
+                                              <span className="text-gray-300">
+                                                •
+                                              </span>
+                                              <span
+                                                className={`font-bold px-2 py-0.5 rounded-full border ${badgeClass}`}
+                                              >
+                                                {lastStatus}
+                                              </span>
+                                            </>
+                                          )}
+                                        </div>
+                                      </div>
+                                      {isSelected && (
+                                        <FontAwesomeIcon
+                                          icon={fas.faCheckCircle}
+                                          className="text-emerald-600"
+                                        />
+                                      )}
+                                    </button>
+                                  );
+                                })}
+                              </div>
                             </div>
-                          </div>
-                        </>
-                      )}
+                          </>
+                        )}
                     </div>
                   </>
                 )}
@@ -752,7 +1013,8 @@ export default function OrangTuaDataAnak() {
                     onClick={() => setShowUpdateForm(true)}
                     className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all shadow-md shadow-blue-200 hover:shadow-lg font-bold"
                   >
-                    <FontAwesomeIcon icon={fas.faChartLine} /> Update Pertumbuhan
+                    <FontAwesomeIcon icon={fas.faChartLine} /> Update
+                    Pertumbuhan
                   </button>
                 )}
               </div>
@@ -764,34 +1026,65 @@ export default function OrangTuaDataAnak() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-7 mb-6">
               <div className="flex justify-between items-start flex-wrap gap-6">
                 <div>
-                  <h2 className="text-3xl font-bold text-gray-800">{displayAnakData.nama_anak}</h2>
+                  <h2 className="text-3xl font-bold text-gray-800">
+                    {displayAnakData.nama_anak}
+                  </h2>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
                     <div className="bg-gradient-to-br from-blue-50 to-white rounded-xl p-4 border border-blue-100">
                       <p className="text-gray-500 text-sm flex items-center gap-2 mb-1">
-                        <FontAwesomeIcon icon={fas.faCalendar} className="text-blue-400" /> Tanggal Lahir
+                        <FontAwesomeIcon
+                          icon={fas.faCalendar}
+                          className="text-blue-400"
+                        />{" "}
+                        Tanggal Lahir
                       </p>
-                      <p className="font-bold text-gray-800">{displayAnakData.tanggal_lahir}</p>
+                      <p className="font-bold text-gray-800">
+                        {displayAnakData.tanggal_lahir}
+                      </p>
                     </div>
                     <div className="bg-gradient-to-br from-emerald-50 to-white rounded-xl p-4 border border-emerald-100">
                       <p className="text-gray-500 text-sm flex items-center gap-2 mb-1">
-                        <FontAwesomeIcon icon={fas.faClock} className="text-emerald-400" /> Usia Saat Ini
+                        <FontAwesomeIcon
+                          icon={fas.faClock}
+                          className="text-emerald-400"
+                        />{" "}
+                        Usia Saat Ini
                       </p>
-                      <p className="font-bold text-emerald-600 text-xl">{formattedAge}</p>
+                      <p className="font-bold text-emerald-600 text-xl">
+                        {formattedAge}
+                      </p>
                       {ageDetail && ageDetail.totalMonths > 0 && (
-                        <p className="text-xs text-gray-400 mt-1">({ageDetail.totalMonths} bulan, {ageDetail.totalDays} hari)</p>
+                        <p className="text-xs text-gray-400 mt-1">
+                          ({ageDetail.totalMonths} bulan, {ageDetail.totalDays}{" "}
+                          hari)
+                        </p>
                       )}
                     </div>
                     <div className="bg-gradient-to-br from-purple-50 to-white rounded-xl p-4 border border-purple-100">
                       <p className="text-gray-500 text-sm flex items-center gap-2 mb-1">
-                        <FontAwesomeIcon icon={fas.faVenusMars} className="text-purple-400" /> Jenis Kelamin
+                        <FontAwesomeIcon
+                          icon={fas.faVenusMars}
+                          className="text-purple-400"
+                        />{" "}
+                        Jenis Kelamin
                       </p>
-                      <p className="font-bold text-gray-800">{displayAnakData.jenis_kelamin === "L" ? "Laki-laki" : "Perempuan"}</p>
+                      <p className="font-bold text-gray-800">
+                        {displayAnakData.jenis_kelamin === "L"
+                          ? "Laki-laki"
+                          : "Perempuan"}
+                      </p>
                     </div>
                     <div className="bg-gradient-to-br from-amber-50 to-white rounded-xl p-4 border border-amber-100">
                       <p className="text-gray-500 text-sm flex items-center gap-2 mb-1">
-                        <FontAwesomeIcon icon={fas.faCheckCircle} className="text-amber-400" /> Status Verifikasi
+                        <FontAwesomeIcon
+                          icon={fas.faCheckCircle}
+                          className="text-amber-400"
+                        />{" "}
+                        Status Verifikasi
                       </p>
-                      <p className={`font-bold ${displayAnakData.status_verifikasi === "Disetujui" ? "text-emerald-600" : "text-amber-600"}`}>
+                      <p
+                        className={`font-bold ${displayAnakData.status_verifikasi === "Disetujui" ? "text-emerald-600" : "text-amber-600"}`}
+                      >
                         {displayAnakData.status_verifikasi || "Menunggu"}
                       </p>
                     </div>
@@ -802,79 +1095,135 @@ export default function OrangTuaDataAnak() {
           )}
 
           {/* Riwayat Gizi */}
-          {displayAnakData && displayAnakData.riwayat && displayAnakData.riwayat.length > 0 && (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-7">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="bg-emerald-100 p-2.5 rounded-xl">
-                  <FontAwesomeIcon icon={fas.faHistory} className="text-emerald-600 text-lg" />
+          {displayAnakData &&
+            displayAnakData.riwayat &&
+            displayAnakData.riwayat.length > 0 && (
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-7">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="bg-emerald-100 p-2.5 rounded-xl">
+                    <FontAwesomeIcon
+                      icon={fas.faHistory}
+                      className="text-emerald-600 text-lg"
+                    />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800">
+                    Riwayat Gizi
+                  </h3>
                 </div>
-                <h3 className="text-xl font-bold text-gray-800">Riwayat Gizi</h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50/80">
+                      <tr>
+                        <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                          Tanggal
+                        </th>
+                        <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                          Usia saat Ukur
+                        </th>
+                        <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                          Tinggi (cm)
+                        </th>
+                        <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                          Berat (kg)
+                        </th>
+                        <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                          L. Kepala (cm)
+                        </th>
+                        <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                          Status Gizi
+                        </th>
+                        <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                          Z-Score
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-50">
+                      {displayAnakData.riwayat.map((item, idx) => {
+                        const ageAtMeasurement = calculateDetailedAge(
+                          displayAnakData.tanggal_lahir,
+                          item.tanggal_pengukuran,
+                        );
+                        return (
+                          <tr
+                            key={idx}
+                            className="hover:bg-gray-50 transition-colors"
+                          >
+                            <td className="px-5 py-4 text-sm font-medium text-gray-700">
+                              {item.tanggal_pengukuran}
+                            </td>
+                            <td className="px-5 py-4 text-sm text-blue-600 font-bold">
+                              {formatAge(ageAtMeasurement)}
+                            </td>
+                            <td className="px-5 py-4 text-sm font-medium text-gray-700">
+                              {item.tinggi_badan}
+                            </td>
+                            <td className="px-5 py-4 text-sm font-medium text-gray-700">
+                              {item.berat_badan}
+                            </td>
+                            <td className="px-5 py-4 text-sm font-medium text-gray-700">
+                              {item.lingkar_kepala || "-"}
+                            </td>
+                            <td className="px-5 py-4">
+                              <span
+                                className={`px-3 py-1.5 rounded-full text-xs font-bold border ${getStatusBadge(item.status_gizi)}`}
+                              >
+                                {item.status_gizi}
+                              </span>
+                            </td>
+                            <td className="px-5 py-4 text-sm font-bold text-gray-700">
+                              {item.z_score}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gray-50/80">
-                    <tr>
-                      <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Tanggal</th>
-                      <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Usia saat Ukur</th>
-                      <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Tinggi (cm)</th>
-                      <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Berat (kg)</th>
-                      <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">L. Kepala (cm)</th>
-                      <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Status Gizi</th>
-                      <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Z-Score</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-50">
-                    {displayAnakData.riwayat.map((item, idx) => {
-                      const ageAtMeasurement = calculateDetailedAge(displayAnakData.tanggal_lahir, item.tanggal_pengukuran);
-                      return (
-                        <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                          <td className="px-5 py-4 text-sm font-medium text-gray-700">{item.tanggal_pengukuran}</td>
-                          <td className="px-5 py-4 text-sm text-blue-600 font-bold">{formatAge(ageAtMeasurement)}</td>
-                          <td className="px-5 py-4 text-sm font-medium text-gray-700">{item.tinggi_badan}</td>
-                          <td className="px-5 py-4 text-sm font-medium text-gray-700">{item.berat_badan}</td>
-                          <td className="px-5 py-4 text-sm font-medium text-gray-700">{item.lingkar_kepala || "-"}</td>
-                          <td className="px-5 py-4">
-                            <span className={`px-3 py-1.5 rounded-full text-xs font-bold border ${getStatusBadge(item.status_gizi)}`}>
-                              {item.status_gizi}
-                            </span>
-                          </td>
-                          <td className="px-5 py-4 text-sm font-bold text-gray-700">{item.z_score}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
+            )}
 
-          {displayAnakData && (!displayAnakData.riwayat || displayAnakData.riwayat.length === 0) && (
-            <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl p-12 text-center border border-amber-200">
-              <div className="bg-amber-100 p-6 rounded-full inline-flex mb-4">
-                <FontAwesomeIcon icon={fas.faChartLine} className="text-5xl text-amber-400" />
+          {displayAnakData &&
+            (!displayAnakData.riwayat ||
+              displayAnakData.riwayat.length === 0) && (
+              <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl p-12 text-center border border-amber-200">
+                <div className="bg-amber-100 p-6 rounded-full inline-flex mb-4">
+                  <FontAwesomeIcon
+                    icon={fas.faChartLine}
+                    className="text-5xl text-amber-400"
+                  />
+                </div>
+                <p className="text-gray-600 font-bold text-lg">
+                  Belum ada data pengukuran untuk anak ini
+                </p>
+                <button
+                  onClick={() => setShowUpdateForm(true)}
+                  className="mt-4 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-8 py-3 rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-md font-bold"
+                >
+                  Tambah Pengukuran Pertama
+                </button>
               </div>
-              <p className="text-gray-600 font-bold text-lg">Belum ada data pengukuran untuk anak ini</p>
-              <button
-                onClick={() => setShowUpdateForm(true)}
-                className="mt-4 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-8 py-3 rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-md font-bold"
-              >
-                Tambah Pengukuran Pertama
-              </button>
-            </div>
-          )}
+            )}
 
           {displayAnakList.length === 0 && !error && (
             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-12 text-center border border-blue-200">
               <div className="bg-blue-100 p-6 rounded-full inline-flex mb-4">
-                <FontAwesomeIcon icon={fas.faBaby} className="text-5xl text-blue-400" />
+                <FontAwesomeIcon
+                  icon={fas.faBaby}
+                  className="text-5xl text-blue-400"
+                />
               </div>
-              <p className="text-gray-600 font-bold text-lg">Belum ada data anak</p>
-              <p className="text-gray-500 mt-2">Silakan tambah data anak terlebih dahulu</p>
+              <p className="text-gray-600 font-bold text-lg">
+                Belum ada data anak
+              </p>
+              <p className="text-gray-500 mt-2">
+                Silakan tambah data anak terlebih dahulu
+              </p>
               <button
                 onClick={handleClickTambahAnak}
                 className="mt-6 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-8 py-3 rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-md font-bold"
               >
-                <FontAwesomeIcon icon={fas.faPlus} className="mr-2" /> Tambah Anak
+                <FontAwesomeIcon icon={fas.faPlus} className="mr-2" /> Tambah
+                Anak
               </button>
             </div>
           )}
@@ -891,16 +1240,32 @@ export default function OrangTuaDataAnak() {
                   <FontAwesomeIcon icon={fas.faUserEdit} className="text-2xl" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold">Lengkapi Data Diri Orangtua</h2>
-                  <p className="text-sm text-emerald-100 mt-0.5">Data ini diperlukan sebelum menambah data anak</p>
+                  <h2 className="text-xl font-bold">
+                    Lengkapi Data Diri Orangtua
+                  </h2>
+                  <p className="text-sm text-emerald-100 mt-0.5">
+                    Data ini diperlukan sebelum menambah data anak
+                  </p>
                 </div>
               </div>
             </div>
 
-            <form onSubmit={handleSimpanProfil} className="p-7 space-y-5 max-h-[70vh] overflow-y-auto">
+            <form
+              onSubmit={handleSimpanProfil}
+              className="p-7 space-y-5 max-h-[70vh] overflow-y-auto"
+            >
               {profilMessage.text && (
-                <div className={`p-4 rounded-xl text-sm flex items-center gap-3 font-medium ${profilMessage.type === "success" ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-red-50 text-red-700 border border-red-200"}`}>
-                  <FontAwesomeIcon icon={profilMessage.type === "success" ? fas.faCheckCircle : fas.faExclamationCircle} className="text-lg" />
+                <div
+                  className={`p-4 rounded-xl text-sm flex items-center gap-3 font-medium ${profilMessage.type === "success" ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-red-50 text-red-700 border border-red-200"}`}
+                >
+                  <FontAwesomeIcon
+                    icon={
+                      profilMessage.type === "success"
+                        ? fas.faCheckCircle
+                        : fas.faExclamationCircle
+                    }
+                    className="text-lg"
+                  />
                   {profilMessage.text}
                 </div>
               )}
@@ -908,12 +1273,21 @@ export default function OrangTuaDataAnak() {
               {/* Tanggal Lahir */}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                  <FontAwesomeIcon icon={fas.faCalendar} className="text-emerald-500" /> Tanggal Lahir
+                  <FontAwesomeIcon
+                    icon={fas.faCalendar}
+                    className="text-emerald-500"
+                  />{" "}
+                  Tanggal Lahir
                 </label>
                 <input
                   type="date"
                   value={profilForm.tanggal_lahir}
-                  onChange={(e) => setProfilForm({ ...profilForm, tanggal_lahir: e.target.value })}
+                  onChange={(e) =>
+                    setProfilForm({
+                      ...profilForm,
+                      tanggal_lahir: e.target.value,
+                    })
+                  }
                   required
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white shadow-sm transition-all"
                   max={new Date().toISOString().split("T")[0]}
@@ -923,17 +1297,25 @@ export default function OrangTuaDataAnak() {
               {/* Domisili */}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                  <FontAwesomeIcon icon={fas.faLocationDot} className="text-emerald-500" /> Domisili (Kabupaten/Kota)
+                  <FontAwesomeIcon
+                    icon={fas.faLocationDot}
+                    className="text-emerald-500"
+                  />{" "}
+                  Domisili (Kabupaten/Kota)
                 </label>
                 <select
                   value={profilForm.wilayah_id}
-                  onChange={(e) => setProfilForm({ ...profilForm, wilayah_id: e.target.value })}
+                  onChange={(e) =>
+                    setProfilForm({ ...profilForm, wilayah_id: e.target.value })
+                  }
                   required
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white shadow-sm transition-all"
                 >
                   <option value="">-- Pilih Kabupaten/Kota --</option>
                   {wilayahList.map((w) => (
-                    <option key={w.id} value={w.id}>{w.nama_kabupaten}</option>
+                    <option key={w.id} value={w.id}>
+                      {w.nama_kabupaten}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -941,17 +1323,28 @@ export default function OrangTuaDataAnak() {
               {/* Penghasilan */}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                  <FontAwesomeIcon icon={fas.faMoneyBillWave} className="text-emerald-500" /> Penghasilan per Bulan
+                  <FontAwesomeIcon
+                    icon={fas.faMoneyBillWave}
+                    className="text-emerald-500"
+                  />{" "}
+                  Penghasilan per Bulan
                 </label>
                 <select
                   value={profilForm.penghasilan_range}
-                  onChange={(e) => setProfilForm({ ...profilForm, penghasilan_range: e.target.value })}
+                  onChange={(e) =>
+                    setProfilForm({
+                      ...profilForm,
+                      penghasilan_range: e.target.value,
+                    })
+                  }
                   required
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white shadow-sm transition-all"
                 >
                   <option value="">-- Pilih Rentang Penghasilan --</option>
                   {PENGHASILAN_OPTIONS.map((opt) => (
-                    <option key={opt} value={opt}>Rp {opt}</option>
+                    <option key={opt} value={opt}>
+                      Rp {opt}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -959,17 +1352,28 @@ export default function OrangTuaDataAnak() {
               {/* Pendidikan Ibu */}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                  <FontAwesomeIcon icon={fas.faGraduationCap} className="text-emerald-500" /> Pendidikan Terakhir Ibu
+                  <FontAwesomeIcon
+                    icon={fas.faGraduationCap}
+                    className="text-emerald-500"
+                  />{" "}
+                  Pendidikan Terakhir Ibu
                 </label>
                 <select
                   value={profilForm.pendidikan_ibu}
-                  onChange={(e) => setProfilForm({ ...profilForm, pendidikan_ibu: e.target.value })}
+                  onChange={(e) =>
+                    setProfilForm({
+                      ...profilForm,
+                      pendidikan_ibu: e.target.value,
+                    })
+                  }
                   required
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white shadow-sm transition-all"
                 >
                   <option value="">-- Pilih Pendidikan Terakhir --</option>
                   {PENDIDIKAN_OPTIONS.map((opt) => (
-                    <option key={opt} value={opt}>{opt}</option>
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -978,11 +1382,17 @@ export default function OrangTuaDataAnak() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                    <FontAwesomeIcon icon={fas.faToilet} className="text-emerald-500" /> Sanitasi
+                    <FontAwesomeIcon
+                      icon={fas.faToilet}
+                      className="text-emerald-500"
+                    />{" "}
+                    Sanitasi
                   </label>
                   <select
                     value={profilForm.sanitasi}
-                    onChange={(e) => setProfilForm({ ...profilForm, sanitasi: e.target.value })}
+                    onChange={(e) =>
+                      setProfilForm({ ...profilForm, sanitasi: e.target.value })
+                    }
                     required
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white shadow-sm transition-all"
                   >
@@ -993,11 +1403,20 @@ export default function OrangTuaDataAnak() {
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                    <FontAwesomeIcon icon={fas.faDroplet} className="text-emerald-500" /> Kualitas Air
+                    <FontAwesomeIcon
+                      icon={fas.faDroplet}
+                      className="text-emerald-500"
+                    />{" "}
+                    Kualitas Air
                   </label>
                   <select
                     value={profilForm.kualitas_air}
-                    onChange={(e) => setProfilForm({ ...profilForm, kualitas_air: e.target.value })}
+                    onChange={(e) =>
+                      setProfilForm({
+                        ...profilForm,
+                        kualitas_air: e.target.value,
+                      })
+                    }
                     required
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white shadow-sm transition-all"
                   >
@@ -1011,7 +1430,11 @@ export default function OrangTuaDataAnak() {
               {/* Akses Kesehatan */}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                  <FontAwesomeIcon icon={fas.faHospital} className="text-emerald-500" /> Akses Layanan Kesehatan
+                  <FontAwesomeIcon
+                    icon={fas.faHospital}
+                    className="text-emerald-500"
+                  />{" "}
+                  Akses Layanan Kesehatan
                 </label>
                 <div className="flex gap-3">
                   {["Mudah", "Sulit"].map((opt) => (
@@ -1028,11 +1451,20 @@ export default function OrangTuaDataAnak() {
                         name="akses_kesehatan"
                         value={opt}
                         checked={profilForm.akses_kesehatan === opt}
-                        onChange={(e) => setProfilForm({ ...profilForm, akses_kesehatan: e.target.value })}
+                        onChange={(e) =>
+                          setProfilForm({
+                            ...profilForm,
+                            akses_kesehatan: e.target.value,
+                          })
+                        }
                         className="hidden"
                         required
                       />
-                      <FontAwesomeIcon icon={opt === "Mudah" ? fas.faThumbsUp : fas.faThumbsDown} />
+                      <FontAwesomeIcon
+                        icon={
+                          opt === "Mudah" ? fas.faThumbsUp : fas.faThumbsDown
+                        }
+                      />
                       {opt}
                     </label>
                   ))}
@@ -1086,9 +1518,14 @@ export default function OrangTuaDataAnak() {
                 <h2 className="text-xl font-bold">Tambah Anak Baru</h2>
               </div>
             </div>
-            <form onSubmit={handleAddAnak} className="p-7 space-y-4 max-h-[70vh] overflow-y-auto">
+            <form
+              onSubmit={handleAddAnak}
+              className="p-7 space-y-4 max-h-[70vh] overflow-y-auto"
+            >
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1.5">Nama Anak</label>
+                <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                  Nama Anak
+                </label>
                 <input
                   type="text"
                   name="nama_anak"
@@ -1100,7 +1537,9 @@ export default function OrangTuaDataAnak() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1.5">Tanggal Lahir</label>
+                <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                  Tanggal Lahir
+                </label>
                 <input
                   type="date"
                   name="tanggal_lahir"
@@ -1111,7 +1550,9 @@ export default function OrangTuaDataAnak() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1.5">Jenis Kelamin</label>
+                <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                  Jenis Kelamin
+                </label>
                 <select
                   name="jenis_kelamin"
                   value={formData.jenis_kelamin}
@@ -1124,7 +1565,9 @@ export default function OrangTuaDataAnak() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1.5">Tinggi Badan (cm)</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                    Tinggi Badan (cm)
+                  </label>
                   <input
                     type="number"
                     step="0.1"
@@ -1137,7 +1580,9 @@ export default function OrangTuaDataAnak() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1.5">Berat Badan (kg)</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                    Berat Badan (kg)
+                  </label>
                   <input
                     type="number"
                     step="0.1"
@@ -1151,7 +1596,9 @@ export default function OrangTuaDataAnak() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1.5">Lingkar Kepala (cm) - Opsional</label>
+                <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                  Lingkar Kepala (cm) - Opsional
+                </label>
                 <input
                   type="number"
                   step="0.1"
@@ -1164,15 +1611,25 @@ export default function OrangTuaDataAnak() {
               </div>
               {userRole === "orang_tua" && profilData?.nama_kabupaten && (
                 <div className="bg-blue-50 rounded-xl p-4 text-sm text-blue-700 flex items-center gap-3 border border-blue-200">
-                  <FontAwesomeIcon icon={fas.faLocationDot} className="text-blue-500" />
+                  <FontAwesomeIcon
+                    icon={fas.faLocationDot}
+                    className="text-blue-500"
+                  />
                   Wilayah anak: <strong>{profilData.nama_kabupaten}</strong>
                 </div>
               )}
               <div className="flex gap-3 pt-4">
-                <button type="button" onClick={() => setShowAddForm(false)} className="flex-1 bg-gray-100 hover:bg-gray-200 py-3 rounded-xl font-bold transition-all">
+                <button
+                  type="button"
+                  onClick={() => setShowAddForm(false)}
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 py-3 rounded-xl font-bold transition-all"
+                >
                   Batal
                 </button>
-                <button type="submit" className="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-3 rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition-all font-bold shadow-md">
+                <button
+                  type="submit"
+                  className="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-3 rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition-all font-bold shadow-md"
+                >
                   <FontAwesomeIcon icon={fas.faSave} className="mr-2" /> Simpan
                 </button>
               </div>
@@ -1190,19 +1647,30 @@ export default function OrangTuaDataAnak() {
                 <div className="bg-white/20 p-2.5 rounded-xl">
                   <FontAwesomeIcon icon={fas.faChartLine} className="text-xl" />
                 </div>
-                <h2 className="text-xl font-bold">Update Pertumbuhan - {displayAnakData.nama_anak}</h2>
+                <h2 className="text-xl font-bold">
+                  Update Pertumbuhan - {displayAnakData.nama_anak}
+                </h2>
               </div>
             </div>
-            <form onSubmit={handleUpdatePertumbuhan} className="p-7 space-y-4 max-h-[70vh] overflow-y-auto">
+            <form
+              onSubmit={handleUpdatePertumbuhan}
+              className="p-7 space-y-4 max-h-[70vh] overflow-y-auto"
+            >
               <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
                 <p className="text-gray-700 flex items-center gap-2 font-medium">
-                  <FontAwesomeIcon icon={fas.faInfoCircle} className="text-blue-500" />
-                  Usia saat ini: <strong className="text-blue-700">{formattedAge}</strong>
+                  <FontAwesomeIcon
+                    icon={fas.faInfoCircle}
+                    className="text-blue-500"
+                  />
+                  Usia saat ini:{" "}
+                  <strong className="text-blue-700">{formattedAge}</strong>
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1.5">Tinggi Badan (cm)</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                    Tinggi Badan (cm)
+                  </label>
                   <input
                     type="number"
                     step="0.1"
@@ -1215,7 +1683,9 @@ export default function OrangTuaDataAnak() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1.5">Berat Badan (kg)</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                    Berat Badan (kg)
+                  </label>
                   <input
                     type="number"
                     step="0.1"
@@ -1229,7 +1699,9 @@ export default function OrangTuaDataAnak() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1.5">Lingkar Kepala (cm) - Opsional</label>
+                <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                  Lingkar Kepala (cm) - Opsional
+                </label>
                 <input
                   type="number"
                   step="0.1"
@@ -1242,15 +1714,26 @@ export default function OrangTuaDataAnak() {
               </div>
               <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
                 <p className="text-sm text-amber-700 flex items-center gap-2">
-                  <FontAwesomeIcon icon={fas.faLightbulb} className="text-amber-500" />
-                  Pengukuran dicatat dengan tanggal hari ini ({new Date().toLocaleDateString("id-ID")})
+                  <FontAwesomeIcon
+                    icon={fas.faLightbulb}
+                    className="text-amber-500"
+                  />
+                  Pengukuran dicatat dengan tanggal hari ini (
+                  {new Date().toLocaleDateString("id-ID")})
                 </p>
               </div>
               <div className="flex gap-3 pt-4">
-                <button type="button" onClick={() => setShowUpdateForm(false)} className="flex-1 bg-gray-100 hover:bg-gray-200 py-3 rounded-xl font-bold transition-all">
+                <button
+                  type="button"
+                  onClick={() => setShowUpdateForm(false)}
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 py-3 rounded-xl font-bold transition-all"
+                >
                   Batal
                 </button>
-                <button type="submit" className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-bold shadow-md">
+                <button
+                  type="submit"
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-bold shadow-md"
+                >
                   <FontAwesomeIcon icon={fas.faSave} className="mr-2" /> Update
                 </button>
               </div>
