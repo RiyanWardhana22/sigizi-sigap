@@ -249,8 +249,12 @@ export default function InputDataWilayah() {
     }
   };
 
+  // Utility class untuk input agar konsisten dan rapi
+  const inputBaseClass =
+    "w-full mt-1.5 px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-slate-700 shadow-sm";
+
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-slate-50/50 font-sans text-slate-800">
       <Sidebar
         handleLogout={() => {
           localStorage.removeItem("user");
@@ -258,62 +262,67 @@ export default function InputDataWilayah() {
         }}
       />
 
-      <div className="flex-1 flex flex-col">
-        <header className="bg-white border-b border-gray-200 px-8 py-5 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold text-gray-800 uppercase">
+      <div className="flex-1 flex flex-col min-w-0">
+        <header className="bg-white border-b border-slate-200 px-6 sm:px-8 py-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sticky top-0 z-10">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
               Input Data Wilayah
             </h1>
-          </div>
-
-          <div className="flex bg-gray-100 p-1.5 rounded-lg border border-gray-200">
-            <button
-              onClick={() => setActiveTab("manual")}
-              className={`flex items-center gap-2 px-5 py-2 text-sm font-bold rounded-md transition-all ${
-                activeTab === "manual"
-                  ? "bg-white text-blue-700 shadow-sm border border-gray-200"
-                  : "text-gray-500 hover:text-gray-800"
-              }`}
-            >
-              <FaKeyboard /> Input Manual
-            </button>
-            <button
-              onClick={() => setActiveTab("import")}
-              className={`flex items-center gap-2 px-5 py-2 text-sm font-bold rounded-md transition-all ${
-                activeTab === "import"
-                  ? "bg-white text-blue-700 shadow-sm border border-gray-200"
-                  : "text-gray-500 hover:text-gray-800"
-              }`}
-            >
-              <FaFileUpload /> Unggah Excel
-            </button>
+            <p className="text-sm text-slate-500 mt-1">
+              Kelola dan kalkulasi agregat data gizi tingkat kabupaten/kota.
+            </p>
           </div>
         </header>
 
-        <main className="p-8 overflow-y-auto">
+        <main className="p-6 sm:p-8 overflow-y-auto w-full max-w-7xl mx-auto">
+          <div className="inline-flex bg-slate-100 p-1 rounded-xl mb-8 border border-slate-200 shadow-inner">
+            <button
+              onClick={() => setActiveTab("manual")}
+              className={`flex items-center gap-2 px-6 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 ${
+                activeTab === "manual"
+                  ? "bg-white text-blue-700 shadow-sm border border-slate-200/60"
+                  : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
+              }`}
+            >
+              Input Manual
+            </button>
+            <button
+              onClick={() => setActiveTab("import")}
+              className={`flex items-center gap-2 px-6 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 ${
+                activeTab === "import"
+                  ? "bg-white text-blue-700 shadow-sm border border-slate-200/60"
+                  : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
+              }`}
+            >
+              Unggah Excel
+            </button>
+          </div>
+
+          {/* ================= TAB MANUAL ================= */}
           {activeTab === "manual" && (
-            <div className="bg-white rounded-xl border border-gray-200 p-8 max-w-5xl animate-fadeIn">
-              <div className="mb-8 border-b border-gray-100 pb-4">
-                <h2 className="text-lg font-bold text-gray-800">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <div className="mb-8 border-b border-slate-100 pb-5">
+                <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
                   Formulir Laporan Tunggal
                 </h2>
-                <p className="text-sm text-gray-500 mt-1">
-                  Isi data riil untuk satu kabupaten. Sistem akan otomatis
-                  menghitung persentasenya.
+                <p className="text-sm text-slate-500 mt-1.5">
+                  Isi data riil untuk satu kabupaten/kota. Sistem akan otomatis
+                  mengkalkulasi nilai persentasenya.
                 </p>
               </div>
 
               <form onSubmit={handleSubmitManual} className="space-y-8">
+                {/* Pemilihan Wilayah */}
                 <div className="max-w-md">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">
-                    Pilih Kabupaten/Kota
+                  <label className="block text-sm font-semibold text-slate-700">
+                    Pilih Kabupaten/Kota <span className="text-red-500">*</span>
                   </label>
                   <select
                     name="kab_kota"
                     value={raw.kab_kota}
                     onChange={handleChangeManual}
                     required
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50"
+                    className={`${inputBaseClass} cursor-pointer`}
                   >
                     <option value="">-- Pilih Wilayah Administrasi --</option>
                     {DAFTAR_WILAYAH_SUMUT.map((wilayah, index) => (
@@ -324,15 +333,19 @@ export default function InputDataWilayah() {
                   </select>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="p-5 border border-gray-200 rounded-lg bg-gray-50/50">
-                    <h3 className="font-bold text-blue-900 border-b border-gray-200 pb-2 mb-4">
-                      1. Bayi & Balita (Angka Riil)
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
+                  {/* Card 1: Bayi & Balita */}
+                  <div className="p-6 border border-slate-200 rounded-xl bg-slate-50/50 hover:border-blue-200 transition-colors">
+                    <h3 className="font-bold text-slate-800 border-b border-slate-200 pb-3 mb-5 flex items-center gap-2">
+                      <span className="bg-blue-100 text-blue-700 w-6 h-6 rounded-full flex items-center justify-center text-xs">
+                        1
+                      </span>
+                      Data Bayi & Balita
                     </h3>
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-5">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
-                          <label className="block text-xs font-semibold text-gray-600 mb-1">
+                          <label className="block text-xs font-semibold text-slate-600">
                             Total Bayi Lahir
                           </label>
                           <input
@@ -341,11 +354,13 @@ export default function InputDataWilayah() {
                             value={raw.total_bayi}
                             onChange={handleChangeManual}
                             required
-                            className="w-full p-2 border border-gray-300 rounded"
+                            min="0"
+                            className={inputBaseClass}
+                            placeholder="Contoh: 150"
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-semibold text-red-600 mb-1">
+                          <label className="block text-xs font-semibold text-red-600">
                             Jumlah Bayi BBLR
                           </label>
                           <input
@@ -354,13 +369,15 @@ export default function InputDataWilayah() {
                             value={raw.bayi_bblr}
                             onChange={handleChangeManual}
                             required
-                            className="w-full p-2 border border-red-300 bg-red-50 rounded"
+                            min="0"
+                            className={`${inputBaseClass} !border-red-200 !bg-red-50/50 focus:!border-red-500 focus:!ring-red-500/20`}
+                            placeholder="Angka riil"
                           />
                         </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
-                          <label className="block text-xs font-semibold text-gray-600 mb-1">
+                          <label className="block text-xs font-semibold text-slate-600">
                             Total Balita Terukur
                           </label>
                           <input
@@ -369,11 +386,13 @@ export default function InputDataWilayah() {
                             value={raw.total_balita}
                             onChange={handleChangeManual}
                             required
-                            className="w-full p-2 border border-gray-300 rounded"
+                            min="0"
+                            className={inputBaseClass}
+                            placeholder="Contoh: 300"
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-semibold text-red-600 mb-1">
+                          <label className="block text-xs font-semibold text-red-600">
                             Balita Gizi Buruk
                           </label>
                           <input
@@ -382,20 +401,26 @@ export default function InputDataWilayah() {
                             value={raw.balita_gizi_buruk}
                             onChange={handleChangeManual}
                             required
-                            className="w-full p-2 border border-red-300 bg-red-50 rounded"
+                            min="0"
+                            className={`${inputBaseClass} !border-red-200 !bg-red-50/50 focus:!border-red-500 focus:!ring-red-500/20`}
+                            placeholder="Angka riil"
                           />
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-5 border border-gray-200 rounded-lg bg-gray-50/50">
-                    <h3 className="font-bold text-blue-900 border-b border-gray-200 pb-2 mb-4">
-                      2. Sanitasi & Air Bersih (KK)
+                  {/* Card 2: Sanitasi & Air Bersih */}
+                  <div className="p-6 border border-slate-200 rounded-xl bg-slate-50/50 hover:border-emerald-200 transition-colors">
+                    <h3 className="font-bold text-slate-800 border-b border-slate-200 pb-3 mb-5 flex items-center gap-2">
+                      <span className="bg-emerald-100 text-emerald-700 w-6 h-6 rounded-full flex items-center justify-center text-xs">
+                        2
+                      </span>
+                      Sanitasi & Air Bersih
                     </h3>
-                    <div className="space-y-4">
+                    <div className="space-y-5">
                       <div>
-                        <label className="block text-xs font-semibold text-gray-600 mb-1">
+                        <label className="block text-xs font-semibold text-slate-600">
                           Total Kepala Keluarga (KK)
                         </label>
                         <input
@@ -404,12 +429,14 @@ export default function InputDataWilayah() {
                           value={raw.total_kk}
                           onChange={handleChangeManual}
                           required
-                          className="w-full p-2 border border-gray-300 rounded"
+                          min="0"
+                          className={inputBaseClass}
+                          placeholder="Masukkan jumlah seluruh KK"
                         />
                       </div>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
-                          <label className="block text-xs font-semibold text-green-600 mb-1">
+                          <label className="block text-xs font-semibold text-emerald-600">
                             KK dgn Jamban Sehat
                           </label>
                           <input
@@ -418,11 +445,13 @@ export default function InputDataWilayah() {
                             value={raw.kk_sanitasi}
                             onChange={handleChangeManual}
                             required
-                            className="w-full p-2 border border-green-300 bg-green-50 rounded"
+                            min="0"
+                            className={`${inputBaseClass} !border-emerald-200 !bg-emerald-50/50 focus:!border-emerald-500 focus:!ring-emerald-500/20`}
+                            placeholder="Angka riil"
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-semibold text-green-600 mb-1">
+                          <label className="block text-xs font-semibold text-emerald-600">
                             KK dgn Air Bersih
                           </label>
                           <input
@@ -431,20 +460,26 @@ export default function InputDataWilayah() {
                             value={raw.kk_air}
                             onChange={handleChangeManual}
                             required
-                            className="w-full p-2 border border-green-300 bg-green-50 rounded"
+                            min="0"
+                            className={`${inputBaseClass} !border-emerald-200 !bg-emerald-50/50 focus:!border-emerald-500 focus:!ring-emerald-500/20`}
+                            placeholder="Angka riil"
                           />
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-5 border border-gray-200 rounded-lg bg-gray-50/50 md:col-span-2">
-                    <h3 className="font-bold text-blue-900 border-b border-gray-200 pb-2 mb-4">
-                      3. Kondisi Sosial Ekonomi
+                  {/* Card 3: Kondisi Sosial Ekonomi */}
+                  <div className="p-6 border border-slate-200 rounded-xl bg-slate-50/50 hover:border-orange-200 transition-colors xl:col-span-2">
+                    <h3 className="font-bold text-slate-800 border-b border-slate-200 pb-3 mb-5 flex items-center gap-2">
+                      <span className="bg-orange-100 text-orange-700 w-6 h-6 rounded-full flex items-center justify-center text-xs">
+                        3
+                      </span>
+                      Kondisi Sosial Ekonomi
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                       <div>
-                        <label className="block text-xs font-semibold text-gray-600 mb-1">
+                        <label className="block text-xs font-semibold text-slate-600">
                           Total Ibu Terdata
                         </label>
                         <input
@@ -453,11 +488,13 @@ export default function InputDataWilayah() {
                           value={raw.total_ibu}
                           onChange={handleChangeManual}
                           required
-                          className="w-full p-2 border border-gray-300 rounded"
+                          min="0"
+                          className={inputBaseClass}
+                          placeholder="Masukkan total ibu"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-orange-600 mb-1">
+                        <label className="block text-xs font-semibold text-orange-600">
                           Ibu Lulusan SMP ke Bawah
                         </label>
                         <input
@@ -466,51 +503,71 @@ export default function InputDataWilayah() {
                           value={raw.ibu_smp_kebawah}
                           onChange={handleChangeManual}
                           required
-                          className="w-full p-2 border border-orange-300 bg-orange-50 rounded"
+                          min="0"
+                          className={`${inputBaseClass} !border-orange-200 !bg-orange-50/50 focus:!border-orange-500 focus:!ring-orange-500/20`}
+                          placeholder="Angka riil"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-gray-600 mb-1">
+                        <label className="block text-xs font-semibold text-slate-600">
                           Rata-rata Penghasilan (Rp)
                         </label>
-                        <input
-                          type="number"
-                          name="penghasilan"
-                          value={raw.penghasilan}
-                          onChange={handleChangeManual}
-                          required
-                          className="w-full p-2 border border-gray-300 rounded"
-                        />
+                        <div className="relative mt-1.5">
+                          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-sm font-semibold">
+                            Rp
+                          </span>
+                          <input
+                            type="number"
+                            name="penghasilan"
+                            value={raw.penghasilan}
+                            onChange={handleChangeManual}
+                            required
+                            min="0"
+                            className={`${inputBaseClass} !mt-0 pl-9`}
+                            placeholder="0"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex justify-end pt-4 border-t border-gray-100">
+                <div className="flex justify-end pt-6 border-t border-slate-100">
                   <button
                     type="submit"
                     disabled={isProcessing}
-                    className={`px-8 py-3 rounded-lg font-bold text-white flex items-center gap-2 transition ${isProcessing ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
+                    className={`px-8 py-3 rounded-xl font-bold text-white flex items-center gap-2 shadow-sm transition-all active:scale-[0.98] ${
+                      isProcessing
+                        ? "bg-slate-400 cursor-not-allowed"
+                        : "bg-blue-600 hover:bg-blue-700 hover:shadow-md hover:-translate-y-0.5"
+                    }`}
                   >
-                    <FaCalculator />{" "}
-                    {isProcessing ? "Menyimpan..." : "Kalkulasi & Simpan Data"}
+                    {isProcessing ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        Menyimpan...
+                      </>
+                    ) : (
+                      <>Kalkulasi & Simpan Data</>
+                    )}
                   </button>
                 </div>
               </form>
             </div>
           )}
 
+          {/* ================= TAB UPLOAD EXCEL ================= */}
           {activeTab === "import" && (
-            <div className="animate-fadeIn">
-              <div className="mb-6 flex gap-3">
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <div className="mb-8 flex flex-col sm:flex-row gap-4">
                 <button
                   onClick={handleExportTemplate}
-                  className="flex items-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2.5 rounded-lg text-sm font-bold transition"
+                  className="flex items-center justify-center gap-2 bg-white border border-slate-200 hover:border-green-300 hover:bg-green-50 text-slate-700 hover:text-green-700 px-6 py-3 rounded-xl text-sm font-bold shadow-sm transition-all"
                 >
                   <FaFileExcel className="text-green-600 text-lg" /> Unduh
                   Format Template
                 </button>
-                <label className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-bold cursor-pointer transition">
+                <label className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-sm cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]">
                   <FaFileUpload className="text-lg" /> Unggah File .xlsx
                   <input
                     type="file"
@@ -522,76 +579,92 @@ export default function InputDataWilayah() {
               </div>
 
               {importData.length > 0 ? (
-                <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                  <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                  <div className="p-6 border-b border-slate-200 flex flex-col md:flex-row justify-between md:items-center gap-4 bg-slate-50/50">
                     <div>
-                      <h2 className="text-lg font-bold text-gray-800">
+                      <h2 className="text-xl font-bold text-slate-800">
                         Pratinjau Data Kalkulasi
                       </h2>
-                      <p className="text-xs text-gray-500 mt-1 uppercase tracking-widest font-semibold">
-                        Siap dikirim ke Database
+                      <p className="text-xs text-slate-500 mt-1 uppercase tracking-widest font-semibold">
+                        {importData.length} Wilayah siap dikirim ke Database
                       </p>
                     </div>
                     <div className="flex gap-3">
                       <button
                         onClick={() => setImportData([])}
-                        className="bg-white border border-red-200 text-red-600 hover:bg-red-50 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition"
+                        className="bg-white border border-slate-200 text-red-600 hover:border-red-200 hover:bg-red-50 px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all"
                       >
                         <FaTrash /> Batalkan
                       </button>
                       <button
                         onClick={handleSaveAllExcel}
                         disabled={isProcessing}
-                        className="bg-green-600 text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-green-700 flex items-center gap-2 transition"
+                        className={`text-white px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 shadow-sm transition-all ${
+                          isProcessing
+                            ? "bg-slate-400 cursor-not-allowed"
+                            : "bg-emerald-600 hover:bg-emerald-700 hover:-translate-y-0.5 active:scale-[0.98]"
+                        }`}
                       >
-                        <FaCheckCircle />{" "}
-                        {isProcessing ? "Memproses..." : "Simpan Semua"}
+                        {isProcessing ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                            Memproses...
+                          </>
+                        ) : (
+                          <>
+                            <FaCheckCircle /> Simpan Semua
+                          </>
+                        )}
                       </button>
                     </div>
                   </div>
 
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full text-left border-collapse whitespace-nowrap">
                       <thead>
-                        <tr className="bg-gray-100/50 text-gray-600 text-[11px] uppercase tracking-wider font-bold border-b">
-                          <th className="p-4">Kabupaten/Kota</th>
+                        <tr className="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wider font-bold border-b border-slate-200">
+                          <th className="p-4 pl-6">Kabupaten/Kota</th>
                           <th className="p-4">BBLR</th>
                           <th className="p-4">Gizi Buruk</th>
                           <th className="p-4">Sanitasi</th>
                           <th className="p-4">Air Bersih</th>
                           <th className="p-4">Pnd. Ibu</th>
-                          <th className="p-4">Penghasilan</th>
+                          <th className="p-4 pr-6 text-right">
+                            Penghasilan (Rp)
+                          </th>
                         </tr>
                       </thead>
                       <tbody className="text-sm">
                         {importData.map((d, i) => (
                           <tr
                             key={i}
-                            className="border-b last:border-0 hover:bg-blue-50/30 transition-colors"
+                            className="border-b border-slate-100 last:border-0 hover:bg-blue-50/50 transition-colors"
                           >
-                            <td className="p-4 font-bold text-gray-700">
+                            <td className="p-4 pl-6 font-bold text-slate-700">
                               {d.kab_kota}
                             </td>
-                            <td className="p-4">
+                            <td className="p-4 text-red-600 font-medium">
                               {d.Persentase_BBLR.toFixed(1)}%
                             </td>
-                            <td className="p-4">
+                            <td className="p-4 text-red-600 font-medium">
                               {d.Persentase_Gizi_Buruk.toFixed(1)}%
                             </td>
-                            <td className="p-4">
+                            <td className="p-4 text-emerald-600 font-medium">
                               {d.Sanitasi_dan_Kebersihan_Lingkungan_mean.toFixed(
                                 1,
                               )}
                               %
                             </td>
-                            <td className="p-4">
+                            <td className="p-4 text-emerald-600 font-medium">
                               {d.Ketersediaan_Air_Bersih_mean.toFixed(1)}%
                             </td>
-                            <td className="p-4">
+                            <td className="p-4 text-orange-600 font-medium">
                               {d["Pendidikan_Ibu_SMP/MTs_mean"].toFixed(1)}%
                             </td>
-                            <td className="p-4 text-gray-500 font-mono">
-                              Rp{d.Penghasilan_keluarga_mean.toLocaleString()}
+                            <td className="p-4 pr-6 text-slate-600 font-mono text-right">
+                              {d.Penghasilan_keluarga_mean.toLocaleString(
+                                "id-ID",
+                              )}
                             </td>
                           </tr>
                         ))}
@@ -600,16 +673,17 @@ export default function InputDataWilayah() {
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center min-h-[350px] border-2 border-dashed border-gray-300 rounded-xl bg-white p-12 text-center">
-                  <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4">
-                    <FaFileUpload className="text-2xl text-blue-400" />
+                <div className="flex flex-col items-center justify-center min-h-[400px] border-2 border-dashed border-slate-300 rounded-2xl bg-white p-12 text-center transition-all hover:border-blue-400 hover:bg-slate-50/50">
+                  <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-5 shadow-inner">
+                    <FaFileUpload className="text-3xl text-blue-500" />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-800">
+                  <h3 className="text-xl font-bold text-slate-800">
                     Laporan Massal Kosong
                   </h3>
-                  <p className="text-gray-500 mt-2 max-w-sm mx-auto text-sm">
-                    Unduh format template, isi data wilayah, dan unggah kembali
-                    di sini untuk memproses puluhan wilayah sekaligus.
+                  <p className="text-slate-500 mt-2 max-w-md mx-auto text-sm leading-relaxed">
+                    Unduh format template terlebih dahulu, isi data riil agregat
+                    wilayah, lalu unggah kembali di sini untuk memproses
+                    kalkulasi secara otomatis.
                   </p>
                 </div>
               )}

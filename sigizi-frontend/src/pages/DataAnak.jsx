@@ -308,10 +308,12 @@ export default function DataAnak() {
     return matchesSearch && matchesWilayah;
   });
 
-  const totalOrangTuaPages = Math.ceil(filteredOrangTua.length / ITEMS_PER_PAGE);
+  const totalOrangTuaPages = Math.ceil(
+    filteredOrangTua.length / ITEMS_PER_PAGE,
+  );
   const paginatedOrangTua = filteredOrangTua.slice(
     (orangTuaPage - 1) * ITEMS_PER_PAGE,
-    orangTuaPage * ITEMS_PER_PAGE
+    orangTuaPage * ITEMS_PER_PAGE,
   );
 
   const handleSearchOrangTuaChange = (e) => {
@@ -356,9 +358,7 @@ export default function DataAnak() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-emerald-50">
       <Sidebar handleLogout={handleLogout} />
-
       <div className="flex-1 flex flex-col">
-        {/* Header Modern */}
         <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-emerald-100 px-8 py-6 sticky top-0 z-20">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -477,15 +477,6 @@ export default function DataAnak() {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div
-                              className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-md ${
-                                selectedOrangTuaId === ot.id
-                                  ? "bg-gradient-to-br from-emerald-500 to-emerald-600"
-                                  : "bg-gradient-to-br from-gray-400 to-gray-500"
-                              }`}
-                            >
-                              {ot.nama_lengkap?.charAt(0).toUpperCase()}
-                            </div>
                             <div>
                               <span
                                 className={`font-semibold text-sm ${
@@ -561,7 +552,10 @@ export default function DataAnak() {
                   </span>{" "}
                   –{" "}
                   <span className="font-semibold text-gray-700">
-                    {Math.min(orangTuaPage * ITEMS_PER_PAGE, filteredOrangTua.length)}
+                    {Math.min(
+                      orangTuaPage * ITEMS_PER_PAGE,
+                      filteredOrangTua.length,
+                    )}
                   </span>{" "}
                   dari{" "}
                   <span className="font-semibold text-gray-700">
@@ -575,7 +569,10 @@ export default function DataAnak() {
                     disabled={orangTuaPage === 1}
                     className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed border-gray-200 bg-white text-gray-700 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-700"
                   >
-                    <FontAwesomeIcon icon={fas.faChevronLeft} className="text-xs" />
+                    <FontAwesomeIcon
+                      icon={fas.faChevronLeft}
+                      className="text-xs"
+                    />
                     Previous
                   </button>
 
@@ -585,7 +582,7 @@ export default function DataAnak() {
                         (p) =>
                           p === 1 ||
                           p === totalOrangTuaPages ||
-                          Math.abs(p - orangTuaPage) <= 1
+                          Math.abs(p - orangTuaPage) <= 1,
                       )
                       .reduce((acc, p, idx, arr) => {
                         if (idx > 0 && p - arr[idx - 1] > 1) {
@@ -596,7 +593,10 @@ export default function DataAnak() {
                       }, [])
                       .map((item, idx) =>
                         item === "..." ? (
-                          <span key={`ellipsis-${idx}`} className="px-2 text-gray-400 text-sm">
+                          <span
+                            key={`ellipsis-${idx}`}
+                            className="px-2 text-gray-400 text-sm"
+                          >
                             ...
                           </span>
                         ) : (
@@ -611,17 +611,24 @@ export default function DataAnak() {
                           >
                             {item}
                           </button>
-                        )
+                        ),
                       )}
                   </div>
 
                   <button
-                    onClick={() => setOrangTuaPage((p) => Math.min(p + 1, totalOrangTuaPages))}
+                    onClick={() =>
+                      setOrangTuaPage((p) =>
+                        Math.min(p + 1, totalOrangTuaPages),
+                      )
+                    }
                     disabled={orangTuaPage === totalOrangTuaPages}
                     className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed border-gray-200 bg-white text-gray-700 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-700"
                   >
                     Next
-                    <FontAwesomeIcon icon={fas.faChevronRight} className="text-xs" />
+                    <FontAwesomeIcon
+                      icon={fas.faChevronRight}
+                      className="text-xs"
+                    />
                   </button>
                 </div>
               </div>
