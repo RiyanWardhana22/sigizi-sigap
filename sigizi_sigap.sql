@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 06, 2026 at 12:20 PM
+-- Generation Time: May 07, 2026 at 12:34 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.24
 
@@ -279,7 +279,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `nama_lengkap`, `tanggal_lahir`, `email`, `password`, `role`, `wilayah_id`, `status_aktif`, `created_at`, `updated_at`, `penghasilan_range`, `sanitasi`, `kualitas_air`, `akses_kesehatan`, `pendidikan_ibu`) VALUES
 (1, 'Administrator', NULL, 'admin@sigizi.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'super_admin', NULL, 1, '2026-04-01 17:12:26', '2026-04-01 17:12:26', NULL, NULL, NULL, NULL, NULL),
-(2, 'Riyan Wardhana', NULL, 'riyanwardhana2@gmail.com', '$2y$10$MYOxExrT1YM2r822.Q1d6uXbvggT/tUT8PBIjKmBSf9/YHZnG3RJu', 'orang_tua', NULL, 1, '2026-04-01 17:59:08', '2026-04-01 17:59:08', NULL, NULL, NULL, NULL, NULL),
+(2, 'Riyan Wardhana', NULL, 'riyanwardhana2@gmail.com', '$2y$10$MYOxExrT1YM2r822.Q1d6uXbvggT/tUT8PBIjKmBSf9/YHZnG3RJu', 'orang_tua', 1, 1, '2026-04-01 17:59:08', '2026-05-07 12:33:27', NULL, NULL, NULL, NULL, NULL),
 (3, 'Joko Ui', NULL, 'jokoui@gmail.com', '$2y$10$TH8VgqPhN71iIzdb3JjCxuXCqza28e6ZRokt1oM9V2O6VxsnzHUqe', 'orang_tua', NULL, 1, '2026-04-07 17:53:07', '2026-04-07 17:53:07', NULL, NULL, NULL, NULL, NULL),
 (4, 'parent', NULL, 'parent@gmail.com', '$2y$10$y0Kl7jA/U5Avm/szI6.yXeaFcHJySxJnk/Lf313M9b.tubn8na3ve', 'orang_tua', NULL, 1, '2026-04-12 17:03:51', '2026-04-12 17:03:51', NULL, NULL, NULL, NULL, NULL),
 (5, 'Ki Prana Lewu', NULL, 'pranalewu@gmail.com', '$2y$10$gnmgWgIU3M11KVr0YB9mR.tapJBcIsuHJh2r7nlNnqgu8L6T55.AC', 'dinas_kesehatan', NULL, 1, '2026-04-17 14:46:38', '2026-04-17 14:46:38', NULL, NULL, NULL, NULL, NULL),
