@@ -540,7 +540,7 @@ export default function OrangTuaDataAnak() {
         <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-emerald-100 px-8 py-6 sticky top-0 z-20">
           <div className="flex items-center gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">Data Anak</h1>
+              <h1 className="text-xl font-bold text-gray-800">Data Anak</h1>
               <p className="text-gray-500 text-sm mt-0.5">
                 Kelola data anak dan pantau pertumbuhannya
               </p>

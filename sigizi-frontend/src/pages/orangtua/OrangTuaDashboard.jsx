@@ -1016,7 +1016,7 @@ export default function OrangTuaDashboard() {
         <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-emerald-100 px-8 py-6 sticky top-0 z-20">
           <div className="flex items-center gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">
+              <h1 className="text-xl font-bold text-gray-800">
                 Dashboard Orang Tua
               </h1>
               <p className="text-gray-500 text-sm mt-0.5">
@@ -1377,7 +1377,7 @@ export default function OrangTuaDashboard() {
             <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-2xl p-7 mb-8 shadow-lg shadow-emerald-200">
               <div className="flex justify-between items-start flex-wrap gap-6">
                 <div>
-                  <h2 className="text-3xl font-bold">
+                  <h2 className="text-2xl font-bold">
                     {displayAnakData.nama_anak}
                   </h2>
                   <p className="opacity-90 mt-2">
