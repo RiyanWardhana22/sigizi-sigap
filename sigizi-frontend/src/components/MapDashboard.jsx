@@ -73,10 +73,9 @@ export default function MapDashboard({ mode = "balita" }) {
   const [isLegendOpen, setIsLegendOpen] = useState(true); 
   
   const [layerBanjir, setLayerBanjir] = useState(false);
-  const [layerKekeringan, setLayerKekeringan] = useState(false);
 
   // LOGIKA PINTAR: Cek apakah ada layer bencana yang menyala
-  const isBencanaActive = layerBanjir || layerKekeringan;
+  const isBencanaActive = layerBanjir
 
   const koordinatWilayah = {
     Nias: [1.1963, 97.6453], "Mandailing Natal": [0.8656, 99.4253], "Tapanuli Selatan": [1.5936, 99.2731],
@@ -119,7 +118,6 @@ export default function MapDashboard({ mode = "balita" }) {
     if (mode === "balita") {
       setIsMenuOpen(false);
       setLayerBanjir(false);
-      setLayerKekeringan(false);
     }
   }, [mode]);
 
@@ -235,7 +233,6 @@ export default function MapDashboard({ mode = "balita" }) {
               </div>
               <div className="flex flex-col gap-2 sm:gap-3">
                 <CustomToggle label="Rawan Banjir" icon={<FaWater size={14} />} active={layerBanjir} onChange={() => setLayerBanjir(!layerBanjir)} activeColor={{ bg: 'bg-blue-100', text: 'text-blue-600', switch: 'bg-blue-500' }} />
-                <CustomToggle label="Rawan Kekeringan" icon={<FaFire size={14} />} active={layerKekeringan} onChange={() => setLayerKekeringan(!layerKekeringan)} activeColor={{ bg: 'bg-orange-100', text: 'text-orange-600', switch: 'bg-orange-500' }} />
               </div>
             </div>
           </div>
@@ -317,10 +314,7 @@ export default function MapDashboard({ mode = "balita" }) {
 
         {/* OVERLAY BNPB */}
         {mode === "kerentanan" && layerBanjir && (
-          <EsriDynamicLayer url="https://gis.bnpb.go.id/server/rest/services/inarisk/layer_bahaya_banjir_30/MapServer" opacity={0.65} />
-        )}
-        {mode === "kerentanan" && layerKekeringan && (
-          <EsriDynamicLayer url="https://gis.bnpb.go.id/server/rest/services/inarisk/layer_bahaya_kekeringan_30/MapServer" opacity={0.65} />
+          <EsriDynamicLayer url="https://gis.bnpb.go.id/server/rest/services/inarisk/layer_bahaya_banjir_30_sumatera/MapServer" opacity={0.65} />
         )}
 
         {/* Trik Kunci: Tambahkan isBencanaActive ke dalam 'key' GeoJSON. 
