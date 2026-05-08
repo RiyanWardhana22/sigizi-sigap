@@ -67,6 +67,8 @@ export default function InputDataWilayah() {
     total_ibu: "",
     ibu_smp_kebawah: "",
     penghasilan: "",
+    total_anak_imunisasi: "",
+    anak_terima_imunisasi: "",
   });
 
   const [importData, setImportData] = useState([]);
@@ -134,6 +136,8 @@ export default function InputDataWilayah() {
           total_ibu: "",
           ibu_smp_kebawah: "",
           penghasilan: "",
+          total_anak_imunisasi: "",
+          anak_terima_imunisasi: "",
         });
       } else {
         alert("Gagal: " + data.message);
@@ -164,10 +168,14 @@ export default function InputDataWilayah() {
         "TOTAL_IBU_TERDATA",
         "IBU_PENDIDIKAN_SMP_KEBAWAH",
         "RATA_PENGHASILAN_WILAYAH",
+        "TOTAL_ANAK_IMUNISASI",
+        "ANAK_TERIMA_IMUNISASI",
       ],
     ];
     const rows = DAFTAR_WILAYAH_SUMUT.map((w) => [
       w,
+      0,
+      0,
       0,
       0,
       0,
@@ -214,6 +222,10 @@ export default function InputDataWilayah() {
             (Number(row.TOTAL_IBU) || 1)) *
           100,
         Penghasilan_keluarga_mean: Number(row.RATA_PENGHASILAN_WILAYAH),
+        Persentase_Imunisasi:
+          (Number(row.ANAK_TERIMA_IMUNISASI) /
+            (Number(row.TOTAL_ANAK_IMUNISASI) || 1)) *
+          100,
       }));
 
       setImportData(parsed);
@@ -530,6 +542,48 @@ export default function InputDataWilayah() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Card 4: Imunisasi (Dummy - Tidak dikirim ke ML) */}
+                  <div className="p-6 border border-slate-200 rounded-xl bg-slate-50/50 hover:border-purple-200 transition-colors">
+                    <h3 className="font-bold text-slate-800 border-b border-slate-200 pb-3 mb-5 flex items-center gap-2">
+                      <span className="bg-purple-100 text-purple-700 w-6 h-6 rounded-full flex items-center justify-center text-xs">
+                        4
+                      </span>
+                      Imunisasi
+                    </h3>
+                    <div className="space-y-5">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                          <label className="block text-xs font-semibold text-slate-600">
+                            Total Anak
+                          </label>
+                          <input
+                            type="number"
+                            name="total_anak_imunisasi"
+                            value={raw.total_anak_imunisasi}
+                            onChange={handleChangeManual}
+                            min="0"
+                            className={inputBaseClass}
+                            placeholder="Masukkan total anak"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-purple-600">
+                            Total Anak Menerima Imunisasi
+                          </label>
+                          <input
+                            type="number"
+                            name="anak_terima_imunisasi"
+                            value={raw.anak_terima_imunisasi}
+                            onChange={handleChangeManual}
+                            min="0"
+                            className={`${inputBaseClass} !border-purple-200 !bg-purple-50/50 focus:!border-purple-500 focus:!ring-purple-500/20`}
+                            placeholder="Angka riil"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="flex justify-end pt-6 border-t border-slate-100">
@@ -629,9 +683,8 @@ export default function InputDataWilayah() {
                           <th className="p-4">Sanitasi</th>
                           <th className="p-4">Air Bersih</th>
                           <th className="p-4">Pnd. Ibu</th>
-                          <th className="p-4 pr-6 text-right">
-                            Penghasilan (Rp)
-                          </th>
+                          <th className="p-4 text-right">Penghasilan (Rp)</th>
+                          <th className="p-4 pr-6 text-right">Imunisasi</th>
                         </tr>
                       </thead>
                       <tbody className="text-sm">
@@ -661,10 +714,13 @@ export default function InputDataWilayah() {
                             <td className="p-4 text-orange-600 font-medium">
                               {d["Pendidikan_Ibu_SMP/MTs_mean"].toFixed(1)}%
                             </td>
-                            <td className="p-4 pr-6 text-slate-600 font-mono text-right">
+                            <td className="p-4 text-slate-600 font-mono text-right">
                               {d.Penghasilan_keluarga_mean.toLocaleString(
                                 "id-ID",
                               )}
+                            </td>
+                            <td className="p-4 pr-6 text-purple-600 font-medium text-right">
+                              {d.Persentase_Imunisasi.toFixed(1)}%
                             </td>
                           </tr>
                         ))}
