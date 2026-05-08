@@ -1340,7 +1340,7 @@ export default function OrangTuaDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-500 text-sm font-medium">
-                    Gizi Kurang
+                    Pra-Stunting
                   </p>
                   <p className="text-3xl font-bold text-amber-600 mt-1">
                     {stats.giziKurang}
