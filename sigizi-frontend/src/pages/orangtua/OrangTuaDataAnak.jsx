@@ -1009,7 +1009,7 @@ export default function OrangTuaDataAnak() {
                   onClick={handleClickTambahAnak}
                   className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-6 py-3 rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-md shadow-emerald-200 hover:shadow-lg font-bold"
                 >
-                  <FontAwesomeIcon icon={fas.faPlus} /> Tambah Anak
+                  <FontAwesomeIcon icon={fas.faPlus} /> Tambah Data Anak
                 </button>
                 {displayAnakData && (
                   <button
@@ -1518,7 +1518,7 @@ export default function OrangTuaDataAnak() {
                 <div className="bg-white/20 p-2.5 rounded-xl">
                   <FontAwesomeIcon icon={fas.faPlus} className="text-xl" />
                 </div>
-                <h2 className="text-xl font-bold">Tambah Anak Baru</h2>
+                <h2 className="text-xl font-bold">Tambah Data Anak</h2>
               </div>
             </div>
             <form
