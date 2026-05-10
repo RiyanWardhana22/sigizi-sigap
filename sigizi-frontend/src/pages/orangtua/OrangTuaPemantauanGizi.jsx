@@ -1237,7 +1237,7 @@ export default function OrangTuaPemantauanGizi() {
             <span
               className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border ${getBBTBBadgeStyle()}`}
             >
-              Z-Score BB/TB: {zScoreBBTB}
+              Z-Score: {zScoreBBTB}
             </span>
           </div>
         )}
@@ -1311,7 +1311,7 @@ export default function OrangTuaPemantauanGizi() {
           <span
             className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border ${getLKBadgeStyle()}`}
           >
-            Z-Score LK/U: {zScoreLK !== null ? zScoreLK.toFixed(2) : "−"}
+            Z-Score: {zScoreLK !== null ? zScoreLK.toFixed(2) : "−"}
           </span>
         </div>
       </div>
