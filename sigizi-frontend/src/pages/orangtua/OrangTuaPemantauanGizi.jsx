@@ -864,6 +864,29 @@ export default function OrangTuaPemantauanGizi() {
     }
   };
 
+  // ─────────────────────────────────────────────
+  // HELPER: Weighted moving-average smoothing
+  // Menghilangkan artefak pembulatan 1 desimal pada tabel WHO/CDC
+  // (nilai 3sd/2sd kadang turun sesaat di bulan 36, 42, 48, 54, 60)
+  // Rumus kernel: [1, 2, 1] / 4 → centre mendapat bobot 2×, diulang 2 pass
+  // ─────────────────────────────────────────────
+  const applySmoothing = (data, keys, passes = 2) => {
+    const result = data.map(d => ({ ...d }));
+    for (let p = 0; p < passes; p++) {
+      for (let i = 1; i < result.length - 1; i++) {
+        keys.forEach(key => {
+          const prev = result[i - 1][key];
+          const curr = result[i][key];
+          const next = result[i + 1][key];
+          if (prev != null && curr != null && next != null) {
+            result[i][key] = (prev + 2 * curr + next) / 4;
+          }
+        });
+      }
+    }
+    return result;
+  };
+
   const generateFullReferenceData = (jenisKelamin, indicator) => {
     const isWHO = ageRangeConfig[ageRange]?.isWHO !== false;
     let config;
@@ -883,6 +906,7 @@ export default function OrangTuaPemantauanGizi() {
       referenceAges.push(config.max);
     }
 
+    // ── Pass 1: kumpulkan nilai absolut SD/persentil dulu, belum hitung diff ──
     const referenceData = [];
     for (const usia of referenceAges) {
       const dataPoint = { usiaBulan: usia, usiaTahun: usia / 12 };
@@ -905,15 +929,6 @@ export default function OrangTuaPemantauanGizi() {
         if (sd0 != null) dataPoint.sd0 = sd0;
         if (sd2 != null) dataPoint.sd2 = sd2;
         if (sd3 != null) dataPoint.sd3 = sd3;
-        if (sdNeg3 != null && sdNeg2 != null) {
-          dataPoint.zonaMerahBawahDiff = sdNeg2 - sdNeg3;
-        }
-        if (sdNeg2 != null && sd2 != null) {
-          dataPoint.zonaHijauDiff = sd2 - sdNeg2;
-        }
-        if (sd2 != null && sd3 != null) {
-          dataPoint.zonaMerahAtasDiff = sd3 - sd2;
-        }
       } else {
         const cdcIndicator =
           indicator === "berat"
@@ -933,35 +948,57 @@ export default function OrangTuaPemantauanGizi() {
         if (p85 != null) dataPoint.baseP85 = p85;
         if (p90 != null) dataPoint.baseP90 = p90;
         if (p95 != null) dataPoint.baseP95 = p95;
-        if (indicator === "berat") {
-          if (p3 != null && p5 != null) {
-            dataPoint.zonaKuningBawahDiff = p5 - p3;
-          }
-          if (p5 != null && p90 != null) {
-            dataPoint.zonaHijauDiff = p90 - p5;
-          }
-          if (p90 != null && p95 != null) {
-            dataPoint.zonaKuningAtasDiff = p95 - p90;
-          }
-        } else if (indicator === "imt") {
-          if (p3 != null && p5 != null) {
-            dataPoint.zonaKuningBawahDiff = p5 - p3;
-          }
-          if (p5 != null && p85 != null) {
-            dataPoint.zonaHijauDiff = p85 - p5;
-          }
-          if (p85 != null && p95 != null) {
-            dataPoint.zonaKuningAtasDiff = p95 - p85;
-          }
-        } else {
-          if (p3 != null && p95 != null) {
-            dataPoint.zonaHijauDiff = p95 - p3;
-          }
-        }
       }
       referenceData.push(dataPoint);
     }
-    return referenceData;
+
+    // ── Pass 2: haluskan nilai absolut → hilangkan artefak pembulatan WHO/CDC ──
+    const whoKeys = ["sdNeg3", "sdNeg2", "sd0", "sd2", "sd3"];
+    const cdcKeys = ["baseP3", "baseP5", "baseP50", "baseP85", "baseP90", "baseP95"];
+    const smoothed = applySmoothing(referenceData, isWHO ? whoKeys : cdcKeys);
+
+    // ── Pass 3: hitung diff dari nilai yang sudah dihaluskan ──
+    smoothed.forEach(dp => {
+      if (isWHO) {
+        if (dp.sdNeg3 != null && dp.sdNeg2 != null) {
+          dp.zonaMerahBawahDiff = Math.max(0, dp.sdNeg2 - dp.sdNeg3);
+        }
+        if (dp.sdNeg2 != null && dp.sd2 != null) {
+          dp.zonaHijauDiff = Math.max(0, dp.sd2 - dp.sdNeg2);
+        }
+        if (dp.sd2 != null && dp.sd3 != null) {
+          dp.zonaMerahAtasDiff = Math.max(0, dp.sd3 - dp.sd2);
+        }
+      } else {
+        if (indicator === "berat") {
+          if (dp.baseP3 != null && dp.baseP5 != null) {
+            dp.zonaKuningBawahDiff = Math.max(0, dp.baseP5 - dp.baseP3);
+          }
+          if (dp.baseP5 != null && dp.baseP90 != null) {
+            dp.zonaHijauDiff = Math.max(0, dp.baseP90 - dp.baseP5);
+          }
+          if (dp.baseP90 != null && dp.baseP95 != null) {
+            dp.zonaKuningAtasDiff = Math.max(0, dp.baseP95 - dp.baseP90);
+          }
+        } else if (indicator === "imt") {
+          if (dp.baseP3 != null && dp.baseP5 != null) {
+            dp.zonaKuningBawahDiff = Math.max(0, dp.baseP5 - dp.baseP3);
+          }
+          if (dp.baseP5 != null && dp.baseP85 != null) {
+            dp.zonaHijauDiff = Math.max(0, dp.baseP85 - dp.baseP5);
+          }
+          if (dp.baseP85 != null && dp.baseP95 != null) {
+            dp.zonaKuningAtasDiff = Math.max(0, dp.baseP95 - dp.baseP85);
+          }
+        } else {
+          if (dp.baseP3 != null && dp.baseP95 != null) {
+            dp.zonaHijauDiff = Math.max(0, dp.baseP95 - dp.baseP3);
+          }
+        }
+      }
+    });
+
+    return smoothed;
   };
 
   // ─────────────────────────────────────────────
@@ -1809,7 +1846,7 @@ export default function OrangTuaPemantauanGizi() {
               )}
 
               <Line
-                type="natural"
+                type="monotone"
                 dataKey={isWHO ? "sd0" : "baseP50"}
                 stroke={isWHO ? "#15803d" : "#2563eb"}
                 strokeWidth={2}
@@ -2266,7 +2303,7 @@ export default function OrangTuaPemantauanGizi() {
               />
 
               <Line
-                type="natural"
+                type="monotone"
                 dataKey="sd0"
                 stroke="#15803d"
                 strokeWidth={2}
@@ -2637,7 +2674,7 @@ export default function OrangTuaPemantauanGizi() {
               />
 
               <Line
-                type="natural"
+                type="monotone"
                 dataKey="sd0"
                 stroke="#15803d"
                 strokeWidth={2}
