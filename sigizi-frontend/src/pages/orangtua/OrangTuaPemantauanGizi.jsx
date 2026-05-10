@@ -37,7 +37,6 @@ function PenjelasanGrafikModal({
   if (!isOpen) return null;
 
   const getPenjelasanContent = () => {
-    // Penjelasan berdasarkan jenis grafik yang aktif
     if (activeMainMenu === "berat") {
       if (activeSubMenu === "bb_u") {
         return {
@@ -266,7 +265,6 @@ function PenjelasanGrafikModal({
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
       <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
-        {/* Header */}
         <div
           className={`bg-gradient-to-r ${headerColors[content.warna] || headerColors.emerald} px-6 py-5 text-white`}
         >
@@ -282,9 +280,7 @@ function PenjelasanGrafikModal({
           <p className="text-sm text-white/80 mt-2">{content.deskripsi}</p>
         </div>
 
-        {/* Body */}
         <div className="p-6 space-y-6">
-          {/* Cara Membaca Grafik */}
           <div>
             <h4 className="font-bold text-gray-800 text-lg flex items-center gap-2 mb-4">
               <span className="bg-blue-100 p-2 rounded-lg">
@@ -312,7 +308,6 @@ function PenjelasanGrafikModal({
             </div>
           </div>
 
-          {/* Arti Warna / Status */}
           <div>
             <h4 className="font-bold text-gray-800 text-lg flex items-center gap-2 mb-4">
               <span className="bg-amber-100 p-2 rounded-lg">
@@ -336,12 +331,10 @@ function PenjelasanGrafikModal({
             </div>
           </div>
 
-          {/* Tips */}
           <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl p-5 border border-emerald-200">
             <p className="text-sm text-gray-700">{content.tips}</p>
           </div>
 
-          {/* Zona Warna pada Grafik */}
           <div>
             <h4 className="font-bold text-gray-800 text-lg flex items-center gap-2 mb-4">
               <span className="bg-emerald-100 p-2 rounded-lg">
@@ -389,7 +382,6 @@ function PenjelasanGrafikModal({
             </div>
           </div>
 
-          {/* Info Tambahan */}
           <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
             <div className="flex items-start gap-3">
               <FontAwesomeIcon
@@ -412,7 +404,6 @@ function PenjelasanGrafikModal({
           </div>
         </div>
 
-        {/* Footer */}
         <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
           <button
             onClick={onClose}
@@ -426,6 +417,142 @@ function PenjelasanGrafikModal({
   );
 }
 
+// ─────────────────────────────────────────────
+// HELPER: Format Usia (Tahun Bulan Hari)
+// ─────────────────────────────────────────────
+const formatUsiaDetail = (usiaBulan) => {
+  if (usiaBulan === undefined || usiaBulan === null) return "-";
+  // Konversi bulan ke total hari (rata-rata 1 bulan = 30.4375 hari)
+  const totalHari = Math.round(usiaBulan * 30.4375);
+  const tahun = Math.floor(totalHari / 365);
+  const sisaHari = totalHari - tahun * 365;
+  const bulan = Math.floor(sisaHari / 30);
+  const hari = sisaHari - bulan * 30;
+
+  return `${tahun} Tahun ${bulan} Bulan ${hari} Hari`;
+};
+
+// ─────────────────────────────────────────────
+// HELPER: Hitung Z-Score dari data referensi WHO
+// ─────────────────────────────────────────────
+const getZScoreFromReference = (value, usiaBulan, jenisKelamin, indicator) => {
+  const data = whoGrowthData[indicator];
+  if (!data) return null;
+  const genderData = jenisKelamin === "L" ? data.laki : data.perempuan;
+  if (!genderData) return null;
+  const ages = Object.keys(genderData)
+    .map(Number)
+    .sort((a, b) => a - b);
+  let closestAge = ages[0];
+  for (const age of ages) {
+    if (Math.abs(age - usiaBulan) < Math.abs(closestAge - usiaBulan)) {
+      closestAge = age;
+    }
+  }
+  const refData = genderData[closestAge];
+  if (!refData) return null;
+  const median = refData["0sd"];
+  const sdNeg2 = refData["-2sd"];
+  const sdPos2 = refData["2sd"];
+  const estimatedSDNeg = (median - sdNeg2) / 2;
+  const estimatedSDPos = (sdPos2 - median) / 2;
+  if (value < median) {
+    return (value - median) / estimatedSDNeg;
+  } else {
+    return (value - median) / estimatedSDPos;
+  }
+};
+
+// ─────────────────────────────────────────────
+// HELPER: Konversi Persentil → Z-Score (Inverse Normal CDF)
+// Menggunakan tabel lookup dengan interpolasi linear
+// ─────────────────────────────────────────────
+const percentileToZScore = (p) => {
+  // [persentil, z-score] — berdasarkan distribusi normal standar
+  const table = [
+    [0.5, -2.576], [1, -2.326], [2, -2.054], [3, -1.881],
+    [5, -1.645], [10, -1.282], [15, -1.036], [20, -0.842],
+    [25, -0.674], [30, -0.524], [35, -0.385], [40, -0.253],
+    [45, -0.126], [50, 0.0],   [55, 0.126],  [60, 0.253],
+    [65, 0.385],  [70, 0.524], [75, 0.674],  [80, 0.842],
+    [85, 1.036],  [90, 1.282], [95, 1.645],  [97, 1.881],
+    [98, 2.054],  [99, 2.326], [99.5, 2.576],
+  ];
+  if (p <= table[0][0]) return table[0][1];
+  if (p >= table[table.length - 1][0]) return table[table.length - 1][1];
+  for (let i = 0; i < table.length - 1; i++) {
+    if (p >= table[i][0] && p <= table[i + 1][0]) {
+      const t = (p - table[i][0]) / (table[i + 1][0] - table[i][0]);
+      return table[i][1] + t * (table[i + 1][1] - table[i][1]);
+    }
+  }
+  return 0;
+};
+
+// ─────────────────────────────────────────────
+// HELPER: Hitung Persentil CDC secara kontinu (interpolasi antar titik referensi)
+// Mengembalikan nilai persentil 0–100 (bukan kategorikal)
+// ─────────────────────────────────────────────
+const calculateCDCPercentileContinuous = (value, usiaBulan, jenisKelamin, indicator) => {
+  const data = cdcGrowthData[indicator];
+  if (!data) return null;
+  const genderData = jenisKelamin === "L" ? data.laki : data.perempuan;
+  if (!genderData) return null;
+
+  const ageInYears = usiaBulan / 12;
+  const ages = Object.keys(genderData).map(Number).sort((a, b) => a - b);
+
+  // Cari dua usia referensi terdekat untuk interpolasi
+  let lowerAge = ages[0];
+  for (const age of ages) {
+    if (age <= ageInYears) lowerAge = age;
+    else break;
+  }
+  const lowerIdx = ages.indexOf(lowerAge);
+  const upperAge = lowerIdx + 1 < ages.length ? ages[lowerIdx + 1] : lowerAge;
+
+  const getRefVals = (ageKey) => {
+    const ref = genderData[ageKey];
+    if (!ref) return null;
+    return [
+      { p: 3,  v: ref.p3  },
+      { p: 5,  v: ref.p5  },
+      { p: 50, v: ref.p50 },
+      { p: 85, v: ref.p85 },
+      { p: 90, v: ref.p90 },
+      { p: 95, v: ref.p95 },
+    ];
+  };
+
+  const lowerRefs = getRefVals(lowerAge);
+  const upperRefs = getRefVals(upperAge);
+  if (!lowerRefs || !upperRefs) return null;
+
+  // Interpolasi nilai referensi antar dua usia
+  const t = lowerAge === upperAge ? 0 : (ageInYears - lowerAge) / (upperAge - lowerAge);
+  const refs = lowerRefs.map((ref, i) => ({
+    p: ref.p,
+    v: ref.v + t * (upperRefs[i].v - ref.v),
+  }));
+
+  // Temukan posisi nilai anak di antara titik persentil
+  if (value <= refs[0].v) {
+    // Di bawah P3: ekstrapolasi ke bawah
+    return Math.max(0.5, 3 * (value / refs[0].v));
+  }
+  for (let i = 0; i < refs.length - 1; i++) {
+    if (value >= refs[i].v && value <= refs[i + 1].v) {
+      const frac = (value - refs[i].v) / (refs[i + 1].v - refs[i].v);
+      return refs[i].p + frac * (refs[i + 1].p - refs[i].p);
+    }
+  }
+  // Di atas P95: ekstrapolasi ke atas
+  return Math.min(99.5, 95 + (value - refs[refs.length - 1].v) / refs[refs.length - 1].v * 4);
+};
+
+// ─────────────────────────────────────────────
+// KOMPONEN UTAMA
+// ─────────────────────────────────────────────
 export default function OrangTuaPemantauanGizi() {
   const navigate = useNavigate();
   const {
@@ -448,7 +575,6 @@ export default function OrangTuaPemantauanGizi() {
   const [ageRange, setAgeRange] = useState("0-60");
   const [showAgeDropdown, setShowAgeDropdown] = useState(false);
 
-  // State untuk modal penjelasan grafik
   const [showPenjelasanGrafik, setShowPenjelasanGrafik] = useState(false);
 
   const [orangTuaList, setOrangTuaList] = useState([]);
@@ -462,86 +588,46 @@ export default function OrangTuaPemantauanGizi() {
 
   const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // Konstanta untuk validasi data
   const MAX_VALID_WEIGHT = 150;
   const MAX_VALID_HEIGHT = 200;
   const MAX_VALID_IMT = 50;
   const MAX_VALID_LK = 70;
 
-  // Mapping rentang umur dengan konfigurasi lengkap
   const ageRangeConfig = {
     "0-2": {
-      min: 0,
-      max: 2,
-      label: "Grafik 0 - 2 Bulan",
-      shortLabel: "0-2 bln",
-      isWHO: true,
-      icon: "faBaby",
-      step: 0.25,
+      min: 0, max: 2, label: "Grafik 0 - 2 Bulan", shortLabel: "0-2 bln",
+      isWHO: true, icon: "faBaby", step: 0.25,
       yDomain: { bb_u: [2, 8], tb_u: [45, 65], imt_u: [10, 20] },
     },
     "0-12": {
-      min: 0,
-      max: 12,
-      label: "Grafik 0 - 12 Bulan",
-      shortLabel: "0-12 bln",
-      isWHO: true,
-      icon: "faBabyCarriage",
-      step: 0.5,
+      min: 0, max: 12, label: "Grafik 0 - 12 Bulan", shortLabel: "0-12 bln",
+      isWHO: true, icon: "faBabyCarriage", step: 0.5,
       yDomain: { bb_u: [3, 12], tb_u: [48, 78], imt_u: [12, 24] },
     },
     "0-60": {
-      min: 0,
-      max: 60,
-      label: "Grafik 0 - 5 Tahun",
-      shortLabel: "0-5 thn",
-      isWHO: true,
-      icon: "faChild",
-      step: 1,
+      min: 0, max: 60, label: "Grafik 0 - 5 Tahun", shortLabel: "0-5 thn",
+      isWHO: true, icon: "faChild", step: 1,
       yDomain: { bb_u: [5, 22], tb_u: [60, 120], imt_u: [12, 28] },
     },
     "60-216": {
-      min: 60,
-      max: 216,
-      label: "Grafik 5 - 18 Tahun",
-      shortLabel: "5-18 thn",
-      isWHO: false,
-      icon: "faUserGraduate",
-      step: 1,
+      min: 60, max: 216, label: "Grafik 5 - 18 Tahun", shortLabel: "5-18 thn",
+      isWHO: false, icon: "faUserGraduate", step: 1,
       yDomain: { bb_u: [15, 100], tb_u: [110, 190], imt_u: [13, 35] },
     },
   };
 
   const lkAgeRangeConfig = {
     "0-2": {
-      min: 0,
-      max: 2,
-      label: "Grafik 0 - 2 Bulan",
-      shortLabel: "0-2 bln",
-      isWHO: true,
-      icon: "faBaby",
-      step: 0.25,
-      yDomain: [31, 38],
+      min: 0, max: 2, label: "Grafik 0 - 2 Bulan", shortLabel: "0-2 bln",
+      isWHO: true, icon: "faBaby", step: 0.25, yDomain: [31, 38],
     },
     "0-12": {
-      min: 0,
-      max: 12,
-      label: "Grafik 0 - 12 Bulan",
-      shortLabel: "0-12 bln",
-      isWHO: true,
-      icon: "faBabyCarriage",
-      step: 0.5,
-      yDomain: [33, 48],
+      min: 0, max: 12, label: "Grafik 0 - 12 Bulan", shortLabel: "0-12 bln",
+      isWHO: true, icon: "faBabyCarriage", step: 0.5, yDomain: [33, 48],
     },
     "0-60": {
-      min: 0,
-      max: 60,
-      label: "Grafik 0 - 5 Tahun",
-      shortLabel: "0-5 thn",
-      isWHO: true,
-      icon: "faChild",
-      step: 1,
-      yDomain: [40, 56],
+      min: 0, max: 60, label: "Grafik 0 - 5 Tahun", shortLabel: "0-5 thn",
+      isWHO: true, icon: "faChild", step: 1, yDomain: [40, 56],
     },
   };
 
@@ -558,7 +644,6 @@ export default function OrangTuaPemantauanGizi() {
     }
     setUser(parsedUser);
     setUserRole(parsedUser.role);
-
     if (parsedUser.role === "super_admin") {
       fetchOrangTuaList();
     } else {
@@ -735,7 +820,6 @@ export default function OrangTuaPemantauanGizi() {
     navigate("/");
   };
 
-  // Helper: Mendapatkan nilai referensi dengan INTERPOLASI LINEAR
   const getReferenceValue = (
     usiaBulan,
     jenisKelamin,
@@ -780,7 +864,6 @@ export default function OrangTuaPemantauanGizi() {
     }
   };
 
-  // Membuat data referensi lengkap
   const generateFullReferenceData = (jenisKelamin, indicator) => {
     const isWHO = ageRangeConfig[ageRange]?.isWHO !== false;
     let config;
@@ -812,18 +895,8 @@ export default function OrangTuaPemantauanGizi() {
               : indicator === "imt"
                 ? "imt_u"
                 : indicator;
-        const sdNeg3 = getReferenceValue(
-          usia,
-          jenisKelamin,
-          whoIndicator,
-          "-3sd",
-        );
-        const sdNeg2 = getReferenceValue(
-          usia,
-          jenisKelamin,
-          whoIndicator,
-          "-2sd",
-        );
+        const sdNeg3 = getReferenceValue(usia, jenisKelamin, whoIndicator, "-3sd");
+        const sdNeg2 = getReferenceValue(usia, jenisKelamin, whoIndicator, "-2sd");
         const sd0 = getReferenceValue(usia, jenisKelamin, whoIndicator, "0sd");
         const sd2 = getReferenceValue(usia, jenisKelamin, whoIndicator, "2sd");
         const sd3 = getReferenceValue(usia, jenisKelamin, whoIndicator, "3sd");
@@ -833,18 +906,12 @@ export default function OrangTuaPemantauanGizi() {
         if (sd2 != null) dataPoint.sd2 = sd2;
         if (sd3 != null) dataPoint.sd3 = sd3;
         if (sdNeg3 != null && sdNeg2 != null) {
-          dataPoint.zonaMerahBawahMin = sdNeg3;
-          dataPoint.zonaMerahBawahMax = sdNeg2;
           dataPoint.zonaMerahBawahDiff = sdNeg2 - sdNeg3;
         }
         if (sdNeg2 != null && sd2 != null) {
-          dataPoint.zonaHijauMin = sdNeg2;
-          dataPoint.zonaHijauMax = sd2;
           dataPoint.zonaHijauDiff = sd2 - sdNeg2;
         }
         if (sd2 != null && sd3 != null) {
-          dataPoint.zonaMerahAtasMin = sd2;
-          dataPoint.zonaMerahAtasMax = sd3;
           dataPoint.zonaMerahAtasDiff = sd3 - sd2;
         }
       } else {
@@ -868,33 +935,26 @@ export default function OrangTuaPemantauanGizi() {
         if (p95 != null) dataPoint.baseP95 = p95;
         if (indicator === "berat") {
           if (p3 != null && p5 != null) {
-            dataPoint.zonaKuningBawahMin = p3;
             dataPoint.zonaKuningBawahDiff = p5 - p3;
           }
           if (p5 != null && p90 != null) {
-            dataPoint.zonaHijauMin = p5;
             dataPoint.zonaHijauDiff = p90 - p5;
           }
           if (p90 != null && p95 != null) {
-            dataPoint.zonaKuningAtasMin = p90;
             dataPoint.zonaKuningAtasDiff = p95 - p90;
           }
         } else if (indicator === "imt") {
           if (p3 != null && p5 != null) {
-            dataPoint.zonaKuningBawahMin = p3;
             dataPoint.zonaKuningBawahDiff = p5 - p3;
           }
           if (p5 != null && p85 != null) {
-            dataPoint.zonaHijauMin = p5;
             dataPoint.zonaHijauDiff = p85 - p5;
           }
           if (p85 != null && p95 != null) {
-            dataPoint.zonaKuningAtasMin = p85;
             dataPoint.zonaKuningAtasDiff = p95 - p85;
           }
         } else {
           if (p3 != null && p95 != null) {
-            dataPoint.zonaHijauMin = p3;
             dataPoint.zonaHijauDiff = p95 - p3;
           }
         }
@@ -904,7 +964,9 @@ export default function OrangTuaPemantauanGizi() {
     return referenceData;
   };
 
-  // Custom Tooltip
+  // ─────────────────────────────────────────────
+  // CUSTOM TOOLTIP - BB/U (WHO & CDC)
+  // ─────────────────────────────────────────────
   const CustomTooltip = ({
     active,
     payload,
@@ -914,128 +976,314 @@ export default function OrangTuaPemantauanGizi() {
     jenisKelamin,
   }) => {
     if (!active || !payload || !payload.length) return null;
+
     const isWHO = ageRangeConfig[ageRange]?.isWHO !== false;
-    const usiaTahun = (label / 12).toFixed(1);
     const usiaBulan = label;
+
     const childData = payload.find(
-      (p) => p.dataKey === "nilai" || p.name === "Data Anak",
+      (p) => p.dataKey === "nilai" || p.name === "Data Anak" || p.name === "Pertumbuhan Si Kecil"
     );
     const childValue = childData?.value;
-    let statusGizi = "-";
-    let persentilAtauZScore = "-";
 
-    if (childValue && childValue < 1000 && jenisKelamin) {
+    if (!childValue || childValue >= 1000) return null;
+
+    let zScoreValue = null;
+    let persentilValue = null;
+    let labelZScore = "";
+
+    if (jenisKelamin) {
       if (indicator === "berat") {
         if (isWHO) {
-          const zScore = calculateZScore(
-            childValue,
-            label,
-            jenisKelamin,
-            "bb_u",
-          );
-          persentilAtauZScore = `Z-Score: ${zScore.toFixed(2)}`;
-          if (zScore < -3) statusGizi = "Sangat Kurang";
-          else if (zScore < -2) statusGizi = "Kurang";
-          else if (zScore <= 2) statusGizi = "Normal";
-          else if (zScore <= 3) statusGizi = "Gemuk";
-          else statusGizi = "Obesitas";
+          zScoreValue = getZScoreFromReference(childValue, usiaBulan, jenisKelamin, "bb_u");
+          labelZScore = zScoreValue !== null ? `Z-Score: ${zScoreValue.toFixed(2)}` : "Z-Score: -";
         } else {
-          const percentile = calculatePercentile(
-            childValue,
-            label,
-            jenisKelamin,
-            "bb_u",
-          );
-          persentilAtauZScore = `Persentil: ${percentile}`;
-          if (percentile < 3) statusGizi = "Sangat Kurang";
-          else if (percentile < 5) statusGizi = "Kurang";
-          else if (percentile <= 90) statusGizi = "Normal";
-          else if (percentile <= 95) statusGizi = "Gemuk";
-          else if (percentile <= 97) statusGizi = "Obesitas";
-          else statusGizi = "Obesitas Berat";
+          const contP = calculateCDCPercentileContinuous(childValue, usiaBulan, jenisKelamin, "bb_u");
+          const cdcZ  = contP !== null ? percentileToZScore(contP) : null;
+          persentilValue = calculatePercentile(childValue, usiaBulan, jenisKelamin, "bb_u");
+          labelZScore = cdcZ !== null
+            ? `Z-Score: ${cdcZ.toFixed(2)} (P${persentilValue})`
+            : `Persentil: P${persentilValue}`;
         }
       } else if (indicator === "tinggi") {
         if (isWHO) {
-          const zScore = calculateZScore(
-            childValue,
-            label,
-            jenisKelamin,
-            "tb_u",
-          );
-          persentilAtauZScore = `Z-Score: ${zScore.toFixed(2)}`;
-          if (zScore < -3) statusGizi = "Sangat Pendek";
-          else if (zScore < -2) statusGizi = "Pendek (Stunting)";
-          else statusGizi = "Normal";
+          zScoreValue = getZScoreFromReference(childValue, usiaBulan, jenisKelamin, "tb_u");
+          labelZScore = zScoreValue !== null ? `Z-Score: ${zScoreValue.toFixed(2)}` : "Z-Score: -";
         } else {
-          const percentile = calculatePercentile(
-            childValue,
-            label,
-            jenisKelamin,
-            "tb_u",
-          );
-          persentilAtauZScore = `Persentil: ${percentile}`;
-          if (percentile < 3) statusGizi = "Sangat Pendek";
-          else if (percentile < 5) statusGizi = "Pendek";
-          else statusGizi = "Normal";
+          const contP = calculateCDCPercentileContinuous(childValue, usiaBulan, jenisKelamin, "tb_u");
+          const cdcZ  = contP !== null ? percentileToZScore(contP) : null;
+          persentilValue = calculatePercentile(childValue, usiaBulan, jenisKelamin, "tb_u");
+          labelZScore = cdcZ !== null
+            ? `Z-Score: ${cdcZ.toFixed(2)} (P${persentilValue})`
+            : `Persentil: P${persentilValue}`;
         }
       } else if (indicator === "imt") {
         if (isWHO) {
-          const zScore = calculateZScore(
-            childValue,
-            label,
-            jenisKelamin,
-            "imt_u",
-          );
-          persentilAtauZScore = `Z-Score: ${zScore.toFixed(2)}`;
-          if (zScore < -3) statusGizi = "Sangat Kurus (Severe Wasting)";
-          else if (zScore < -2) statusGizi = "Kurus (Wasting)";
-          else if (zScore <= 1) statusGizi = "Normal";
-          else if (zScore <= 2) statusGizi = "Gemuk";
-          else statusGizi = "Obesitas";
+          zScoreValue = getZScoreFromReference(childValue, usiaBulan, jenisKelamin, "imt_u");
+          labelZScore = zScoreValue !== null ? `Z-Score: ${zScoreValue.toFixed(2)}` : "Z-Score: -";
         } else {
-          const percentile = calculatePercentile(
-            childValue,
-            label,
-            jenisKelamin,
-            "imt_u",
-          );
-          persentilAtauZScore = `Persentil: ${percentile}`;
-          if (percentile < 3) statusGizi = "Sangat Kurus";
-          else if (percentile < 5) statusGizi = "Kurus";
-          else if (percentile <= 85) statusGizi = "Normal";
-          else if (percentile <= 95) statusGizi = "Gemuk";
-          else if (percentile <= 97) statusGizi = "Obesitas";
-          else statusGizi = "Obesitas Berat";
+          const contP = calculateCDCPercentileContinuous(childValue, usiaBulan, jenisKelamin, "imt_u");
+          const cdcZ  = contP !== null ? percentileToZScore(contP) : null;
+          persentilValue = calculatePercentile(childValue, usiaBulan, jenisKelamin, "imt_u");
+          labelZScore = cdcZ !== null
+            ? `Z-Score: ${cdcZ.toFixed(2)} (P${persentilValue})`
+            : `Persentil: P${persentilValue}`;
         }
       }
     }
 
-    const statusColor =
-      statusGizi === "Normal"
-        ? "text-emerald-600"
-        : statusGizi.includes("Kurang") ||
-            statusGizi.includes("Pendek") ||
-            statusGizi.includes("Kurus")
-          ? "text-amber-600"
-          : "text-red-600";
+    const getIndicatorLabel = () => {
+      if (indicator === "berat") return "Berat Badan";
+      if (indicator === "tinggi") return "Tinggi Badan";
+      if (indicator === "imt") return "Indeks Massa Tubuh";
+      return "";
+    };
+
+    const getIndicatorShort = () => {
+      if (indicator === "berat") return "BB";
+      if (indicator === "tinggi") return "TB";
+      if (indicator === "imt") return "IMT";
+      return "";
+    };
+
+    // Warna badge berdasarkan zona z-score / persentil
+    const getBadgeStyle = () => {
+      if (isWHO) {
+        if (zScoreValue === null) return "bg-gray-50 text-gray-500 border-gray-200";
+        if (zScoreValue >= -2 && zScoreValue <= 2) return "bg-emerald-50 text-emerald-700 border-emerald-200";
+        if ((zScoreValue >= -3 && zScoreValue < -2) || (zScoreValue > 2 && zScoreValue <= 3))
+          return "bg-amber-50 text-amber-700 border-amber-200";
+        return "bg-red-50 text-red-700 border-red-200";
+      } else {
+        if (persentilValue === null) return "bg-gray-50 text-gray-500 border-gray-200";
+        const isNormal =
+          indicator === "tinggi" ? persentilValue >= 3 && persentilValue <= 95
+          : indicator === "imt"  ? persentilValue >= 5 && persentilValue <= 85
+          :                        persentilValue >= 5 && persentilValue <= 90;
+        const isWarning =
+          !isNormal && (
+            indicator === "tinggi" ? true
+            : indicator === "imt"  ? (persentilValue >= 3 && persentilValue < 5) || (persentilValue > 85 && persentilValue <= 95)
+            :                        (persentilValue >= 3 && persentilValue < 5) || (persentilValue > 90 && persentilValue <= 95)
+          );
+        if (isNormal)  return "bg-emerald-50 text-emerald-700 border-emerald-200";
+        if (isWarning) return "bg-amber-50 text-amber-700 border-amber-200";
+        return "bg-red-50 text-red-700 border-red-200";
+      }
+    };
+
+    const accentColor = isWHO ? "#15803d" : "#2563eb";
 
     return (
-      <div className="bg-white rounded-2xl shadow-xl p-5 border border-gray-100 min-w-[220px]">
-        <p className="text-sm font-bold text-gray-500 mb-2">
-          {ageRange === "60-216"
-            ? `Usia ${usiaTahun} Tahun`
-            : `Usia ${usiaBulan} Bulan`}
-        </p>
-        <p className="text-2xl font-bold text-gray-800">
-          {childValue && childValue < 1000 ? childValue.toFixed(1) : "-"} {unit}
-        </p>
-        <p className={`text-sm font-bold ${statusColor} mt-2`}>{statusGizi}</p>
-        <p className="text-xs text-gray-400 mt-1">{persentilAtauZScore}</p>
+      <div
+        className="bg-white rounded-2xl shadow-2xl overflow-hidden"
+        style={{ border: "1px solid #e5e7eb", minWidth: "240px", maxWidth: "290px" }}
+      >
+        {/* Accent bar */}
+        <div className="h-1 w-full" style={{ backgroundColor: accentColor }} />
+
+        {/* Age row */}
+        <div className="px-4 pt-3 pb-2.5 border-b border-gray-100">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">
+            Usia
+          </p>
+          <p className="text-sm font-semibold text-gray-700">
+            {formatUsiaDetail(usiaBulan)}
+          </p>
+        </div>
+
+        {/* Main metric */}
+        <div className="px-4 pt-3 pb-2">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
+            {getIndicatorLabel()} ({getIndicatorShort()})
+          </p>
+          <p className="text-3xl font-black text-gray-900 leading-none tracking-tight">
+            {childValue.toFixed(1)}
+            <span className="text-base font-medium text-gray-400 ml-1">{unit}</span>
+          </p>
+        </div>
+
+        {/* Z-Score / Percentile badge */}
+        <div className="px-4 pb-4 pt-1">
+          <span
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border ${getBadgeStyle()}`}
+          >
+            {labelZScore}
+          </span>
+        </div>
       </div>
     );
   };
 
-  // Render grafik utama dengan ComposedChart
+  // ─────────────────────────────────────────────
+  // CUSTOM TOOLTIP - BB/TB (WHO)
+  // ─────────────────────────────────────────────
+  const BBTBTooltip = ({ active, payload, label }) => {
+    if (!active || !payload || !payload.length) return null;
+
+    const childEntry = payload.find(
+      (p) => (p.dataKey === "berat" || p.name === "Data Anak") && p.value != null
+    );
+    const sd0Entry = payload.find((p) => p.dataKey === "sd0");
+
+    if (!childEntry?.value) return null;
+
+    const tinggiCm = label;
+    const beratKg = childEntry.value;
+
+    let zScoreBBTB = null;
+    const sdNeg2 = payload.find((p) => p.dataKey === "sdNeg2")?.value;
+    const sd0 = sd0Entry?.value;
+
+    if (sdNeg2 != null && sd0 != null) {
+      const sd = (sd0 - sdNeg2) / 2;
+      if (sd !== 0) {
+        zScoreBBTB = ((beratKg - sd0) / sd).toFixed(2);
+      }
+    }
+
+    const anakData = payload.find((p) => p.payload?.tanggal);
+    const usiaBulan = anakData?.payload?.usiaBulan;
+
+    // Badge warna berdasarkan z-score BB/TB
+    const getBBTBBadgeStyle = () => {
+      if (!zScoreBBTB) return "bg-gray-50 text-gray-500 border-gray-200";
+      const z = parseFloat(zScoreBBTB);
+      if (z >= -2 && z <= 2) return "bg-emerald-50 text-emerald-700 border-emerald-200";
+      if ((z >= -3 && z < -2) || (z > 2 && z <= 3)) return "bg-amber-50 text-amber-700 border-amber-200";
+      return "bg-red-50 text-red-700 border-red-200";
+    };
+
+    return (
+      <div
+        className="bg-white rounded-2xl shadow-2xl overflow-hidden"
+        style={{ border: "1px solid #e5e7eb", minWidth: "240px", maxWidth: "290px" }}
+      >
+        {/* Accent bar */}
+        <div className="h-1 w-full bg-emerald-600" />
+
+        {/* Age row */}
+        {usiaBulan !== undefined && usiaBulan !== null && (
+          <div className="px-4 pt-3 pb-2.5 border-b border-gray-100">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">
+              Usia
+            </p>
+            <p className="text-sm font-semibold text-gray-700">
+              {formatUsiaDetail(usiaBulan)}
+            </p>
+          </div>
+        )}
+
+        {/* Height row */}
+        <div className="px-4 pt-3 pb-1 border-b border-gray-100">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">
+            Tinggi Badan (TB)
+          </p>
+          <p className="text-lg font-bold text-gray-700">
+            {tinggiCm} <span className="text-sm font-medium text-gray-400">cm</span>
+          </p>
+        </div>
+
+        {/* Weight main metric */}
+        <div className="px-4 pt-3 pb-2">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
+            Berat Badan (BB)
+          </p>
+          <p className="text-3xl font-black text-gray-900 leading-none tracking-tight">
+            {beratKg.toFixed(1)}
+            <span className="text-base font-medium text-gray-400 ml-1">kg</span>
+          </p>
+        </div>
+
+        {/* Z-Score badge */}
+        {zScoreBBTB && (
+          <div className="px-4 pb-4 pt-1">
+            <span
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border ${getBBTBBadgeStyle()}`}
+            >
+              Z-Score BB/TB: {zScoreBBTB}
+            </span>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // ─────────────────────────────────────────────
+  // CUSTOM TOOLTIP - LK/U (WHO)
+  // ─────────────────────────────────────────────
+  const LKUTooltip = ({ active, payload, label }) => {
+    if (!active || !payload || !payload.length) return null;
+
+    const displayGrowthData =
+      userRole === "orang_tua" ? growthData : superAdminGrowthData;
+    const anak =
+      userRole === "orang_tua" ? selectedAnakData : superAdminSelectedAnak;
+
+    const childData = payload.find(
+      (p) => p.dataKey === "nilai" || p.name === "Pertumbuhan Si Kecil"
+    );
+    const childValue = childData?.value;
+
+    if (!childValue || childValue >= 1000) return null;
+
+    const jenisKelamin = anak?.jenis_kelamin;
+    const zScoreLK = jenisKelamin 
+      ? getZScoreFromReference(childValue, label, jenisKelamin, "lk_u") 
+      : null;
+
+    // Badge warna berdasarkan z-score LK/U
+    const getLKBadgeStyle = () => {
+      if (zScoreLK === null) return "bg-gray-50 text-gray-500 border-gray-200";
+      if (zScoreLK >= -2 && zScoreLK <= 2) return "bg-emerald-50 text-emerald-700 border-emerald-200";
+      if ((zScoreLK >= -3 && zScoreLK < -2) || (zScoreLK > 2 && zScoreLK <= 3))
+        return "bg-amber-50 text-amber-700 border-amber-200";
+      return "bg-red-50 text-red-700 border-red-200";
+    };
+
+    return (
+      <div
+        className="bg-white rounded-2xl shadow-2xl overflow-hidden"
+        style={{ border: "1px solid #e5e7eb", minWidth: "240px", maxWidth: "290px" }}
+      >
+        {/* Accent bar */}
+        <div className="h-1 w-full bg-purple-600" />
+
+        {/* Age row */}
+        <div className="px-4 pt-3 pb-2.5 border-b border-gray-100">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">
+            Usia
+          </p>
+          <p className="text-sm font-semibold text-gray-700">
+            {formatUsiaDetail(label)}
+          </p>
+        </div>
+
+        {/* Main metric */}
+        <div className="px-4 pt-3 pb-2">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
+            Lingkar Kepala (LK)
+          </p>
+          <p className="text-3xl font-black text-gray-900 leading-none tracking-tight">
+            {childValue.toFixed(1)}
+            <span className="text-base font-medium text-gray-400 ml-1">cm</span>
+          </p>
+        </div>
+
+        {/* Z-Score badge */}
+        <div className="px-4 pb-4 pt-1">
+          <span
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border ${getLKBadgeStyle()}`}
+          >
+            Z-Score LK/U: {zScoreLK !== null ? zScoreLK.toFixed(2) : "−"}
+          </span>
+        </div>
+      </div>
+    );
+  };
+
+  // ─────────────────────────────────────────────
+  // RENDER GROWTH CHART (BB/U, TB/U, IMT/U)
+  // ─────────────────────────────────────────────
   const renderGrowthChart = (indicator, yAxisLabel, unit) => {
     const displayGrowthData =
       userRole === "orang_tua" ? growthData : superAdminGrowthData;
@@ -1174,77 +1422,74 @@ export default function OrangTuaPemantauanGizi() {
 
     return (
       <div>
-        {/* Info Card */}
-        <div className="mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
-          <div className="flex flex-wrap justify-between items-center gap-6">
-            <div>
-              <p className="text-sm text-gray-500 font-bold uppercase tracking-wider">
-                {indicator === "berat"
-                  ? "Berat Badan"
-                  : indicator === "tinggi"
-                    ? "Tinggi Badan"
-                    : "IMT"}{" "}
-                Terakhir
-              </p>
-              <p className="text-4xl font-bold text-gray-800 mt-2">
-                {latestChildPoint && latestChildPoint.nilai < MAX_VALID_WEIGHT
-                  ? latestChildPoint.nilai.toFixed(1)
-                  : "-"}{" "}
-                <span className="text-xl font-normal text-gray-500">
-                  {unit}
-                </span>
-              </p>
-              {latestChildPoint &&
-                latestChildPoint.nilai < MAX_VALID_WEIGHT && (
-                  <p className="text-sm text-gray-400 mt-1 font-medium">
-                    Usia: {Math.floor(latestChildPoint.usiaBulan / 12)} Tahun{" "}
-                    {latestChildPoint.usiaBulan % 12} Bulan
+        {/* ── Stat Card ── */}
+        <div className="mb-8 rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+          <div className={`h-1 w-full ${isWHO ? "bg-emerald-500" : "bg-blue-500"}`} />
+          <div className="bg-white px-6 py-5">
+            <div className="flex flex-wrap justify-between items-center gap-6">
+
+              {/* Left: latest value */}
+              <div>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
+                  {indicator === "berat"
+                    ? "Berat Badan (BB)"
+                    : indicator === "tinggi"
+                      ? "Tinggi Badan (TB)"
+                      : "Indeks Massa Tubuh (IMT)"} — Pengukuran Terakhir
+                </p>
+                <p className="text-4xl font-black text-gray-900 leading-none tracking-tight">
+                  {latestChildPoint && latestChildPoint.nilai < MAX_VALID_WEIGHT
+                    ? latestChildPoint.nilai.toFixed(1)
+                    : "−"}{" "}
+                  <span className="text-xl font-medium text-gray-400">{unit}</span>
+                </p>
+                {latestChildPoint && latestChildPoint.nilai < MAX_VALID_WEIGHT && (
+                  <p className="text-sm text-gray-400 mt-2 font-medium">
+                    {formatUsiaDetail(latestChildPoint.usiaBulan)}
                   </p>
                 )}
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p className="text-sm text-gray-500 font-bold uppercase tracking-wider">
-                  Standar Referensi
-                </p>
-                <span
-                  className={`inline-block mt-2 px-4 py-2 rounded-xl text-sm font-bold ${
-                    isWHO
-                      ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
-                      : "bg-blue-100 text-blue-700 border border-blue-200"
-                  }`}
-                >
-                  {isWHO ? "WHO" : "CDC"} -{" "}
-                  {indicator === "berat"
-                    ? "BB/U"
-                    : indicator === "tinggi"
-                      ? "TB/U"
-                      : "IMT/U"}
-                </span>
               </div>
-              {/* Tombol Bantuan "?" */}
-              <button
-                onClick={() => setShowPenjelasanGrafik(true)}
-                className="bg-white border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 text-gray-500 hover:text-blue-600 w-12 h-12 rounded-xl flex items-center justify-center transition-all shadow-sm font-bold text-lg"
-                title="Klik untuk melihat penjelasan grafik"
-              >
-                ?
-              </button>
+
+              {/* Right: reference badge + help */}
+              <div className="flex items-center gap-3">
+                <div className="text-right">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
+                    Standar Referensi
+                  </p>
+                  <span
+                    className={`inline-block px-4 py-2 rounded-xl text-sm font-bold border ${
+                      isWHO
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                        : "bg-blue-50 text-blue-700 border-blue-200"
+                    }`}
+                  >
+                    {isWHO ? "WHO" : "CDC"} —{" "}
+                    {indicator === "berat" ? "BB/U" : indicator === "tinggi" ? "TB/U" : "IMT/U"}
+                  </span>
+                </div>
+                <button
+                  onClick={() => setShowPenjelasanGrafik(true)}
+                  className="bg-white border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 text-gray-400 hover:text-blue-600 w-11 h-11 rounded-xl flex items-center justify-center transition-all shadow-sm font-bold text-base"
+                  title="Klik untuk melihat penjelasan grafik"
+                >
+                  ?
+                </button>
+              </div>
+
             </div>
           </div>
         </div>
 
-        {/* Chart */}
         <div style={{ height: "520px", width: "100%" }}>
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart
               data={mergedData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 30 }}
+              margin={{ top: 16, right: 32, left: 16, bottom: 36 }}
             >
               <CartesianGrid
                 vertical={false}
-                stroke="#e5e7eb"
-                strokeDasharray="3 3"
+                stroke="#f0f0f0"
+                strokeDasharray="4 4"
               />
               <XAxis
                 type="number"
@@ -1252,20 +1497,20 @@ export default function OrangTuaPemantauanGizi() {
                 scale="linear"
                 domain={[config.min, config.max]}
                 allowDataOverflow={false}
-                tick={{ fontSize: 11, fill: "#6b7280" }}
+                tick={{ fontSize: 11, fill: "#9ca3af", fontWeight: 500 }}
                 tickFormatter={(v) =>
                   ageRange === "60-216" ? `${Math.round(v / 12)}` : `${v}`
                 }
                 label={{
-                  value:
-                    ageRange === "60-216" ? "Usia (tahun)" : "Usia (bulan)",
+                  value: ageRange === "60-216" ? "Usia (tahun)" : "Usia (bulan)",
                   position: "insideBottom",
-                  offset: -15,
+                  offset: -20,
                   fontSize: 11,
-                  fill: "#6b7280",
+                  fill: "#9ca3af",
+                  fontWeight: 600,
                 }}
                 axisLine={{ stroke: "#e5e7eb" }}
-                tickLine={{ stroke: "#e5e7eb" }}
+                tickLine={false}
               />
               <YAxis
                 domain={yDomain}
@@ -1274,11 +1519,13 @@ export default function OrangTuaPemantauanGizi() {
                   angle: -90,
                   position: "insideLeft",
                   fontSize: 11,
-                  fill: "#6b7280",
+                  fill: "#9ca3af",
+                  fontWeight: 600,
+                  dx: -4,
                 }}
-                tick={{ fontSize: 11, fill: "#6b7280" }}
-                axisLine={{ stroke: "#e5e7eb" }}
-                tickLine={{ stroke: "#e5e7eb" }}
+                tick={{ fontSize: 11, fill: "#9ca3af", fontWeight: 500 }}
+                axisLine={false}
+                tickLine={false}
                 tickFormatter={(value) => {
                   if (value > 1000) return "?";
                   if (value > 100) return Math.round(value).toString();
@@ -1295,16 +1542,16 @@ export default function OrangTuaPemantauanGizi() {
                   />
                 )}
                 cursor={{
-                  stroke: "#9ca3af",
+                  stroke: "#d1d5db",
                   strokeWidth: 1,
-                  strokeDasharray: "3 3",
+                  strokeDasharray: "4 4",
                 }}
               />
               <Legend
                 verticalAlign="top"
-                height={40}
+                height={36}
                 iconType="circle"
-                wrapperStyle={{ fontSize: "11px", paddingBottom: "10px" }}
+                wrapperStyle={{ fontSize: "11px", paddingBottom: "8px", color: "#6b7280", fontWeight: 600 }}
               />
 
               {isWHO && (
@@ -1609,72 +1856,84 @@ export default function OrangTuaPemantauanGizi() {
           </ResponsiveContainer>
         </div>
 
-        {/* Keterangan zona warna */}
-        <div className="flex flex-wrap justify-center gap-6 mt-6 pt-6 border-t border-gray-100">
-          <div className="flex items-center gap-2">
-            <div
-              className="w-5 h-5 rounded-md border border-emerald-400"
-              style={{ backgroundColor: "#bbf7d0" }}
-            ></div>
-            <span className="text-xs text-gray-600 font-bold">
-              {isWHO
-                ? "Normal (-2SD s.d +2SD)"
-                : indicator === "tinggi"
-                  ? "Normal (P3–P95)"
-                  : indicator === "imt"
-                    ? "Normal (P5–P85)"
-                    : "Normal (P5–P90)"}
-            </span>
-          </div>
-          {(isWHO || indicator !== "tinggi") && (
+        {/* ── Legend Bawah ── */}
+        <div className="mt-6 pt-5 border-t border-gray-100">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center mb-3">
+            Keterangan Grafik
+          </p>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2.5">
+            {/* Zona Normal */}
             <div className="flex items-center gap-2">
               <div
-                className="w-5 h-5 rounded-md border border-amber-400"
-                style={{ backgroundColor: "#fef3c7" }}
-              ></div>
-              <span className="text-xs text-gray-600 font-bold">
+                className="w-4 h-4 rounded flex-shrink-0"
+                style={{ backgroundColor: "#bbf7d0", border: "1.5px solid #22c55e" }}
+              />
+              <span className="text-xs text-gray-600 font-semibold">
                 {isWHO
-                  ? "Perhatian (-3SD s.d -2SD / +2SD s.d +3SD)"
-                  : indicator === "berat"
-                    ? "Perhatian (P3–P5 / P90–P95)"
-                    : "Perhatian (P3–P5 / P85–P95)"}
+                  ? "Normal (−2SD s.d +2SD)"
+                  : indicator === "tinggi" ? "Normal (P3–P95)"
+                  : indicator === "imt"    ? "Normal (P5–P85)"
+                  :                          "Normal (P5–P90)"}
               </span>
             </div>
-          )}
-          <div className="flex items-center gap-2">
-            <div
-              className="w-8 h-0.5 rounded"
-              style={{
-                backgroundColor: isWHO ? "#15803d" : "#2563eb",
-                borderTop: isWHO ? "none" : "2px dashed",
-              }}
-            ></div>
-            <span className="text-xs text-gray-600 font-bold">
-              {isWHO ? "Median (0 SD)" : "Median (P50)"}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div
-              className="w-8 h-0.5"
-              style={{ borderTop: "2px dashed #f59e0b" }}
-            ></div>
-            <span className="text-xs text-gray-600 font-bold">Batas Zona</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div
-              className="w-5 h-5 rounded-full border-2 border-white shadow-md"
-              style={{ backgroundColor: "#1d4ed8" }}
-            ></div>
-            <span className="text-xs text-gray-600 font-bold">
-              Pertumbuhan Si Kecil
-            </span>
+            {/* Zona Perhatian */}
+            {(isWHO || indicator !== "tinggi") && (
+              <div className="flex items-center gap-2">
+                <div
+                  className="w-4 h-4 rounded flex-shrink-0"
+                  style={{ backgroundColor: "#fef3c7", border: "1.5px solid #f59e0b" }}
+                />
+                <span className="text-xs text-gray-600 font-semibold">
+                  {isWHO
+                    ? "Perhatian (−3SD / +3SD)"
+                    : indicator === "berat" ? "Perhatian (P3–P5 / P90–P95)"
+                    :                         "Perhatian (P3–P5 / P85–P95)"}
+                </span>
+              </div>
+            )}
+            {/* Garis Median */}
+            <div className="flex items-center gap-2">
+              <div
+                className="w-7 flex-shrink-0"
+                style={{
+                  height: "2.5px",
+                  borderRadius: "2px",
+                  background: isWHO
+                    ? "#15803d"
+                    : "repeating-linear-gradient(to right, #2563eb 0, #2563eb 5px, transparent 5px, transparent 9px)",
+                }}
+              />
+              <span className="text-xs text-gray-600 font-semibold">
+                {isWHO ? "Median (0 SD)" : "Median (P50)"}
+              </span>
+            </div>
+            {/* Batas Zona */}
+            <div className="flex items-center gap-2">
+              <div
+                className="w-7 flex-shrink-0"
+                style={{
+                  height: "2px",
+                  background: "repeating-linear-gradient(to right, #f59e0b 0, #f59e0b 4px, transparent 4px, transparent 7px)",
+                }}
+              />
+              <span className="text-xs text-gray-600 font-semibold">Batas Zona</span>
+            </div>
+            {/* Data Anak */}
+            <div className="flex items-center gap-2">
+              <div
+                className="w-4 h-4 rounded-full flex-shrink-0"
+                style={{ backgroundColor: "#1d4ed8", border: "2.5px solid #fff", boxShadow: "0 0 0 1.5px #1d4ed8" }}
+              />
+              <span className="text-xs text-gray-600 font-semibold">
+                Pertumbuhan Si Kecil
+              </span>
+            </div>
           </div>
         </div>
       </div>
     );
   };
 
-  // Render functions untuk setiap chart
   const renderBBUChart = () =>
     renderGrowthChart("berat", "Berat Badan (kg)", "kg");
   const renderIMTUChart = () =>
@@ -1682,7 +1941,6 @@ export default function OrangTuaPemantauanGizi() {
   const renderTBUChart = () =>
     renderGrowthChart("tinggi", "Tinggi Badan (cm)", "cm");
 
-  // Helper: interpolasi nilai WHO WFH
   const getWFHReferenceValue = (heightCm, jenisKelamin, key) => {
     const genderData =
       jenisKelamin === "L" ? whoWFHData.laki : whoWFHData.perempuan;
@@ -1700,7 +1958,6 @@ export default function OrangTuaPemantauanGizi() {
     return v1 + ((v2 - v1) * (heightCm - lower)) / (upper - lower);
   };
 
-  // Render BB/TB chart
   const renderBBTBChart = () => {
     const displayGrowthData =
       userRole === "orang_tua" ? growthData : superAdminGrowthData;
@@ -1764,6 +2021,7 @@ export default function OrangTuaPemantauanGizi() {
       const match = childPoints.find((cp) => Math.abs(cp.tinggi - h) < 0.5);
       dp.berat = match ? match.berat : null;
       dp.tanggal = match ? match.tanggal : null;
+      dp.usiaBulan = match ? match.usiaBulan : null;
       return dp;
     });
 
@@ -1781,11 +2039,7 @@ export default function OrangTuaPemantauanGizi() {
           berat: cp.berat,
           tanggal: cp.tanggal,
           usiaBulan: cp.usiaBulan,
-          sdNeg3,
-          sdNeg2,
-          sd0,
-          sd2,
-          sd3,
+          sdNeg3, sdNeg2, sd0, sd2, sd3,
           zonaKuningBawahDiff:
             sdNeg3 != null && sdNeg2 != null ? sdNeg2 - sdNeg3 : null,
           zonaHijauDiff: sdNeg2 != null && sd2 != null ? sd2 - sdNeg2 : null,
@@ -1803,63 +2057,6 @@ export default function OrangTuaPemantauanGizi() {
       Math.floor(Math.min(...allSdNeg3, ...allBerats)) - 1,
     );
     const yMax = Math.ceil(Math.max(...allSd3, ...allBerats)) + 2;
-
-    const BBTBTooltip = ({ active, payload, label }) => {
-      if (!active || !payload || !payload.length) return null;
-      const childEntry = payload.find(
-        (p) => p.dataKey === "berat" && p.value != null,
-      );
-      const sd0Entry = payload.find((p) => p.dataKey === "sd0");
-      let status = null;
-      let statusColor = "text-emerald-600";
-      if (childEntry?.value) {
-        const berat = childEntry.value;
-        const sdNeg3 = payload.find((p) => p.dataKey === "sdNeg3")?.value;
-        const sdNeg2 = payload.find((p) => p.dataKey === "sdNeg2")?.value;
-        const sd2v = payload.find((p) => p.dataKey === "sd2")?.value;
-        const sd3 = payload.find((p) => p.dataKey === "sd3")?.value;
-        if (sdNeg3 != null && berat < sdNeg3) {
-          status = "Sangat Kurus (< -3SD)";
-          statusColor = "text-red-600";
-        } else if (sdNeg2 != null && berat < sdNeg2) {
-          status = "Kurus (-3SD s.d -2SD)";
-          statusColor = "text-amber-600";
-        } else if (sd2v != null && berat <= sd2v) {
-          status = "Normal (-2SD s.d +2SD)";
-          statusColor = "text-emerald-600";
-        } else if (sd3 != null && berat <= sd3) {
-          status = "Gemuk (+2SD s.d +3SD)";
-          statusColor = "text-amber-600";
-        } else {
-          status = "Obesitas (> +3SD)";
-          statusColor = "text-red-600";
-        }
-      }
-      return (
-        <div className="bg-white rounded-2xl shadow-xl p-5 border border-gray-100 min-w-[220px]">
-          <p className="text-sm font-bold text-gray-500 mb-2">
-            Tinggi: {label} cm
-          </p>
-          {childEntry?.value && (
-            <>
-              <p className="text-2xl font-bold text-gray-800">
-                {childEntry.value.toFixed(1)} kg
-              </p>
-              {status && (
-                <p className={`text-sm font-bold ${statusColor} mt-2`}>
-                  {status}
-                </p>
-              )}
-            </>
-          )}
-          {sd0Entry?.value && (
-            <p className="text-xs text-gray-400 mt-1">
-              Median: {sd0Entry.value.toFixed(1)} kg
-            </p>
-          )}
-        </div>
-      );
-    };
 
     return (
       <div>
@@ -2161,7 +2358,6 @@ export default function OrangTuaPemantauanGizi() {
     );
   };
 
-  // Render LK/U chart
   const renderLKUChart = () => {
     const displayGrowthData =
       userRole === "orang_tua" ? growthData : superAdminGrowthData;
@@ -2220,15 +2416,12 @@ export default function OrangTuaPemantauanGizi() {
       if (sd2 != null) dataPoint.sd2 = sd2;
       if (sd3 != null) dataPoint.sd3 = sd3;
       if (sdNeg3 != null && sdNeg2 != null) {
-        dataPoint.zonaKuningBawahMin = sdNeg3;
         dataPoint.zonaKuningBawahDiff = sdNeg2 - sdNeg3;
       }
       if (sdNeg2 != null && sd2 != null) {
-        dataPoint.zonaHijauMin = sdNeg2;
         dataPoint.zonaHijauDiff = sd2 - sdNeg2;
       }
       if (sd2 != null && sd3 != null) {
-        dataPoint.zonaKuningAtasMin = sd2;
         dataPoint.zonaKuningAtasDiff = sd3 - sd2;
       }
       referenceData.push(dataPoint);
@@ -2331,19 +2524,11 @@ export default function OrangTuaPemantauanGizi() {
                 tick={{ fontSize: 11 }}
               />
               <Tooltip
-                contentStyle={{
-                  backgroundColor: "white",
-                  borderRadius: "16px",
-                  border: "1px solid #e5e7eb",
-                  boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-                }}
-                formatter={(value, name, props) => {
-                  if (name === "Data Anak")
-                    return [
-                      `${value?.toFixed(1)} cm`,
-                      props.payload?.tanggal || "Data Anak",
-                    ];
-                  return [`${value?.toFixed(1)} cm`, name];
+                content={<LKUTooltip />}
+                cursor={{
+                  stroke: "#9ca3af",
+                  strokeWidth: 1,
+                  strokeDasharray: "3 3",
                 }}
               />
               <Legend verticalAlign="top" height={36} />
