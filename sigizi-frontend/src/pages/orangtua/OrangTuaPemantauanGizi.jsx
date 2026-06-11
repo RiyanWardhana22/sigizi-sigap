@@ -23,6 +23,7 @@ import {
   calculatePercentile,
   calculateZScore,
 } from "./growthReferences";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 // ─────────────────────────────────────────────
 // KOMPONEN: MODAL PENJELASAN GRAFIK
@@ -555,6 +556,7 @@ const calculateCDCPercentileContinuous = (value, usiaBulan, jenisKelamin, indica
 // ─────────────────────────────────────────────
 export default function OrangTuaPemantauanGizi() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const {
     selectedAnakId,
     selectedAnakData,
@@ -1469,10 +1471,10 @@ export default function OrangTuaPemantauanGizi() {
               <div>
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
                   {indicator === "berat"
-                    ? "Berat Badan (BB)"
+                    ? t("ortu.pemantauanGizi.beratBadan")
                     : indicator === "tinggi"
-                      ? "Tinggi Badan (TB)"
-                      : "Indeks Massa Tubuh (IMT)"} — Pengukuran Terakhir
+                      ? t("ortu.pemantauanGizi.tinggiBadan")
+                      : t("ortu.pemantauanGizi.imt")} — {t("ortu.pemantauanGizi.dataTerbaru")}
                 </p>
                 <p className="text-4xl font-black text-gray-900 leading-none tracking-tight">
                   {latestChildPoint && latestChildPoint.nilai < MAX_VALID_WEIGHT
@@ -1491,7 +1493,7 @@ export default function OrangTuaPemantauanGizi() {
               <div className="flex items-center gap-3">
                 <div className="text-right">
                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
-                    Standar Referensi
+                    {t("ortu.pemantauanGizi.standarReferensi")}
                   </p>
                   <span
                     className={`inline-block px-4 py-2 rounded-xl text-sm font-bold border ${
@@ -1501,7 +1503,7 @@ export default function OrangTuaPemantauanGizi() {
                     }`}
                   >
                     {isWHO ? "WHO" : "CDC"} —{" "}
-                    {indicator === "berat" ? "BB/U" : indicator === "tinggi" ? "TB/U" : "IMT/U"}
+                    {indicator === "berat" ? t("ortu.pemantauanGizi.bbU") : indicator === "tinggi" ? t("ortu.pemantauanGizi.tbU") : t("ortu.pemantauanGizi.imtU")}
                   </span>
                 </div>
                 <button
@@ -1896,7 +1898,7 @@ export default function OrangTuaPemantauanGizi() {
         {/* ── Legend Bawah ── */}
         <div className="mt-6 pt-5 border-t border-gray-100">
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center mb-3">
-            Keterangan Grafik
+            {t("ortu.pemantauanGizi.keteranganGrafik")}
           </p>
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-2.5">
             {/* Zona Normal */}
@@ -1907,10 +1909,10 @@ export default function OrangTuaPemantauanGizi() {
               />
               <span className="text-xs text-gray-600 font-semibold">
                 {isWHO
-                  ? "Normal (−2SD s.d +2SD)"
-                  : indicator === "tinggi" ? "Normal (P3–P95)"
-                  : indicator === "imt"    ? "Normal (P5–P85)"
-                  :                          "Normal (P5–P90)"}
+                  ? t("ortu.pemantauanGizi.zonaNormal") + "(−2SD s.d +2SD)"
+                  : indicator === "tinggi" ? t("ortu.pemantauanGizi.zonaNormal") + "(P3–P95)"
+                  : indicator === "imt"    ? t("ortu.pemantauanGizi.zonaNormal") + "(P5–P85)"
+                  :                          t("ortu.pemantauanGizi.zonaNormal") + "(P5–P90)"}
               </span>
             </div>
             {/* Zona Perhatian */}
@@ -2823,10 +2825,10 @@ export default function OrangTuaPemantauanGizi() {
           <div className="flex items-center gap-4">
             <div>
               <h1 className="text-xl font-bold text-gray-800">
-                Pemantauan Tumbuh Kembang
+                {t("ortu.pemantauanGizi.title")}
               </h1>
               <p className="text-gray-500 text-sm mt-0.5">
-                Pantau pertumbuhan anak berdasarkan standar WHO & CDC
+                {t("ortu.pemantauanGizi.subtitle")}
               </p>
             </div>
           </div>
@@ -2844,7 +2846,7 @@ export default function OrangTuaPemantauanGizi() {
                   />
                 </div>
                 <h3 className="font-bold text-blue-800 text-lg">
-                  Mode Super Admin
+                  {t("ortu.pemantauanGizi.modeSuperAdmin")}
                 </h3>
               </div>
               <select
@@ -2865,7 +2867,7 @@ export default function OrangTuaPemantauanGizi() {
           {displayAnakList.length > 0 ? (
             <div className="mb-8">
               <label className="block text-sm font-bold text-gray-700 mb-2">
-                Pilih Anak
+                {t("ortu.pemantauanGizi.pilihAnak")}
               </label>
               <div className="relative w-full md:w-96">
                 <button
@@ -2885,7 +2887,7 @@ export default function OrangTuaPemantauanGizi() {
                     </div>
                     <div className="text-left">
                       <p className="font-bold text-gray-800">
-                        {displayAnakData?.nama_anak || "Pilih Anak"}
+                        {displayAnakData?.nama_anak || t("ortu.pemantauanGizi.pilihAnak")}
                       </p>
                       <p className="text-sm text-gray-500">
                         {formattedAge} •{" "}
@@ -2957,8 +2959,7 @@ export default function OrangTuaPemantauanGizi() {
           ) : (
             <div className="mb-8 bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl p-8 text-center border border-amber-200">
               <p className="text-gray-600 font-medium">
-                Belum ada data anak. Silakan tambahkan data anak terlebih
-                dahulu.
+                {t("ortu.pemantauanGizi.belumAdaDataAnak")}
               </p>
             </div>
           )}
@@ -2974,19 +2975,19 @@ export default function OrangTuaPemantauanGizi() {
                   }}
                   className={`flex-1 py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${activeMainMenu === "berat" ? "bg-white text-emerald-600 shadow-md" : "text-gray-500 hover:text-gray-700"}`}
                 >
-                  <FontAwesomeIcon icon={fas.faWeightScale} /> Berat
+                  <FontAwesomeIcon icon={fas.faWeightScale} /> {t("ortu.pemantauanGizi.berat")}
                 </button>
                 <button
                   onClick={() => setActiveMainMenu("tinggi")}
                   className={`flex-1 py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${activeMainMenu === "tinggi" ? "bg-white text-emerald-600 shadow-md" : "text-gray-500 hover:text-gray-700"}`}
                 >
-                  <FontAwesomeIcon icon={fas.faRuler} /> Tinggi
+                  <FontAwesomeIcon icon={fas.faRuler} /> {t("ortu.pemantauanGizi.tinggi")}
                 </button>
                 <button
                   onClick={() => setActiveMainMenu("lingkar_kepala")}
                   className={`flex-1 py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${activeMainMenu === "lingkar_kepala" ? "bg-white text-emerald-600 shadow-md" : "text-gray-500 hover:text-gray-700"}`}
                 >
-                  <FontAwesomeIcon icon={fas.faBrain} /> Lingkar Kepala
+                  <FontAwesomeIcon icon={fas.faBrain} /> {t("ortu.pemantauanGizi.lingkarKepala")}
                 </button>
               </div>
             </div>
@@ -3000,25 +3001,25 @@ export default function OrangTuaPemantauanGizi() {
                   onClick={() => setActiveSubMenu("bb_u")}
                   className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition border ${activeSubMenu === "bb_u" ? "border-emerald-500 bg-emerald-50 text-emerald-600" : "border-transparent text-gray-500 hover:text-gray-700"}`}
                 >
-                  BB/U
+                  {t("ortu.pemantauanGizi.bbU")}
                 </button>
                 <button
                   onClick={() => setActiveSubMenu("bb_tb")}
                   className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition border ${activeSubMenu === "bb_tb" ? "border-emerald-500 bg-emerald-50 text-emerald-600" : "border-transparent text-gray-500 hover:text-gray-700"}`}
                 >
-                  BB/TB
+                  {t("ortu.pemantauanGizi.bbTb")}
                 </button>
                 <button
                   onClick={() => setActiveSubMenu("imt_u")}
                   className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition border ${activeSubMenu === "imt_u" ? "border-emerald-500 bg-emerald-50 text-emerald-600" : "border-transparent text-gray-500 hover:text-gray-700"}`}
                 >
-                  IMT/U
+                  {t("ortu.pemantauanGizi.imtU")}
                 </button>
               </div>
               <p className="text-center text-xs text-gray-400 mt-2 font-medium">
-                {activeSubMenu === "bb_u" && "Berat Badan Sesuai Usia"}
-                {activeSubMenu === "bb_tb" && "Berat Badan vs Tinggi Badan"}
-                {activeSubMenu === "imt_u" && "Indeks Massa Tubuh Sesuai Usia"}
+                {activeSubMenu === "bb_u" && t("ortu.pemantauanGizi.beratBadanSesuaiUsia")}
+                {activeSubMenu === "bb_tb" && t("ortu.pemantauanGizi.beratBadanVsTinggi")}
+                {activeSubMenu === "imt_u" && t("ortu.pemantauanGizi.indeksMassaTubuh")}
               </p>
             </div>
           )}
@@ -3120,10 +3121,10 @@ export default function OrangTuaPemantauanGizi() {
                 />
               </div>
               <p className="text-gray-600 font-bold text-lg">
-                Pilih anak untuk melihat grafik pertumbuhan
+                {t("ortu.pemantauanGizi.pilihAnakTerlebihDahulu")}
               </p>
               <p className="text-gray-500 mt-1">
-                Grafik akan menampilkan data berdasarkan standar WHO dan CDC
+                {t("ortu.pemantauanGizi.grafikMenampilkanStandar")}
               </p>
             </div>
           )}

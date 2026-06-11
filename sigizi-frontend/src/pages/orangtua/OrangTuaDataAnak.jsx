@@ -5,6 +5,7 @@ import { useAnak } from "../../contexts/AnakContext";
 import Sidebar from "../../components/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
+import { useLanguage } from "../../contexts/LanguageContext"; 
 
 const PENGHASILAN_OPTIONS = [
   "0 - 1.000.000",
@@ -38,6 +39,7 @@ const PENDIDIKAN_OPTIONS = [
 
 export default function OrangTuaDataAnak() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const {
     selectedAnakId,
     selectedAnakData,
@@ -545,7 +547,7 @@ export default function OrangTuaDataAnak() {
             <div>
               <h1 className="text-xl font-bold text-gray-800">Data Anak</h1>
               <p className="text-gray-500 text-sm mt-0.5">
-                Kelola data anak dan pantau pertumbuhannya
+                {t("ortu.dataAnak.subtitle")}
               </p>
             </div>
           </div>
@@ -577,20 +579,18 @@ export default function OrangTuaDataAnak() {
                     />
                   </div>
                   <h3 className="font-bold text-amber-800 text-lg">
-                    Lengkapi Data Diri Terlebih Dahulu
+                    {t("ortu.dataAnak.lengkapiDataDiri")}
                   </h3>
                 </div>
                 <p className="text-sm text-amber-700 ml-14">
-                  Sebelum menambah data anak, Anda perlu melengkapi data diri
-                  meliputi tanggal lahir, domisili, penghasilan, pendidikan ibu,
-                  kondisi sanitasi, kualitas air, dan akses layanan kesehatan.
+                  {t("ortu.dataAnak.deskripsiLengkapiData")}
                 </p>
               </div>
               <button
                 onClick={() => setShowProfilForm(true)}
                 className="shrink-0 bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-md shadow-amber-200 hover:shadow-lg flex items-center gap-2"
               >
-                <FontAwesomeIcon icon={fas.faUserEdit} /> Lengkapi Sekarang
+                <FontAwesomeIcon icon={fas.faUserEdit} /> {t("ortu.dataAnak.lengkapiSekarang")}
               </button>
             </div>
           )}
@@ -606,19 +606,19 @@ export default function OrangTuaDataAnak() {
                       className="text-emerald-600"
                     />
                   </div>
-                  Data Diri Orang Tua
+                  {t("ortu.dataAnak.dataDiriOrangTua")}
                 </h3>
                 <button
                   onClick={() => setShowProfilForm(true)}
                   className="text-sm text-emerald-600 hover:text-emerald-700 font-bold bg-emerald-50 px-4 py-2 rounded-xl hover:bg-emerald-100 transition-all"
                 >
-                  <FontAwesomeIcon icon={fas.faEdit} className="mr-2" /> Edit
+                  <FontAwesomeIcon icon={fas.faEdit} className="mr-2" /> {t("ortu.dataAnak.edit")}
                 </button>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4">
                 {[
                   {
-                    label: "Tanggal Lahir",
+                    label: t("ortu.dataAnak.tanggalLahirOrtu"),
                     value: profilData.tanggal_lahir || "-",
                     sub: profilData.tanggal_lahir
                       ? `${calculateOrangTuaAge(profilData.tanggal_lahir)} thn`
@@ -627,37 +627,37 @@ export default function OrangTuaDataAnak() {
                     color: "blue",
                   },
                   {
-                    label: "Domisili",
+                    label: t("ortu.dataAnak.domisiliKabKota"),
                     value: profilData.nama_kabupaten || "-",
                     icon: fas.faLocationDot,
                     color: "emerald",
                   },
                   {
-                    label: "Penghasilan/bln",
+                    label: t("ortu.dataAnak.penghasilanPerBulan"),
                     value: `Rp ${profilData.penghasilan_range || "-"}`,
                     icon: fas.faMoneyBillWave,
                     color: "emerald",
                   },
                   {
-                    label: "Pendidikan Ibu",
+                    label: t("ortu.dataAnak.pendidikanTerakhirIbu"),
                     value: profilData.pendidikan_ibu || "-",
                     icon: fas.faGraduationCap,
                     color: "indigo",
                   },
                   {
-                    label: "Sanitasi",
+                    label: t("ortu.dataAnak.sanitasiLabel"),
                     value: profilData.sanitasi || "-",
                     icon: fas.faToilet,
                     color: "gray",
                   },
                   {
-                    label: "Kualitas Air",
+                    label: t("ortu.dataAnak.kualitasAirLabel"),
                     value: profilData.kualitas_air || "-",
                     icon: fas.faDroplet,
                     color: "cyan",
                   },
                   {
-                    label: "Akses Kesehatan",
+                    label: t("ortu.dataAnak.aksesLayananKesehatan"),
                     value: profilData.akses_kesehatan || "-",
                     icon: fas.faHospital,
                     color: "purple",
@@ -781,7 +781,7 @@ export default function OrangTuaDataAnak() {
                 {displayAnakList.length > 0 && (
                   <>
                     <label className="block text-sm font-bold text-gray-700 mb-2">
-                      Pilih Anak
+                      {t("ortu.dataAnak.pilihAnak")}
                     </label>
                     <div className="relative">
                       <button
@@ -819,7 +819,7 @@ export default function OrangTuaDataAnak() {
                                 className="text-emerald-600 text-2xl"
                               />
                               <span className="text-gray-700 font-medium">
-                                Pilih Anak
+                                {t("ortu.dataAnak.pilihAnak")}
                               </span>
                             </>
                           )}
@@ -1009,15 +1009,14 @@ export default function OrangTuaDataAnak() {
                   onClick={handleClickTambahAnak}
                   className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-6 py-3 rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-md shadow-emerald-200 hover:shadow-lg font-bold"
                 >
-                  <FontAwesomeIcon icon={fas.faPlus} /> Tambah Data Anak
+                  <FontAwesomeIcon icon={fas.faPlus} /> {t("ortu.dataAnak.tambahDataAnak")}
                 </button>
                 {displayAnakData && (
                   <button
                     onClick={() => setShowUpdateForm(true)}
                     className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all shadow-md shadow-blue-200 hover:shadow-lg font-bold"
                   >
-                    <FontAwesomeIcon icon={fas.faChartLine} /> Update
-                    Pertumbuhan
+                    <FontAwesomeIcon icon={fas.faChartLine} /> {t("ortu.dataAnak.updatePertumbuhan")}
                   </button>
                 )}
               </div>
@@ -1216,17 +1215,16 @@ export default function OrangTuaDataAnak() {
                 />
               </div>
               <p className="text-gray-600 font-bold text-lg">
-                Belum ada data anak
+                {t("ortu.dataAnak.belumAdaDataAnak")}
               </p>
               <p className="text-gray-500 mt-2">
-                Silakan tambah data anak terlebih dahulu
+                {t("ortu.dataAnak.silakanTambahDataAnak")}
               </p>
               <button
                 onClick={handleClickTambahAnak}
                 className="mt-6 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-8 py-3 rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-md font-bold"
               >
-                <FontAwesomeIcon icon={fas.faPlus} className="mr-2" /> Tambah
-                Anak
+                <FontAwesomeIcon icon={fas.faPlus} className="mr-2" /> {t("ortu.dataAnak.tambahAnak")}
               </button>
             </div>
           )}
@@ -1518,7 +1516,7 @@ export default function OrangTuaDataAnak() {
                 <div className="bg-white/20 p-2.5 rounded-xl">
                   <FontAwesomeIcon icon={fas.faPlus} className="text-xl" />
                 </div>
-                <h2 className="text-xl font-bold">Tambah Data Anak</h2>
+                <h2 className="text-xl font-bold">{t("ortu.dataAnak.tambahDataAnakTitle")}</h2>
               </div>
             </div>
             <form
@@ -1527,12 +1525,12 @@ export default function OrangTuaDataAnak() {
             >
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1.5">
-                  Nama Anak
+                  {t("ortu.dataAnak.namaAnak")}
                 </label>
                 <input
                   type="text"
                   name="nama_anak"
-                  placeholder="Masukkan nama anak"
+                  placeholder={t("ortu.dataAnak.namaAnakPlaceholder")}
                   value={formData.nama_anak}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm transition-all"
@@ -1541,7 +1539,7 @@ export default function OrangTuaDataAnak() {
               </div>
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1.5">
-                  Tanggal Lahir
+                  {t("ortu.dataAnak.tanggalLahirAnak")}
                 </label>
                 <input
                   type="date"
@@ -1554,7 +1552,7 @@ export default function OrangTuaDataAnak() {
               </div>
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1.5">
-                  Jenis Kelamin
+                  {t("ortu.dataAnak.jenisKelamin")}
                 </label>
                 <select
                   name="jenis_kelamin"
@@ -1562,14 +1560,14 @@ export default function OrangTuaDataAnak() {
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm transition-all"
                 >
-                  <option value="L">Laki-laki</option>
-                  <option value="P">Perempuan</option>
+                  <option value="L">{t("ortu.dataAnak.lakilaki")}</option>
+                  <option value="P">{t("ortu.dataAnak.perempuan")}</option>
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1.5">
-                    Tinggi Badan (cm)
+                    {t("ortu.dataAnak.tinggiBadanCm")}
                   </label>
                   <input
                     type="number"
@@ -1584,7 +1582,7 @@ export default function OrangTuaDataAnak() {
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1.5">
-                    Berat Badan (kg)
+                    {t("ortu.dataAnak.beratBadanKg")}
                   </label>
                   <input
                     type="number"
@@ -1600,7 +1598,7 @@ export default function OrangTuaDataAnak() {
               </div>
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1.5">
-                  Lingkar Kepala (cm) - Opsional
+                  {t("ortu.dataAnak.lingkarKepalaCm")}
                 </label>
                 <input
                   type="number"

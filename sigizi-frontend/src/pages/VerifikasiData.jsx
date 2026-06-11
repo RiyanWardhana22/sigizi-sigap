@@ -23,9 +23,11 @@ import {
   FaToilet,
   FaHospitalSymbol,
 } from "react-icons/fa";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function VerifikasiData() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [dataAnak, setDataAnak] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -197,10 +199,10 @@ export default function VerifikasiData() {
           <div className="flex items-center gap-4">
             <div>
               <h1 className="text-xl font-bold text-slate-800 tracking-tight">
-                Verifikasi Data
+                {t("verifikasi.title")}
               </h1>
               <p className="text-[11px] font-medium text-slate-400 uppercase tracking-widest">
-                Dinas Kesehatan Portal
+                {t("verifikasi.subtitle")}
               </p>
             </div>
           </div>
@@ -210,19 +212,19 @@ export default function VerifikasiData() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {[
               {
-                label: "Total Pendaftar",
+                label: t("verifikasi.totalPendaftar"),
                 value: stats.total,
                 icon: <FaUsers />,
                 color: "blue",
               },
               {
-                label: "Menunggu",
+                label: t("verifikasi.menunggu"),
                 value: stats.pending,
                 icon: <FaHourglassHalf />,
                 color: "amber",
               },
               {
-                label: "Disetujui",
+                label: t("verifikasi.disetujui"),
                 value: stats.approved,
                 icon: <FaCheck />,
                 color: "emerald",
@@ -253,7 +255,7 @@ export default function VerifikasiData() {
               <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
-                placeholder="Cari nama anak atau orang tua..."
+                placeholder={t("verifikasi.cariNamaAnakOrtu")}
                 className="w-full pl-12 pr-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-emerald-500/20 transition-all text-sm"
                 value={searchTerm}
                 onChange={(e) => {
@@ -272,10 +274,10 @@ export default function VerifikasiData() {
                   setCurrentPage(1);
                 }}
               >
-                <option value="Semua">Semua Status</option>
-                <option value="Menunggu">Menunggu</option>
-                <option value="Disetujui">Disetujui</option>
-                <option value="Ditolak">Ditolak</option>
+                <option value="Semua">{t("verifikasi.filterStatus")}</option>
+                <option value="Menunggu">{t("verifikasi.menunggu")}</option>
+                <option value="Disetujui">{t("verifikasi.disetujui")}</option>
+                <option value="Ditolak">{t("verifikasi.tolak")}</option>
               </select>
             </div>
           </div>
@@ -290,16 +292,16 @@ export default function VerifikasiData() {
                       No
                     </th>
                     <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                      Nama anak
+                      {t("verifikasi.namaAnak")}
                     </th>
                     <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                      Nama Orang Tua
+                      {t("verifikasi.namaOrangTua")}
                     </th>
                     <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                      Status
+                      {t("verifikasi.status")}
                     </th>
                     <th className="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">
-                      Aksi
+                      {t("verifikasi.aksi")}
                     </th>
                   </tr>
                 </thead>
@@ -345,7 +347,7 @@ export default function VerifikasiData() {
                               onClick={() => handleCekData(anak)}
                               className="px-4 py-2 bg-slate-800 text-white text-[10px] font-bold uppercase rounded-lg hover:bg-slate-700 transition"
                             >
-                              Detail
+                              {t("verifikasi.detail")}
                             </button>
                           </div>
                         </td>
@@ -406,8 +408,8 @@ export default function VerifikasiData() {
                 </h2>
                 <p className="text-emerald-400 font-bold text-xs uppercase tracking-widest mb-6">
                   {selectedAnak.jenis_kelamin === "L"
-                    ? "Laki-laki"
-                    : "Perempuan"}{" "}
+                    ? t("dataAnak.lakiLaki")
+                    : t("dataAnak.perempuan")}{" "}
                   •{" "}
                   {selectedAnak.umur_bulan ||
                     hitungUmurBulan(selectedAnak.tanggal_lahir)}
@@ -461,7 +463,7 @@ export default function VerifikasiData() {
               <div className="p-4 md:p-8 overflow-y-auto flex-1 custom-scrollbar">
                 <div className="mb-10">
                   <h3 className="flex items-center gap-2 uppercase text-slate-800 font-bold mb-6">
-                    Data Pengukuran Fisik
+                    {t("verifikasi.dataPengukuranFisik")}
                   </h3>
                   <div className="grid grid-cols-3 gap-4">
                     {[
@@ -537,7 +539,7 @@ export default function VerifikasiData() {
                 {/* Section: Sosio-Ekonomi */}
                 <div>
                   <h3 className="flex items-center gap-2 uppercase text-slate-800 font-bold mb-6">
-                    Profil Penanggung Jawab
+                    {t("verifikasi.profilPenanggungJawab")}
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {[
@@ -600,7 +602,7 @@ export default function VerifikasiData() {
                   onClick={closeModal}
                   className="px-6 py-3 text-xs font-bold text-slate-500 uppercase hover:bg-slate-50 rounded-xl transition"
                 >
-                  Tutup
+                  {t("verifikasi.close")}
                 </button>
                 {selectedAnak.status_verifikasi === "Menunggu" && (
                   <>
@@ -611,7 +613,7 @@ export default function VerifikasiData() {
                       }}
                       className="px-6 py-3 bg-rose-50 text-rose-600 text-xs font-bold uppercase rounded-xl hover:bg-rose-600 hover:text-white transition"
                     >
-                      Tolak
+                      {t("verifikasi.tolak")}
                     </button>
                     <button
                       onClick={() => {
@@ -620,7 +622,7 @@ export default function VerifikasiData() {
                       }}
                       className="px-6 py-3 bg-emerald-500 text-white text-xs font-bold uppercase rounded-xl hover:bg-emerald-600 shadow-lg shadow-emerald-200 transition"
                     >
-                      Validasi & Setujui
+                      {t("verifikasi.validasiSetujui")}
                     </button>
                   </>
                 )}

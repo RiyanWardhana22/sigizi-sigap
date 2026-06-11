@@ -24,9 +24,11 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function AnalisisStrategis() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [korelasiData, setKorelasiData] = useState([]);
   const [evaluasiData, setEvaluasiData] = useState({
     peringatan: [],
@@ -117,7 +119,7 @@ export default function AnalisisStrategis() {
           <div>
             <h1 className="text-xl font-bold text-gray-800 tracking-tight flex items-center gap-2 uppercase">
               {" "}
-              Analisis & Evaluasi Strategis
+              {t("analisis.title")}
             </h1>
           </div>
         </header>
@@ -127,7 +129,7 @@ export default function AnalisisStrategis() {
             <div className="py-32 flex flex-col items-center justify-center gap-4 text-[#0A2A20]">
               <div className="w-10 h-10 border-4 border-[#0A2A20] border-t-transparent rounded-full animate-spin"></div>
               <p className="font-medium text-sm animate-pulse text-slate-500">
-                Memproses Algoritma AI & Sinkronisasi Data...
+                {t("analisis.memprosesAI")}
               </p>
             </div>
           ) : (
@@ -135,7 +137,7 @@ export default function AnalisisStrategis() {
               {/* SECTION 1: EVALUASI KINERJA */}
               <section className="animate-fadeIn">
                 <h2 className="text-lg font-bold text-slate-800 mb-4">
-                  Monitoring Tren Kinerja
+                  {t("analisis.monitoringTrenKinerja")}
                 </h2>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Peringatan Card */}
@@ -145,7 +147,7 @@ export default function AnalisisStrategis() {
                         <FaExclamationTriangle />
                       </div>
                       <h3 className="text-base font-semibold text-slate-800">
-                        Peringatan Lonjakan
+                        {t("analisis.peringatanLonjakan")}
                       </h3>
                     </div>
 
@@ -184,7 +186,7 @@ export default function AnalisisStrategis() {
                         <GiProgression />
                       </div>
                       <h3 className="text-base font-semibold text-slate-800">
-                        Top 5 Kabupaten/Kota Penurunan Stunting
+                        {t("analisis.prestasi")}
                       </h3>
                     </div>
 
@@ -217,7 +219,7 @@ export default function AnalisisStrategis() {
               {/* SECTION 2: AKAR MASALAH */}
               <section className="animate-fadeIn">
                 <h2 className="text-lg font-bold text-slate-800 mb-4">
-                  Analisis Faktor Akar Masalah
+                  {t("analisis.analisisFaktorAkar")}
                 </h2>
                 <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-100 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)]">
                   <div className="h-[450px] w-full">
@@ -313,7 +315,7 @@ export default function AnalisisStrategis() {
               <section className="animate-fadeIn">
                 <div className="flex items-center gap-3 mb-4">
                   <h2 className="text-lg font-bold text-slate-800">
-                    Prediksi Masa Depan Kabupaten/Kota Rawan Stunting
+                    {t("analisis.prediksiMasaDepan")}
                   </h2>
                 </div>
 
@@ -421,12 +423,10 @@ export default function AnalisisStrategis() {
                       <div className="col-span-full py-12 bg-slate-50 border border-slate-100 border-dashed rounded-xl text-center">
                         <FaCheckCircle className="text-4xl mx-auto mb-3 text-emerald-400" />
                         <h4 className="font-semibold text-slate-800">
-                          Zonasi Aman Terkendali
+                          {t("analisis.zonasiAman")}
                         </h4>
                         <p className="text-sm text-slate-500 mt-1 max-w-md mx-auto">
-                          Berdasarkan model AI saat ini, tidak ada wilayah yang
-                          diprediksi akan mengalami lonjakan krisis dalam waktu
-                          dekat.
+                          {t("analisis.zonasiAmanText")}
                         </p>
                       </div>
                     )}
@@ -439,20 +439,18 @@ export default function AnalisisStrategis() {
                     </div>
                     <div>
                       <h5 className="text-sm font-bold text-indigo-900 mb-1">
-                        Rekomendasi Tindakan
+                        {t("analisis.rekomendasiTindakan")}
                       </h5>
                       <p className="text-xs text-indigo-800/80 leading-relaxed">
-                        Fokuskan alokasi anggaran infrastruktur (Dana Desa/Dinas
-                        PU) segera pada wilayah{" "}
+                        {t("analisis.rekomendasiText")}{" "}
                         <span className="font-semibold text-rose-600">
-                          KRISIS
+                          {t("analisis.krisis")}
                         </span>
-                        . Untuk wilayah berstatus{" "}
+                        {t("analisis.krisisText")}{" "}
                         <span className="font-semibold text-amber-600">
-                          WASPADA
+                          {t("analisis.waspada")}
                         </span>
-                        , optimalkan program Pemberian Makanan Tambahan (PMT)
-                        dan pengawasan berkala melalui Posyandu terdekat.
+                        {t("analisis.waspadaText")}
                       </p>
                     </div>
                   </div>

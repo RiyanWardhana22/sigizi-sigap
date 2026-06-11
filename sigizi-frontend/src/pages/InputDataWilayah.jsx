@@ -11,6 +11,7 @@ import {
   FaCheckCircle,
   FaKeyboard,
 } from "react-icons/fa";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const DAFTAR_WILAYAH_SUMUT = [
   "Nias",
@@ -52,6 +53,7 @@ const API_URL = "http://localhost/sigizi-sigap/sigizi-backend";
 
 export default function InputDataWilayah() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("manual");
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -278,10 +280,10 @@ export default function InputDataWilayah() {
         <header className="bg-white border-b border-slate-200 px-6 sm:px-8 py-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sticky top-0 z-10">
           <div>
             <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
-              Input Data Wilayah
+              {t("inputWilayah.title")}
             </h1>
             <p className="text-sm text-slate-500 mt-1">
-              Kelola dan kalkulasi agregat data gizi tingkat kabupaten/kota.
+              {t("inputWilayah.subtitle")}
             </p>
           </div>
         </header>
@@ -296,7 +298,7 @@ export default function InputDataWilayah() {
                   : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
               }`}
             >
-              Input Manual
+              {t("inputWilayah.inputManual")}
             </button>
             <button
               onClick={() => setActiveTab("import")}
@@ -306,7 +308,7 @@ export default function InputDataWilayah() {
                   : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
               }`}
             >
-              Unggah Excel
+              {t("inputWilayah.unggahExcel")}
             </button>
           </div>
 
@@ -315,11 +317,10 @@ export default function InputDataWilayah() {
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <div className="mb-8 border-b border-slate-100 pb-5">
                 <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                  Formulir Laporan Tunggal
+                  {t("inputWilayah.formLaporanTunggal")}
                 </h2>
                 <p className="text-sm text-slate-500 mt-1.5">
-                  Isi data riil untuk satu kabupaten/kota. Sistem akan otomatis
-                  mengkalkulasi nilai persentasenya.
+                  {t("inputWilayah.deskripsiManual")}
                 </p>
               </div>
 
@@ -327,7 +328,7 @@ export default function InputDataWilayah() {
                 {/* Pemilihan Wilayah */}
                 <div className="max-w-md">
                   <label className="block text-sm font-semibold text-slate-700">
-                    Pilih Kabupaten/Kota <span className="text-red-500">*</span>
+                    {t("inputWilayah.pilihKabupatenKota")} <span className="text-red-500">*</span>
                   </label>
                   <select
                     name="kab_kota"
@@ -336,7 +337,7 @@ export default function InputDataWilayah() {
                     required
                     className={`${inputBaseClass} cursor-pointer`}
                   >
-                    <option value="">-- Pilih Wilayah Administrasi --</option>
+                    <option value="">{t("inputWilayah.pilihWilayahAdministrasi")}</option>
                     {DAFTAR_WILAYAH_SUMUT.map((wilayah, index) => (
                       <option key={index} value={wilayah}>
                         {wilayah}
@@ -599,10 +600,10 @@ export default function InputDataWilayah() {
                     {isProcessing ? (
                       <>
                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                        Menyimpan...
+                        {t("inputWilayah.menyimpan")}
                       </>
                     ) : (
-                      <>Kalkulasi & Simpan Data</>
+                      <>{t("inputWilayah.kalkulasiSimpan")}</>
                     )}
                   </button>
                 </div>
@@ -618,11 +619,10 @@ export default function InputDataWilayah() {
                   onClick={handleExportTemplate}
                   className="flex items-center justify-center gap-2 bg-white border border-slate-200 hover:border-green-300 hover:bg-green-50 text-slate-700 hover:text-green-700 px-6 py-3 rounded-xl text-sm font-bold shadow-sm transition-all"
                 >
-                  <FaFileExcel className="text-green-600 text-lg" /> Unduh
-                  Format Template
+                  <FaFileExcel className="text-green-600 text-lg" /> {t("inputWilayah.unduhFormatTemplate")}
                 </button>
                 <label className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-sm cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]">
-                  <FaFileUpload className="text-lg" /> Unggah File .xlsx
+                  <FaFileUpload className="text-lg" /> {t("inputWilayah.unggahFileExcel")}
                   <input
                     type="file"
                     accept=".xlsx, .xls"
@@ -637,10 +637,10 @@ export default function InputDataWilayah() {
                   <div className="p-6 border-b border-slate-200 flex flex-col md:flex-row justify-between md:items-center gap-4 bg-slate-50/50">
                     <div>
                       <h2 className="text-xl font-bold text-slate-800">
-                        Pratinjau Data Kalkulasi
+                        {t("inputWilayah.pratinjauDataKalkulasi")}
                       </h2>
                       <p className="text-xs text-slate-500 mt-1 uppercase tracking-widest font-semibold">
-                        {importData.length} Wilayah siap dikirim ke Database
+                        {importData.length} {t("inputWilayah.wilayahSiapKirim")}
                       </p>
                     </div>
                     <div className="flex gap-3">
@@ -648,7 +648,7 @@ export default function InputDataWilayah() {
                         onClick={() => setImportData([])}
                         className="bg-white border border-slate-200 text-red-600 hover:border-red-200 hover:bg-red-50 px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all"
                       >
-                        <FaTrash /> Batalkan
+                        <FaTrash /> {t("inputWilayah.batalkan")}
                       </button>
                       <button
                         onClick={handleSaveAllExcel}
@@ -662,11 +662,11 @@ export default function InputDataWilayah() {
                         {isProcessing ? (
                           <>
                             <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                            Memproses...
+                            {t("inputWilayah.memproses")}
                           </>
                         ) : (
                           <>
-                            <FaCheckCircle /> Simpan Semua
+                            <FaCheckCircle /> {t("inputWilayah.simpanSemua")}
                           </>
                         )}
                       </button>

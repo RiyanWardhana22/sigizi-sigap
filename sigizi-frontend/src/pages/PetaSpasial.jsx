@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import MapDashboard from "../components/MapDashboard";
 import { FaMapMarkedAlt, FaUserFriends, FaChartArea } from "react-icons/fa";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function PetaSpasial() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [user, setUser] = useState(null);
   const [modePeta, setModePeta] = useState("balita");
 
@@ -31,7 +33,7 @@ export default function PetaSpasial() {
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
         <header className="bg-white border-b border-gray-200 px-8 py-5 flex items-center gap-4 z-10 relative">
           <h1 className="text-xl font-bold text-gray-800 uppercase tracking-wider">
-            Sistem Informasi Geografis (GIS)
+            {t("peta.title")}
           </h1>
         </header>
 
@@ -54,10 +56,10 @@ export default function PetaSpasial() {
                 </div>
                 <div>
                   <h3 className="font-bold text-sm uppercase">
-                    Peta Sebaran Balita
+                    {t("peta.petaSebaranBalita")}
                   </h3>
                   <p className="text-xs opacity-80 font-medium">
-                    Data Mikro: Lokasi individu & status gizi anak
+                    {t("peta.deskripsiMikro")}
                   </p>
                 </div>
               </button>
@@ -77,10 +79,10 @@ export default function PetaSpasial() {
                 </div>
                 <div>
                   <h3 className="font-bold text-sm uppercase">
-                    Peta Kerentanan Wilayah
+                    {t("peta.petaKerentananWilayah")}
                   </h3>
                   <p className="text-xs opacity-80 font-medium">
-                    Data Makro: Prediksi Machine Learning per Kabupaten
+                    {t("peta.deskripsiMakro")}
                   </p>
                 </div>
               </button>
@@ -91,13 +93,13 @@ export default function PetaSpasial() {
               <div className="p-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
                 <h2 className="text-sm font-bold text-gray-700 uppercase tracking-tighter">
                   {modePeta === "balita"
-                    ? "Visualisasi Titik Kasus"
-                    : "Visualisasi Poligon Risiko"}
+                    ? t("peta.visualisasiTitikKasus")
+                    : t("peta.visualisasiPoligonRisiko")}
                 </h2>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                   <span className="text-[10px] font-bold text-gray-400 uppercase">
-                    Live Database
+                    {t("peta.liveDatabase")}
                   </span>
                 </div>
               </div>
@@ -114,19 +116,19 @@ export default function PetaSpasial() {
                       <div className="flex items-center gap-2">
                         <span className="w-3 h-3 rounded-full bg-green-500"></span>
                         <span className="text-xs font-bold text-gray-600">
-                          Gizi Normal
+                          {t("peta.giziNormal")}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
                         <span className="text-xs font-bold text-gray-600">
-                          Pra-Stunting
+                          {t("peta.praStunting")}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="w-3 h-3 rounded-full bg-red-500"></span>
                         <span className="text-xs font-bold text-gray-600">
-                          Stunting
+                          {t("peta.stunting")}
                         </span>
                       </div>
                     </>
@@ -135,25 +137,25 @@ export default function PetaSpasial() {
                       <div className="flex items-center gap-2">
                         <span className="w-4 h-2 rounded-sm bg-green-500 border border-green-600"></span>
                         <span className="text-xs font-bold text-gray-600">
-                          Risiko Rendah
+                          {t("peta.risikoRendah")}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="w-4 h-2 rounded-sm bg-yellow-400 border border-yellow-500"></span>
                         <span className="text-xs font-bold text-gray-600">
-                          Risiko Sedang
+                          {t("peta.risikoSedang")}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="w-4 h-2 rounded-sm bg-orange-500 border border-orange-600"></span>
                         <span className="text-xs font-bold text-gray-600">
-                          Risiko Tinggi
+                          {t("peta.risikoTinggi")}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="w-4 h-2 rounded-sm bg-red-600 border border-red-700"></span>
                         <span className="text-xs font-bold text-gray-600">
-                          Risiko Sangat Tinggi
+                          {t("peta.risikoSangatTinggi")}
                         </span>
                       </div>
                     </>

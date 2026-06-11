@@ -17,9 +17,11 @@ import {
 } from "react-icons/fa";
 import { IoArrowRedo } from "react-icons/io5";
 import { TbReportAnalytics } from "react-icons/tb";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function Sidebar({ handleLogout }) {
   const location = useLocation();
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [userRole, setUserRole] = useState("");
   const [userName, setUserName] = useState("");
@@ -38,51 +40,51 @@ export default function Sidebar({ handleLogout }) {
     setIsOpen(false);
   }, [location.pathname]);
 
-  const superAdminMenus = [
+    const superAdminMenus = [
     {
-      name: "Ringkasan",
+      name: t("nav.dashboard"),
       icon: <FaHome />,
       path: "/dashboard",
       roles: ["super_admin", "dinas_kesehatan", "pemangku_kepentingan"],
     },
     {
-      name: "Peta Spasial GIS",
+      name: t("nav.petaSpasial"),
       icon: <FaMapMarkedAlt />,
       path: "/dashboard/peta",
       roles: ["super_admin", "dinas_kesehatan", "pemangku_kepentingan"],
     },
     {
-      name: "Manajemen Pengguna",
+      name: t("nav.manajemenPengguna"),
       icon: <FaUsers />,
       path: "/dashboard/users",
       roles: ["super_admin"],
     },
     {
-      name: "Input Data Wilayah",
+      name: t("nav.inputDataWilayah"),
       icon: <FaDatabase />,
       path: "/input-wilayah",
       roles: ["super_admin", "dinas_kesehatan"],
     },
     {
-      name: "Data Orangtua & Anak",
+      name: t("nav.dataAnak"),
       icon: <FaBaby />,
       path: "/dashboard/anak",
       roles: ["super_admin", "dinas_kesehatan", "orang_tua"],
     },
     {
-      name: "Verifikasi Data",
+      name: t("nav.verifikasiData"),
       icon: <FaClipboardCheck />,
       path: "/dashboard/verifikasi",
       roles: ["super_admin", "dinas_kesehatan"],
     },
     {
-      name: "Analisis & Evaluasi",
+      name: t("nav.analisisEvaluasi"),
       icon: <FaChartPie />,
       path: "/dashboard/analisis",
       roles: ["super_admin", "pemangku_kepentingan"],
     },
     {
-      name: "Laporan Rekapitulasi",
+      name: t("nav.laporanRekapitulasi"),
       icon: <TbReportAnalytics />,
       path: "/dashboard/laporan",
       roles: ["super_admin", "pemangku_kepentingan"],
@@ -91,25 +93,25 @@ export default function Sidebar({ handleLogout }) {
 
   const orangTuaMenus = [
     {
-      name: "Dashboard Orang Tua",
+      name: t("nav.dashboardOrangTua"),
       icon: <FaHome />,
       path: "/orangtua/dashboard",
       roles: ["super_admin", "orang_tua"],
     },
     {
-      name: "Data Anak",
+      name: t("nav.dataAnakOrtu"),
       icon: <FaChild />,
       path: "/orangtua/data-anak",
       roles: ["super_admin", "orang_tua"],
     },
     {
-      name: "Pemantauan Gizi",
+      name: t("nav.pemantauanGizi"),
       icon: <FaAppleAlt />,
       path: "/orangtua/pemantauan-gizi",
       roles: ["super_admin", "orang_tua"],
     },
     {
-      name: "Pengaturan Akun",
+      name: t("nav.pengaturanAkun"),
       icon: <FaUserCog />,
       path: "/orangtua/pengaturan",
       roles: ["super_admin", "orang_tua"],
@@ -150,7 +152,7 @@ export default function Sidebar({ handleLogout }) {
         <div className="p-6 flex justify-between items-center lg:justify-start gap-3">
           <div className="flex items-center gap-3">
             <h2 className="text-xl font-bold tracking-wide text-white">
-              SI-GIZI SIGAP<span className="text-emerald-400"></span>
+              {t("sidebar.siGiziSigap")}<span className="text-emerald-400"></span>
             </h2>
           </div>
 
@@ -166,7 +168,7 @@ export default function Sidebar({ handleLogout }) {
         <div className="flex-1 px-4 py-2 overflow-y-auto custom-scrollbar">
           <div className="mb-2">
             <p className="text-[10px] font-bold tracking-wider text-slate-500 uppercase px-4 mb-3">
-              Main Menu
+              {t("nav.mainMenu")}
             </p>
           </div>
           <ul className="space-y-1.5">
@@ -180,7 +182,7 @@ export default function Sidebar({ handleLogout }) {
                   {isSeparator && (
                     <div className="mt-8 mb-3 px-4">
                       <p className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
-                        Fitur Orang Tua (Preview)
+                        {t("nav.fiturOrangTua")}
                       </p>
                     </div>
                   )}
@@ -237,7 +239,7 @@ export default function Sidebar({ handleLogout }) {
             className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 focus:outline-none"
           >
             <IoArrowRedo className="text-lg" />
-            <span>Logout</span>
+            <span>{t("app.logout")}</span>
           </button>
         </div>
       </div>

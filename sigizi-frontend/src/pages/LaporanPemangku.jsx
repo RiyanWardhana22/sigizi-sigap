@@ -19,9 +19,11 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function LaporanPemangku() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("sebaran");
   const [laporan, setLaporan] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -137,10 +139,10 @@ export default function LaporanPemangku() {
         <header className="bg-white border-b border-slate-100 px-8 py-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 z-10 shadow-sm print:shadow-none print:border-b-2 print:border-black print:px-0 print:py-4 print:mb-6">
           <div>
             <h1 className="text-xl font-bold text-gray-800 tracking-tight flex items-center gap-2 uppercase">
-              Laporan Rekapitulasi Wilayah
+              {t("laporan.title")}
             </h1>
             <p className="text-xs text-slate-500 mt-1 print:text-slate-800 print:font-medium">
-              Data sebaran gizi anak tingkat Kabupaten/Kota - Tahun{" "}
+              {t("laporan.subtitle")} {" "}
               {filterTahun}
             </p>
           </div>
@@ -174,7 +176,7 @@ export default function LaporanPemangku() {
                       : "text-slate-500 hover:text-slate-700"
                   }`}
                 >
-                  Grafik Sebaran
+                  {t("laporan.grafikSebaran")}
                 </button>
                 <button
                   onClick={() => setActiveTab("tabel")}
@@ -184,7 +186,7 @@ export default function LaporanPemangku() {
                       : "text-slate-500 hover:text-slate-700"
                   }`}
                 >
-                  Tabel Rekapitulasi
+                  {t("laporan.tabelRekapitulasi")}
                 </button>
               </div>
 
@@ -205,13 +207,13 @@ export default function LaporanPemangku() {
                     onClick={handleExportCSV}
                     className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 hover:text-slate-800 transition-colors"
                   >
-                    <FaFileExcel className="text-emerald-600" /> Excel
+                    <FaFileExcel className="text-emerald-600" /> {t("laporan.excel")}
                   </button>
                   <button
                     onClick={handlePrint}
                     className="flex items-center gap-2 px-4 py-2 bg-[#0A2A20] hover:bg-[#124233] text-white rounded-lg text-sm font-medium shadow-sm transition-colors"
                   >
-                    <FaFilePdf className="text-rose-400" /> PDF
+                    <FaFilePdf className="text-rose-400" /> {t("laporan.pdf")}
                   </button>
                 </div>
               </div>
@@ -223,7 +225,7 @@ export default function LaporanPemangku() {
                 <div className="py-24 flex flex-col items-center justify-center gap-4 text-[#0A2A20] print:hidden">
                   <div className="w-10 h-10 border-4 border-[#0A2A20] border-t-transparent rounded-full animate-spin"></div>
                   <p className="font-medium text-sm animate-pulse text-slate-500">
-                    Menarik Data Laporan...
+                    {t("laporan.menarikDataLaporan")}
                   </p>
                 </div>
               ) : (
@@ -233,10 +235,10 @@ export default function LaporanPemangku() {
                       <div className="mb-6 flex justify-between items-end print:hidden">
                         <div>
                           <h2 className="text-lg font-bold text-slate-800">
-                            Grafik Kerentanan Wilayah
+                            {t("laporan.grafikKerentananWilayah")}
                           </h2>
                           <p className="text-sm text-slate-500 mt-1">
-                            Distribusi status gizi di Kabupaten/Kota
+                            {t("laporan.distribusiStatusGizi")} 
                           </p>
                         </div>
                       </div>
@@ -329,19 +331,19 @@ export default function LaporanPemangku() {
                           <thead className="bg-slate-50 border-b border-slate-100 print:bg-white print:border-black print:border-b-2">
                             <tr>
                               <th className="px-6 py-4 font-semibold text-slate-700 print:px-2 print:py-2">
-                                Wilayah
+                                {t("laporan.wilayah")}
                               </th>
                               <th className="px-6 py-4 font-semibold text-slate-700 text-center print:px-2 print:py-2">
-                                Total Anak
+                                {t("laporan.totalAnak")}
                               </th>
                               <th className="px-6 py-4 font-semibold text-emerald-700 text-center print:px-2 print:py-2 print:text-black">
-                                Normal
+                                {t("laporan.normal")}
                               </th>
                               <th className="px-6 py-4 font-semibold text-amber-700 text-center print:px-2 print:py-2 print:text-black">
-                                Pra-Stunting
+                                {t("laporan.praStunting")}
                               </th>
                               <th className="px-6 py-4 font-semibold text-rose-700 text-center print:px-2 print:py-2 print:text-black">
-                                Stunting
+                                {t("laporan.stunting")}
                               </th>
                             </tr>
                           </thead>

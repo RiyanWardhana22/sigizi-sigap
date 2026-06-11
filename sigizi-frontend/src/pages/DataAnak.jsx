@@ -14,6 +14,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function DataAnak() {
   const navigate = useNavigate();
@@ -42,9 +43,10 @@ export default function DataAnak() {
     wasting: 0,
     giziBerlebih: 0,
   });
+  const { t } = useLanguage();
 
   const STATUS_GIZI_LIST = [
-    { value: "semua", label: "Semua Status" },
+    { value: "semua", label: t("dataAnak.semuaStatus") },
     { value: "Normal", label: "Normal" },
     { value: "Pra-stunting", label: "Pra-stunting" },
     { value: "Stunting", label: "Stunting" },
@@ -364,10 +366,10 @@ export default function DataAnak() {
             <div className="flex items-center gap-4">
               <div>
                 <h1 className="text-xl font-bold text-gray-800">
-                  Data Orang Tua & Anak
+                  {t("dataAnak.title")}
                 </h1>
                 <p className="text-gray-500 text-xs mt-0.5">
-                  Kelola dan pantau data orang tua beserta data anak
+                  {t("dataAnak.subtitle")}
                 </p>
               </div>
             </div>
@@ -403,7 +405,7 @@ export default function DataAnak() {
               <div className="flex flex-wrap gap-4 items-end">
                 <div className="flex-1 min-w-[250px]">
                   <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                    Cari Orang Tua
+                    {t("dataAnak.cariOrangTua")}
                   </label>
                   <div className="relative">
                     <FontAwesomeIcon
@@ -412,7 +414,7 @@ export default function DataAnak() {
                     />
                     <input
                       type="text"
-                      placeholder="Cari nama atau email..."
+                      placeholder={t("dataAnak.cariOrangTuaPlaceholder")}
                       value={searchOrangTua}
                       onChange={(e) => handleSearchOrangTuaChange(e)}
                       className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm bg-white shadow-sm transition-all"
@@ -421,14 +423,14 @@ export default function DataAnak() {
                 </div>
                 <div className="w-64">
                   <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                    Filter Domisili
+                    {t("dataAnak.filterDomisili")}
                   </label>
                   <select
                     value={filterWilayah}
                     onChange={(e) => handleFilterWilayahChange(e)}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm bg-white shadow-sm transition-all"
                   >
-                    <option value="semua">Semua Domisili</option>
+                    <option value="semua">{t("dataAnak.semuaDomisili")}</option>
                     {wilayahList.map((w) => (
                       <option key={w.id} value={w.nama_kabupaten}>
                         {w.nama_kabupaten}
@@ -448,16 +450,16 @@ export default function DataAnak() {
                       No
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Nama
+                      {t("dataAnak.nama")}
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Email
+                      {t("dataAnak.email")}
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Domisili
+                      {t("dataAnak.domisili")}
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Aksi
+                      {t("dataAnak.aksi")}
                     </th>
                   </tr>
                 </thead>
@@ -512,8 +514,8 @@ export default function DataAnak() {
                             }`}
                           >
                             {selectedOrangTuaId === ot.id
-                              ? "Terpilih"
-                              : "Pilih"}
+                              ? t("dataAnak.terpilih")
+                              : t("dataAnak.pilih")}
                           </button>
                         </td>
                       </tr>
@@ -899,31 +901,31 @@ export default function DataAnak() {
                     <thead className="bg-gray-50/80 backdrop-blur-sm sticky top-0 z-10">
                       <tr>
                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                          Nama Anak
+                          {t("dataAnak.namaAnak")}
                         </th>
                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                          Tgl Lahir
+                          {t("dataAnak.tglLahir")}
                         </th>
                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                          Umur
+                          {t("dataAnak.umur")}
                         </th>
                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                          JK
+                          {t("dataAnak.jk")} 
                         </th>
                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                          Tinggi
+                          {t("dataAnak.tinggi")}
                         </th>
                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                          Berat
+                          {t("dataAnak.berat")}
                         </th>
                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                          L. Kepala
+                          {t("dataAnak.lingkarKepala")}
                         </th>
                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                          Status Gizi
+                          {t("dataAnak.statusGizi")}
                         </th>
                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                          Z-Score
+                          {t("dataAnak.zScore")}
                         </th>
                       </tr>
                     </thead>
@@ -1025,7 +1027,7 @@ export default function DataAnak() {
                                 />
                               </div>
                               <p className="text-gray-500 font-medium">
-                                Tidak ada anak dengan filter yang dipilih
+                                {t("dataAnak.noDataAnak")}
                               </p>
                             </div>
                           </td>

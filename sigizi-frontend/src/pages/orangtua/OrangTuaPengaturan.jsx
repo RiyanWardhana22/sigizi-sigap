@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 export default function OrangTuaPengaturan() {
   const navigate = useNavigate();
+  const { t, language, changeLanguage } = useLanguage();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -67,7 +69,7 @@ export default function OrangTuaPengaturan() {
             email: profileData.email,
             role: user.role,
           }),
-        },
+        }
       );
       const data = await response.json();
 
@@ -79,7 +81,7 @@ export default function OrangTuaPengaturan() {
         };
         localStorage.setItem("user", JSON.stringify(updatedUser));
         setUser(updatedUser);
-        setMessage({ type: "success", text: "Profil berhasil diperbarui!" });
+        setMessage({ type: "success", text: t("ortu.pengaturan.profilBerhasilDiperbarui") });
         setIsEditing(false);
 
         setTimeout(() => setMessage({ type: "", text: "" }), 3000);
@@ -96,12 +98,12 @@ export default function OrangTuaPengaturan() {
     setMessage({ type: "", text: "" });
 
     if (passwordData.new_password !== passwordData.confirm_password) {
-      setMessage({ type: "error", text: "Password baru tidak cocok!" });
+      setMessage({ type: "error", text: t("ortu.pengaturan.passwordBaruTidakCocok") });
       return;
     }
 
     if (passwordData.new_password.length < 6) {
-      setMessage({ type: "error", text: "Password minimal 6 karakter!" });
+      setMessage({ type: "error", text: t("ortu.pengaturan.minimalKarakter") });
       return;
     }
 
@@ -115,12 +117,12 @@ export default function OrangTuaPengaturan() {
             email: user.email,
             password: passwordData.current_password,
           }),
-        },
+        }
       );
       const loginData = await loginResponse.json();
 
       if (loginData.status !== "success") {
-        setMessage({ type: "error", text: "Password saat ini salah!" });
+        setMessage({ type: "error", text: t("ortu.pengaturan.passwordSaatIniSalah") });
         return;
       }
 
@@ -136,12 +138,12 @@ export default function OrangTuaPengaturan() {
             role: user.role,
             password: passwordData.new_password,
           }),
-        },
+        }
       );
       const data = await response.json();
 
       if (data.status === "success") {
-        setMessage({ type: "success", text: "Password berhasil diubah!" });
+        setMessage({ type: "success", text: t("ortu.pengaturan.passwordBerhasilDiubah") });
         setPasswordData({
           current_password: "",
           new_password: "",
@@ -185,7 +187,7 @@ export default function OrangTuaPengaturan() {
               icon={fas.faUserCog}
               className="text-2xl text-sigizi-green"
             />
-            <h1 className="text-xl font-bold text-gray-800">Pengaturan Akun</h1>
+            <h1 className="text-xl font-bold text-gray-800">{t("ortu.pengaturan.title")}</h1>
           </div>
         </header>
 
@@ -214,14 +216,14 @@ export default function OrangTuaPengaturan() {
             <div className="bg-white rounded-xl shadow-sm p-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                  <FontAwesomeIcon icon={fas.faUser} /> Informasi Profil
+                  <FontAwesomeIcon icon={fas.faUser} /> {t("ortu.pengaturan.informasiProfil")}
                 </h2>
                 {!isEditing && (
                   <button
                     onClick={() => setIsEditing(true)}
                     className="text-sigizi-green hover:text-sigizi-light-green text-sm font-semibold"
                   >
-                    Edit Profil
+                    {t("ortu.pengaturan.editProfil")}
                   </button>
                 )}
               </div>
@@ -230,7 +232,7 @@ export default function OrangTuaPengaturan() {
                 <form onSubmit={handleUpdateProfile} className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Nama Lengkap
+                      {t("ortu.pengaturan.namaLengkap")}
                     </label>
                     <input
                       type="text"
@@ -243,7 +245,7 @@ export default function OrangTuaPengaturan() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Email
+                      {t("ortu.pengaturan.email")}
                     </label>
                     <input
                       type="email"
@@ -266,13 +268,13 @@ export default function OrangTuaPengaturan() {
                       }}
                       className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg transition"
                     >
-                      Batal
+                      {t("ortu.pengaturan.batal")}
                     </button>
                     <button
                       type="submit"
                       className="flex-1 bg-sigizi-green hover:bg-sigizi-light-green text-white py-2 rounded-lg transition flex items-center justify-center gap-2"
                     >
-                      <FontAwesomeIcon icon={fas.faSave} /> Simpan
+                      <FontAwesomeIcon icon={fas.faSave} /> {t("ortu.pengaturan.simpan")}
                     </button>
                   </div>
                 </form>
@@ -284,7 +286,7 @@ export default function OrangTuaPengaturan() {
                       className="text-gray-400"
                     />
                     <div>
-                      <p className="text-xs text-gray-500">Nama Lengkap</p>
+                      <p className="text-xs text-gray-500">{t("ortu.pengaturan.namaLengkap")}</p>
                       <p className="font-medium">{user.nama_lengkap}</p>
                     </div>
                   </div>
@@ -294,7 +296,7 @@ export default function OrangTuaPengaturan() {
                       className="text-gray-400"
                     />
                     <div>
-                      <p className="text-xs text-gray-500">Email</p>
+                      <p className="text-xs text-gray-500">{t("ortu.pengaturan.email")}</p>
                       <p className="font-medium">{user.email}</p>
                     </div>
                   </div>
@@ -304,7 +306,7 @@ export default function OrangTuaPengaturan() {
                       className="text-gray-400"
                     />
                     <div>
-                      <p className="text-xs text-gray-500">Role</p>
+                      <p className="text-xs text-gray-500">{t("ortu.pengaturan.role")}</p>
                       <p className="font-medium capitalize">
                         {user.role.replace("_", " ")}
                       </p>
@@ -317,7 +319,7 @@ export default function OrangTuaPengaturan() {
             {/* Change Password Card */}
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2 mb-4">
-                <FontAwesomeIcon icon={fas.faLock} /> Ubah Password
+                <FontAwesomeIcon icon={fas.faLock} /> {t("ortu.pengaturan.ubahPassword")}
               </h2>
 
               {!showPasswordForm ? (
@@ -325,13 +327,13 @@ export default function OrangTuaPengaturan() {
                   onClick={() => setShowPasswordForm(true)}
                   className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-lg transition font-semibold"
                 >
-                  Ubah Password
+                  {t("ortu.pengaturan.ubahPassword")}
                 </button>
               ) : (
                 <form onSubmit={handleChangePassword} className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Password Saat Ini
+                      {t("ortu.pengaturan.passwordSaatIni")}
                     </label>
                     <input
                       type="password"
@@ -344,7 +346,7 @@ export default function OrangTuaPengaturan() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Password Baru
+                      {t("ortu.pengaturan.passwordBaru")}
                     </label>
                     <input
                       type="password"
@@ -355,12 +357,12 @@ export default function OrangTuaPengaturan() {
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sigizi-green"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      Minimal 6 karakter
+                      {t("ortu.pengaturan.minimalKarakter")}
                     </p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Konfirmasi Password Baru
+                      {t("ortu.pengaturan.konfirmasiPasswordBaru")}
                     </label>
                     <input
                       type="password"
@@ -384,17 +386,59 @@ export default function OrangTuaPengaturan() {
                       }}
                       className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg transition"
                     >
-                      Batal
+                      {t("ortu.pengaturan.batal")}
                     </button>
                     <button
                       type="submit"
                       className="flex-1 bg-sigizi-green hover:bg-sigizi-light-green text-white py-2 rounded-lg transition"
                     >
-                      Ubah Password
+                      {t("ortu.pengaturan.ubah")}
                     </button>
                   </div>
                 </form>
               )}
+            </div>
+
+            {/* Language Settings Card */}
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2 mb-4">
+                <FontAwesomeIcon icon={fas.faLanguage} /> {t("ortu.pengaturan.pengaturanBahasa")}
+              </h2>
+              
+              <div className="space-y-4">
+                <p className="text-sm text-gray-500">
+                  {t("ortu.pengaturan.pilihBahasa")}
+                </p>
+                
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => changeLanguage("id")}
+                    className={`flex-1 flex items-center justify-center gap-3 py-3 px-4 rounded-xl font-bold transition-all ${
+                      language === "id"
+                        ? "bg-emerald-600 text-white shadow-md shadow-emerald-200"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                  >
+                    <span className="text-xl">🇮🇩</span>
+                    {t("ortu.pengaturan.bahasaIndonesia")}
+                  </button>
+                  <button
+                    onClick={() => changeLanguage("en")}
+                    className={`flex-1 flex items-center justify-center gap-3 py-3 px-4 rounded-xl font-bold transition-all ${
+                      language === "en"
+                        ? "bg-emerald-600 text-white shadow-md shadow-emerald-200"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                  >
+                    <span className="text-xl">🇬🇧</span>
+                    {t("ortu.pengaturan.bahasaInggris")}
+                  </button>
+                </div>
+                
+                <p className="text-xs text-gray-400 mt-2">
+                  {t("ortu.pengaturan.bahasaAkanBerubah")}
+                </p>
+              </div>
             </div>
           </div>
         </main>

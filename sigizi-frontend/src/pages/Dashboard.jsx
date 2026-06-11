@@ -10,9 +10,11 @@ import {
   FaUserFriends,
   FaChartArea,
 } from "react-icons/fa";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [user, setUser] = useState(null);
   const [stats, setStats] = useState({
     total_anak: 0,
@@ -68,10 +70,10 @@ export default function Dashboard() {
         <header className="bg-white border-b border-slate-100 px-8 py-5 flex justify-between items-center z-10 shadow-sm">
           <div>
             <h1 className="text-xl font-bold text-slate-800 tracking-tight">
-              Dashboard Overview
+              {t("dashboard.title")}
             </h1>
             <p className="text-xs text-slate-500 mt-1">
-              Selamat datang kembali, pantau statistik gizi secara real-time.
+              {t("dashboard.welcome")}
             </p>
           </div>
         </header>
@@ -81,7 +83,7 @@ export default function Dashboard() {
             <div className="py-24 flex flex-col items-center justify-center gap-4 text-[#0A2A20]">
               <div className="w-10 h-10 border-4 border-[#0A2A20] border-t-transparent rounded-full animate-spin"></div>
               <p className="font-medium text-sm animate-pulse text-slate-500">
-                Memuat data analitik sistem...
+                {t("dashboard.memuatData")}
               </p>
             </div>
           ) : (
@@ -94,7 +96,7 @@ export default function Dashboard() {
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                      Total Anak
+                      {t("dashboard.totalAnak")}
                     </p>
                   </div>
                 </div>
@@ -111,7 +113,7 @@ export default function Dashboard() {
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                      Kasus Stunting
+                      {t("dashboard.kasusStunting")}
                     </p>
                   </div>
                 </div>
@@ -128,7 +130,7 @@ export default function Dashboard() {
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                      Pra-stunting
+                      {t("dashboard.praStunting")}
                     </p>
                   </div>
                 </div>
@@ -145,7 +147,7 @@ export default function Dashboard() {
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                      Gizi Normal
+                      {t("dashboard.giziNormal")}
                     </p>
                   </div>
                 </div>
@@ -161,13 +163,13 @@ export default function Dashboard() {
               <div className="flex items-center gap-3">
                 <h3 className="text-base font-bold text-slate-800 tracking-tight">
                   {modePeta === "balita"
-                    ? "Peta Sebaran Kasus Balita"
-                    : "Peta Kerentanan Wilayah (AI Model)"}
+                    ? t("dashboard.petaSebaran")
+                    : t("dashboard.petaKerentanan")}
                 </h3>
                 <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-md border border-emerald-100">
                   <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
                   <span className="text-[10px] font-bold uppercase tracking-wider">
-                    Live
+                    {t("dashboard.live")}
                   </span>
                 </div>
               </div>
@@ -185,7 +187,7 @@ export default function Dashboard() {
                   <FaUserFriends
                     className={modePeta === "balita" ? "text-emerald-500" : ""}
                   />{" "}
-                  Mikro (Titik)
+                  {t("dashboard.mikroTitik")}
                 </button>
                 <button
                   onClick={() => setModePeta("kerentanan")}
@@ -200,7 +202,7 @@ export default function Dashboard() {
                       modePeta === "kerentanan" ? "text-amber-500" : ""
                     }
                   />{" "}
-                  Makro (Area ML)
+                  {t("dashboard.makroArea")}
                 </button>
               </div>
             </div>

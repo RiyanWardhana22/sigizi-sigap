@@ -16,9 +16,11 @@ import {
   FaUserTie,
   FaUsers,
 } from "react-icons/fa";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function Users() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -227,7 +229,7 @@ export default function Users() {
         <header className="bg-white border-b px-8 py-5 flex items-center justify-between z-10 shadow-sm">
           <div className="flex items-center gap-3">
             <h1 className="text-xl font-bold text-slate-800 tracking-tight">
-              Manajemen Pengguna
+              {t("users.title")}
             </h1>
           </div>
         </header>
@@ -236,7 +238,7 @@ export default function Users() {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center items-center text-center">
               <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
-                Total
+                {t("users.total")}
               </p>
               <h3 className="text-2xl font-black text-gray-800">
                 {stats.total}
@@ -244,7 +246,7 @@ export default function Users() {
             </div>
             <div className="bg-blue-50 p-4 rounded-2xl shadow-sm border border-blue-100 flex flex-col justify-center items-center text-center">
               <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">
-                Orang Tua
+                {t("users.orangTua")}
               </p>
               <h3 className="text-2xl font-black text-blue-800">
                 {stats.orangTua}
@@ -252,7 +254,7 @@ export default function Users() {
             </div>
             <div className="bg-green-50 p-4 rounded-2xl shadow-sm border border-green-100 flex flex-col justify-center items-center text-center">
               <p className="text-[10px] font-black text-green-400 uppercase tracking-widest mb-1">
-                Dinkes
+                {t("users.dinkes")}
               </p>
               <h3 className="text-2xl font-black text-green-800">
                 {stats.dinkes}
@@ -260,7 +262,7 @@ export default function Users() {
             </div>
             <div className="bg-purple-50 p-4 rounded-2xl shadow-sm border border-purple-100 flex flex-col justify-center items-center text-center">
               <p className="text-[10px] font-black text-purple-400 uppercase tracking-widest mb-1">
-                Pemangku
+                {t("users.pemangku")}
               </p>
               <h3 className="text-2xl font-black text-purple-800">
                 {stats.pemangku}
@@ -268,7 +270,7 @@ export default function Users() {
             </div>
             <div className="bg-red-50 p-4 rounded-2xl shadow-sm border border-red-100 flex flex-col justify-center items-center text-center">
               <p className="text-[10px] font-black text-red-400 uppercase tracking-widest mb-1">
-                Admin
+                {t("users.admin")}
               </p>
               <h3 className="text-2xl font-black text-red-800">
                 {stats.admin}
@@ -282,7 +284,7 @@ export default function Users() {
               <FaSearch className="absolute left-4 top-3.5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Cari nama atau email pengguna..."
+                placeholder={t("users.cariNamaEmail")}
                 className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-sigizi-green transition-all text-sm"
                 value={searchTerm}
                 onChange={(e) => {
@@ -302,13 +304,13 @@ export default function Users() {
                     setCurrentPage(1);
                   }}
                 >
-                  <option value="Semua">Semua Role</option>
-                  <option value="orang_tua">Orang Tua</option>
-                  <option value="dinas_kesehatan">Dinas Kesehatan</option>
+                  <option value="Semua">{t("users.semuaRole")}</option>
+                  <option value="orang_tua">{t("users.orangTua")}</option>
+                  <option value="dinas_kesehatan">{t("users.dinkes")}</option>
                   <option value="pemangku_kepentingan">
-                    Pemangku Kepentingan
+                    {t("users.pemangku")}
                   </option>
-                  <option value="super_admin">Super Admin</option>
+                  <option value="super_admin">{t("users.admin")}</option>
                 </select>
               </div>
             </div>
@@ -326,7 +328,7 @@ export default function Users() {
               className="bg-sigizi-green hover:bg-sigizi-light-green text-white px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 shadow-lg transition transform active:scale-95"
             >
               <FaPlus />{" "}
-              <span className="hidden sm:inline">Tambah Pengguna</span>
+              <span className="hidden sm:inline">{t("users.tambahPengguna")}</span>
             </button>
           </div>
 
@@ -337,10 +339,10 @@ export default function Users() {
                 <thead>
                   <tr className="bg-gray-50/50 text-gray-500 text-[10px] uppercase font-black tracking-widest border-b">
                     <th className="p-5">No</th>
-                    <th className="p-5">Identitas Pengguna</th>
-                    <th className="p-5">Kontak Email</th>
-                    <th className="p-5">Hak Akses (Role)</th>
-                    <th className="p-5 text-center">Tindakan</th>
+                    <th className="p-5">{t("users.identitasPengguna")}</th>
+                    <th className="p-5">{t("users.kontakEmail")}</th>
+                    <th className="p-5">{t("users.hakAkses")}</th>
+                    <th className="p-5 text-center">{t("users.tindakan")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
@@ -349,7 +351,7 @@ export default function Users() {
                       <td colSpan="5" className="p-10 text-center">
                         <div className="w-8 h-8 border-4 border-sigizi-green border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
                         <p className="text-gray-400 text-sm font-bold">
-                          Memuat Data...
+                          {t("users.memuatData")}
                         </p>
                       </td>
                     </tr>
@@ -412,7 +414,7 @@ export default function Users() {
                           <FaUsers />
                         </div>
                         <p className="text-gray-400 font-bold text-sm italic tracking-tight">
-                          Pengguna tidak ditemukan.
+                          {t("users.penggunaTidakDitemukan")}
                         </p>
                       </td>
                     </tr>
@@ -474,7 +476,7 @@ export default function Users() {
           <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden transform transition-all">
             <div className="bg-sigizi-green px-6 py-4 flex justify-between items-center text-white">
               <h2 className="text-lg font-black uppercase tracking-widest flex items-center gap-2">
-                Tambah Pengguna
+                {t("users.tambahPengguna")}
               </h2>
               <button
                 onClick={() => setShowAddModal(false)}
@@ -486,7 +488,7 @@ export default function Users() {
             <form onSubmit={handleAddUser} className="p-6 space-y-4">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">
-                  Nama Lengkap
+                  {t("users.namaLengkap")}
                 </label>
                 <input
                   type="text"
@@ -500,7 +502,7 @@ export default function Users() {
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">
-                  Email Aktif
+                  {t("users.emailAktif")}
                 </label>
                 <input
                   type="email"
@@ -514,7 +516,7 @@ export default function Users() {
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">
-                  Kata Sandi
+                  {t("users.kataSandi")}
                 </label>
                 <input
                   type="password"
@@ -528,7 +530,7 @@ export default function Users() {
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">
-                  Hak Akses (Role)
+                  {t("users.hakAksesRole")}
                 </label>
                 <select
                   name="role"
@@ -550,13 +552,13 @@ export default function Users() {
                   onClick={() => setShowAddModal(false)}
                   className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold uppercase tracking-widest text-xs transition"
                 >
-                  Batal
+                  {t("users.batal")}
                 </button>
                 <button
                   type="submit"
                   className="flex-1 px-4 py-3 bg-sigizi-green hover:bg-sigizi-light-green text-white rounded-xl font-bold uppercase tracking-widest text-xs shadow-lg transition"
                 >
-                  Simpan
+                  {t("users.simpan")}
                 </button>
               </div>
             </form>

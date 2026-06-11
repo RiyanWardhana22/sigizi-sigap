@@ -12,6 +12,7 @@ import {
   Vector3,
   WebGLRenderer,
 } from "three";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const vertexShader = `
 precision highp float;
@@ -493,6 +494,7 @@ function FloatingLines({
 }
 
 export default function Login() {
+  const { t } = useLanguage();
   const [isLoginView, setIsLoginView] = useState(true);
   const [namaLengkap, setNamaLengkap] = useState("");
   const [email, setEmail] = useState("");
@@ -620,8 +622,8 @@ export default function Login() {
             </h2>
             <p className="text-slate-400 mt-2 text-sm font-medium">
               {isLoginView
-                ? "Selamat datang silahkan masuk anda!"
-                : "Daftar sebagai Orang Tua baru"}
+                ? t("login.subtitle")
+                : t("login.registerSubtitle")}
             </p>
           </div>
 
@@ -647,7 +649,7 @@ export default function Login() {
                   <input
                     type="text"
                     className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#285A48] focus:border-transparent focus:bg-white/10 transition-all text-sm"
-                    placeholder="Nama Lengkap"
+                    placeholder={t("login.fullNamePlaceholder")}
                     value={namaLengkap}
                     onChange={(e) => setNamaLengkap(e.target.value)}
                     required={!isLoginView}
@@ -663,7 +665,7 @@ export default function Login() {
                 <input
                   type="email"
                   className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#285A48] focus:border-transparent focus:bg-white/10 transition-all text-sm"
-                  placeholder="Email Address"
+                  placeholder={t("login.emailPlaceholder")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -678,7 +680,7 @@ export default function Login() {
                 <input
                   type="password"
                   className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#285A48] focus:border-transparent focus:bg-white/10 transition-all text-sm"
-                  placeholder="Password"
+                  placeholder={t("login.passwordPlaceholder")}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -695,14 +697,14 @@ export default function Login() {
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
                     />
-                    Remember me
+                    {t("login.rememberMe")}
                   </label>
                   <button
                     type="button"
                     onClick={handleForgotPassword}
                     className="text-xs font-medium text-emerald-400 hover:text-emerald-300 transition-colors"
                   >
-                    Lupa Password?
+                    {t("login.forgotPassword")}
                   </button>
                 </div>
               )}
@@ -712,7 +714,7 @@ export default function Login() {
                 type="submit"
                 className="w-full bg-[#285A48] hover:bg-[#1d4235] text-white font-bold py-3.5 px-4 rounded-xl shadow-[0_0_15px_rgba(40,90,72,0.4)] transition-all duration-300 mt-2 text-sm uppercase tracking-wider"
               >
-                {isLoginView ? "Login" : "Daftar"}
+                {isLoginView ? t("login.loginButton") : t("login.registerButton")}
               </button>
             </form>
 
@@ -720,22 +722,22 @@ export default function Login() {
             <div className="mt-8 text-center text-xs text-slate-400">
               {isLoginView ? (
                 <p>
-                  Belum memiliki akun?{" "}
+                  {t("login.noAccount")}{" "}
                   <button
                     onClick={toggleView}
                     className="font-bold text-emerald-400 hover:text-emerald-300 hover:underline transition-colors"
                   >
-                    Buat akun di sini
+                    {t("login.createAccount")}
                   </button>
                 </p>
               ) : (
                 <p>
-                  Sudah punya akun?{" "}
+                  {t("login.hasAccount")}{" "}
                   <button
                     onClick={toggleView}
                     className="font-bold text-emerald-400 hover:text-emerald-300 hover:underline transition-colors"
                   >
-                    Masuk di sini
+                    {t("login.loginHere")}
                   </button>
                 </p>
               )}

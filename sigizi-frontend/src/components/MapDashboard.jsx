@@ -19,6 +19,7 @@ import {
   FaMapMarkedAlt
 } from "react-icons/fa";
 import "leaflet/dist/leaflet.css";
+import { useLanguage } from "../contexts/LanguageContext";
 
 // =========================================================================
 // KOMPONEN RENDER BNPB
@@ -65,6 +66,7 @@ const CustomToggle = ({ label, icon, active, onChange, activeColor }) => (
 );
 
 export default function MapDashboard({ mode = "balita" }) {
+  const { t } = useLanguage();
   const [laporan, setLaporan] = useState([]);
   const [agregatML, setAgregatML] = useState([]);
   const [geoJsonData, setGeoJsonData] = useState(null);
@@ -221,18 +223,18 @@ export default function MapDashboard({ mode = "balita" }) {
             className={`pointer-events-auto flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 bg-white/95 backdrop-blur-md rounded-xl shadow-md border transition-all duration-300 hover:bg-gray-50 active:scale-95 ${isMenuOpen ? 'border-blue-500 text-blue-600' : 'border-gray-200 text-gray-700'}`}
           >
             <FaLayerGroup className="text-sm sm:text-base" />
-            <span className="text-xs sm:text-sm font-bold tracking-tight">Lapisan Bencana</span>
+            <span className="text-xs sm:text-sm font-bold tracking-tight">{t("map.lapisanBencana")}</span>
             <FaChevronDown className={`text-[10px] sm:text-xs transition-transform duration-300 ${isMenuOpen ? 'rotate-180' : ''}`} />
           </button>
 
           <div className={`pointer-events-auto transition-all duration-300 origin-top-right w-[calc(100vw-1.5rem)] max-w-[280px] sm:max-w-[320px] ${isMenuOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 -translate-y-2 hidden'}`}>
             <div className="bg-white/95 backdrop-blur-xl p-4 sm:p-5 rounded-2xl shadow-xl border border-gray-100">
               <div className="mb-3 sm:mb-4">
-                <h4 className="text-xs sm:text-[13px] font-black text-gray-800 uppercase tracking-tight">Konteks Kewilayahan</h4>
-                <p className="text-[10px] sm:text-[11px] text-gray-500 font-medium">Server Live InaRISK BNPB</p>
+                <h4 className="text-xs sm:text-[13px] font-black text-gray-800 uppercase tracking-tight">{t("map.konteksKewilayahan")}</h4>
+                <p className="text-[10px] sm:text-[11px] text-gray-500 font-medium">{t("map.serverLive")}</p>
               </div>
               <div className="flex flex-col gap-2 sm:gap-3">
-                <CustomToggle label="Rawan Banjir" icon={<FaWater size={14} />} active={layerBanjir} onChange={() => setLayerBanjir(!layerBanjir)} activeColor={{ bg: 'bg-blue-100', text: 'text-blue-600', switch: 'bg-blue-500' }} />
+                <CustomToggle label={t("map.rawanBanjir")} icon={<FaWater size={14} />} active={layerBanjir} onChange={() => setLayerBanjir(!layerBanjir)} activeColor={{ bg: 'bg-blue-100', text: 'text-blue-600', switch: 'bg-blue-500' }} />
               </div>
             </div>
           </div>
@@ -248,7 +250,7 @@ export default function MapDashboard({ mode = "balita" }) {
           className="pointer-events-auto flex items-center gap-2 px-3 py-2 bg-white/95 backdrop-blur-md rounded-xl shadow-md border border-gray-200 text-gray-700 hover:bg-gray-50 transition-all active:scale-95"
         >
           <FaMapMarkedAlt className="text-gray-500 text-sm" />
-          <span className="text-xs font-bold tracking-tight">Legenda Peta</span>
+          <span className="text-xs font-bold tracking-tight">{t("map.legendaPeta")}</span>
           {isLegendOpen ? <FaChevronDown className="text-[10px] text-gray-400" /> : <FaChevronUp className="text-[10px] text-gray-400" />}
         </button>
 
@@ -257,22 +259,22 @@ export default function MapDashboard({ mode = "balita" }) {
             
             {mode === "balita" ? (
               <div className="flex flex-col gap-2">
-                <div className="text-[9px] sm:text-[10px] font-bold text-gray-400 mb-1 border-b pb-1">KASUS MIKRO (BALITA)</div>
-                <div className="flex items-center gap-2.5"><div className="w-2.5 h-2.5 rounded-full bg-red-500 border border-white"></div><span className="text-[11px] sm:text-xs font-semibold text-gray-700">Stunting Ditemukan</span></div>
-                <div className="flex items-center gap-2.5"><div className="w-2.5 h-2.5 rounded-full bg-yellow-400 border border-white"></div><span className="text-[11px] sm:text-xs font-semibold text-gray-700">Pra-Stunting (Waspada)</span></div>
-                <div className="flex items-center gap-2.5"><div className="w-2.5 h-2.5 rounded-full bg-green-500 border border-white"></div><span className="text-[11px] sm:text-xs font-semibold text-gray-700">Gizi Normal / Aman</span></div>
+                <div className="text-[9px] sm:text-[10px] font-bold text-gray-400 mb-1 border-b pb-1">{t("map.kasusMikro")}</div>
+                <div className="flex items-center gap-2.5"><div className="w-2.5 h-2.5 rounded-full bg-red-500 border border-white"></div><span className="text-[11px] sm:text-xs font-semibold text-gray-700">{t("map.stuntingDitemukan")}</span></div>
+                <div className="flex items-center gap-2.5"><div className="w-2.5 h-2.5 rounded-full bg-yellow-400 border border-white"></div><span className="text-[11px] sm:text-xs font-semibold text-gray-700">{t("map.praStuntingWaspada")}</span></div>
+                <div className="flex items-center gap-2.5"><div className="w-2.5 h-2.5 rounded-full bg-green-500 border border-white"></div><span className="text-[11px] sm:text-xs font-semibold text-gray-700">{t("map.giziNormalAman")}</span></div>
               </div>
             ) : (
               <div className="flex flex-col gap-3">
                 <div>
                   <div className="text-[9px] sm:text-[10px] font-bold text-gray-400 mb-2 border-b pb-1 flex items-center justify-between">
-                    <span className="flex items-center gap-1"><FaShieldAlt/> RISIKO STUNTING (ML)</span>
+                    <span className="flex items-center gap-1"><FaShieldAlt/> {t("map.risikoStunting")}</span>
                   </div>
                   
                   {/* PENANDA CERDAS DI LEGENDA: Beritahu user bentuk petanya berubah */}
                   {isBencanaActive && (
                     <div className="bg-orange-50 border border-orange-200 text-orange-700 text-[9px] px-2 py-1 rounded mb-2 font-medium leading-tight">
-                      Mode Overlay Aktif: Risiko ML kini ditampilkan sebagai <b className="font-bold">Warna Garis Batas Wilayah</b>.
+                      {t("map.modeOverlayAktif")} <b className="font-bold">{t("map.warnaGarisBatas")}</b>.
                     </div>
                   )}
 
@@ -283,7 +285,7 @@ export default function MapDashboard({ mode = "balita" }) {
                     <div className="w-1/4 bg-red-600"></div>
                   </div>
                   <div className="flex justify-between text-[8px] sm:text-[9px] font-bold text-gray-500 uppercase">
-                    <span>Aman</span><span>Waspada</span><span>Rawan</span><span>Kritis</span>
+                    <span>{t("map.aman")}</span><span>{t("map.waspada")}</span><span>{t("map.rawan")}</span><span>{t("map.kritis")}</span>
                   </div>
                 </div>
 
@@ -291,11 +293,11 @@ export default function MapDashboard({ mode = "balita" }) {
                   <div className="mt-1 sm:mt-2 pt-2 sm:pt-3 border-t border-gray-100">
                     <div className="text-[9px] sm:text-[10px] font-bold text-gray-400 mb-2 border-b pb-1 flex items-center gap-1.5">
                       {layerBanjir ? <FaWater className="text-blue-500"/> : <FaFire className="text-orange-500"/>} 
-                      PETA KERAWANAN (BNPB)
+                      {t("map.petaKerawanan")}
                     </div>
-                    <div className="flex items-center gap-2 mb-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-red-500 opacity-70"></div><span className="text-[10px] sm:text-[11px] font-semibold text-gray-700">Kawasan Rawan Tinggi</span></div>
-                    <div className="flex items-center gap-2 mb-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-yellow-400 opacity-70"></div><span className="text-[10px] sm:text-[11px] font-semibold text-gray-700">Tingkat Menengah</span></div>
-                    <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-sm bg-green-500 opacity-70"></div><span className="text-[10px] sm:text-[11px] font-semibold text-gray-700">Kawasan Aman</span></div>
+                    <div className="flex items-center gap-2 mb-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-red-500 opacity-70"></div><span className="text-[10px] sm:text-[11px] font-semibold text-gray-700">{t("map.kawasanRawanTinggi")}</span></div>
+                    <div className="flex items-center gap-2 mb-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-yellow-400 opacity-70"></div><span className="text-[10px] sm:text-[11px] font-semibold text-gray-700">{t("map.tingkatMenengah")}</span></div>
+                    <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-sm bg-green-500 opacity-70"></div><span className="text-[10px] sm:text-[11px] font-semibold text-gray-700">{t("map.kawasanAman")}</span></div>
                   </div>
                 )}
               </div>

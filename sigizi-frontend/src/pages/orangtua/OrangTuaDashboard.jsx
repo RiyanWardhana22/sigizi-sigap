@@ -5,6 +5,7 @@ import { useAnak } from "../../contexts/AnakContext";
 import Sidebar from "../../components/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 // ─────────────────────────────────────────────
 // DATA EDUKASI BERDASARKAN STATUS GIZI
@@ -491,6 +492,7 @@ function EdukasiSection({ status }) {
 // KOMPONEN: KARTU DATA DIRI ORANG TUA
 // ─────────────────────────────────────────────
 function DataDiriOrangTua({ user, profilData, navigate }) {
+  const { t } = useLanguage();
   const calculateAge = (tanggalLahir) => {
     if (!tanggalLahir) return null;
     const birth = new Date(tanggalLahir);
@@ -537,7 +539,7 @@ function DataDiriOrangTua({ user, profilData, navigate }) {
                 icon={fas.faIdCard}
                 className="text-emerald-500"
               />
-              Identitas Diri
+              {t("ortu.dashboard.identitasDiri")}
             </h3>
 
             <div className="space-y-3">
@@ -550,7 +552,7 @@ function DataDiriOrangTua({ user, profilData, navigate }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-gray-400 font-medium">
-                    Nama Lengkap
+                    {t("ortu.dashboard.namaLengkap")}
                   </p>
                   <p className="font-bold text-gray-800 truncate">
                     {user.nama_lengkap}
@@ -566,7 +568,7 @@ function DataDiriOrangTua({ user, profilData, navigate }) {
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-400 font-medium">Email</p>
+                  <p className="text-xs text-gray-400 font-medium">{t("ortu.dashboard.email")}</p>
                   <p className="font-bold text-gray-800 truncate">
                     {user.email}
                   </p>
@@ -582,7 +584,7 @@ function DataDiriOrangTua({ user, profilData, navigate }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-gray-400 font-medium">
-                    Tanggal Lahir
+                    {t("ortu.dashboard.tanggalLahir")}
                   </p>
                   <div className="flex items-center gap-2">
                     <p className="font-bold text-gray-800">
@@ -607,7 +609,7 @@ function DataDiriOrangTua({ user, profilData, navigate }) {
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-400 font-medium">Domisili</p>
+                  <p className="text-xs text-gray-400 font-medium">{t("ortu.dashboard.domisili")}</p>
                   <p className="font-bold text-gray-800 truncate">
                     {profilData?.nama_kabupaten || "-"}
                   </p>
@@ -623,7 +625,7 @@ function DataDiriOrangTua({ user, profilData, navigate }) {
                 icon={fas.faChartPie}
                 className="text-teal-500"
               />
-              Sosial Ekonomi
+              {t("ortu.dashboard.sosialEkonomi")}
             </h3>
 
             {profilData && profilData.profil_lengkap ? (
@@ -637,7 +639,7 @@ function DataDiriOrangTua({ user, profilData, navigate }) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-gray-400 font-medium">
-                      Penghasilan per Bulan
+                      {t("ortu.dashboard.penghasilanPerBulan")}
                     </p>
                     <p className="font-bold text-gray-800">
                       Rp {profilData.penghasilan_range}
@@ -654,7 +656,7 @@ function DataDiriOrangTua({ user, profilData, navigate }) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-gray-400 font-medium">
-                      Pendidikan Ibu
+                      {t("ortu.dashboard.pendidikanIbu")}
                     </p>
                     <p className="font-bold text-gray-800">
                       {profilData.pendidikan_ibu || "-"}
@@ -671,7 +673,7 @@ function DataDiriOrangTua({ user, profilData, navigate }) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-gray-400 font-medium">
-                      Sanitasi
+                      {t("ortu.dashboard.sanitasi")}
                     </p>
                     <span
                       className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
@@ -701,7 +703,7 @@ function DataDiriOrangTua({ user, profilData, navigate }) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-gray-400 font-medium">
-                      Kualitas Air
+                      {t("ortu.dashboard.kualitasAir")}
                     </p>
                     <span
                       className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
@@ -731,7 +733,7 @@ function DataDiriOrangTua({ user, profilData, navigate }) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-gray-400 font-medium">
-                      Akses Kesehatan
+                      {t("ortu.dashboard.aksesKesehatan")}
                     </p>
                     <span
                       className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
@@ -760,15 +762,15 @@ function DataDiriOrangTua({ user, profilData, navigate }) {
                 />
                 <div>
                   <p className="font-bold text-amber-800">
-                    Data sosial ekonomi belum lengkap
+                    {t("ortu.dashboard.dataSosialEkonomiBelumLengkap")}
                   </p>
                   <p className="text-sm text-amber-700 mt-1">
-                    Silakan lengkapi data diri Anda di menu{" "}
+                    {t("ortu.dashboard.silakanLengkapiData")}{" "}
                     <button
                       onClick={() => navigate("/orangtua/data-anak")}
                       className="underline font-bold hover:text-amber-900"
                     >
-                      Data Anak
+                      {t("ortu.dashboard.dataAnak")}
                     </button>
                   </p>
                 </div>
@@ -786,6 +788,7 @@ function DataDiriOrangTua({ user, profilData, navigate }) {
 // ─────────────────────────────────────────────
 export default function OrangTuaDashboard() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const {
     selectedAnakId,
     selectedAnakData,
@@ -1017,10 +1020,10 @@ export default function OrangTuaDashboard() {
           <div className="flex items-center gap-4">
             <div>
               <h1 className="text-xl font-bold text-gray-800">
-                Dashboard Orang Tua
+                {t("ortu.dashboard.title")}
               </h1>
               <p className="text-gray-500 text-sm mt-0.5">
-                Pantau status gizi dan tumbuh kembang anak
+                {t("ortu.dashboard.subtitle")}
               </p>
             </div>
           </div>
@@ -1304,7 +1307,7 @@ export default function OrangTuaDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-500 text-sm font-medium">
-                    Total Anak
+                    {t("ortu.dashboard.totalAnak")}
                   </p>
                   <p className="text-3xl font-bold text-gray-800 mt-1">
                     {stats.totalAnak}
@@ -1322,7 +1325,7 @@ export default function OrangTuaDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-500 text-sm font-medium">
-                    Status Normal
+                    {t("ortu.dashboard.statusNormal")}
                   </p>
                   <p className="text-3xl font-bold text-emerald-600 mt-1">
                     {stats.normal}
@@ -1340,7 +1343,7 @@ export default function OrangTuaDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-500 text-sm font-medium">
-                    Pra-Stunting
+                    {t("ortu.dashboard.praStunting")}
                   </p>
                   <p className="text-3xl font-bold text-amber-600 mt-1">
                     {stats.giziKurang}
@@ -1357,7 +1360,7 @@ export default function OrangTuaDashboard() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 border-l-4 border-red-500 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-500 text-sm font-medium">Stunting</p>
+                  <p className="text-gray-500 text-sm font-medium">{t("ortu.dashboard.stunting")}</p>
                   <p className="text-3xl font-bold text-red-600 mt-1">
                     {stats.stunting}
                   </p>
@@ -1381,12 +1384,12 @@ export default function OrangTuaDashboard() {
                     {displayAnakData.nama_anak}
                   </h2>
                   <p className="opacity-90 mt-2">
-                    Lahir: {displayAnakData.tanggal_lahir} | JK:{" "}
+                    Lahir: {displayAnakData.tanggal_lahir} | {t("ortu.dashboard.jk")}:{" "}
                     {displayAnakData.jenis_kelamin === "L"
-                      ? "Laki-laki"
-                      : "Perempuan"}{" "}
-                    | Verifikasi:{" "}
-                    {displayAnakData.status_verifikasi || "Menunggu"}
+                      ? t("dataAnak.lakiLaki")
+                      : t("dataAnak.perempuan")}{" "}
+                    | {t("ortu.dashboard.verifikasi")}:{" "}
+                    {displayAnakData.status_verifikasi || t("ortu.dashboard.menunggu")}
                   </p>
                   {latestMeasurement && (
                     <div className="flex flex-wrap gap-3 mt-4">
@@ -1418,7 +1421,7 @@ export default function OrangTuaDashboard() {
                   )}
                 </div>
                 <div className="text-right">
-                  <p className="text-sm opacity-75">Terakhir diupdate</p>
+                  <p className="text-sm opacity-75">{t("ortu.dashboard.terakhirDiupdate")}</p>
                   <p className="font-bold text-lg">
                     {latestMeasurement?.tanggal_pengukuran || "-"}
                   </p>
