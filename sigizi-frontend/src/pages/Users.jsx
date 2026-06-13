@@ -45,7 +45,7 @@ export default function Users() {
     } else {
       const parsedUser = JSON.parse(userData);
       if (parsedUser.role !== "super_admin") {
-        alert("Akses Ditolak! Halaman ini khusus Super Admin.");
+        alert(t("users.alert1"));
         navigate("/dashboard");
       } else {
         fetchUsers();
@@ -64,7 +64,7 @@ export default function Users() {
         setUsers(data.data);
       }
     } catch (error) {
-      console.error("Gagal mengambil data:", error);
+      console.error(t("users.alert2"), error);
     } finally {
       setLoading(false);
     }
@@ -100,7 +100,7 @@ export default function Users() {
         alert(data.message);
       }
     } catch (error) {
-      console.error("Gagal menambah pengguna:", error);
+      console.error(t("users.alert3"), error);
     }
   };
 
@@ -134,12 +134,12 @@ export default function Users() {
         alert(data.message);
       }
     } catch (error) {
-      console.error("Gagal update pengguna:", error);
+      console.error(t("users.alert4"), error);
     }
   };
 
   const handleDeleteUser = async (id) => {
-    if (!window.confirm("Apakah Anda yakin ingin menghapus pengguna ini?"))
+    if (!window.confirm(t("users.hapusTeks")))
       return;
     try {
       const response = await fetch(
@@ -157,7 +157,7 @@ export default function Users() {
         alert(data.message);
       }
     } catch (error) {
-      console.error("Gagal menghapus pengguna:", error);
+      console.error(t("users.alert5"), error);
     }
   };
 
@@ -190,19 +190,19 @@ export default function Users() {
     switch (role) {
       case "orang_tua":
         return {
-          text: "Orang Tua",
+          text: t("users.orangTua"),
           color: "bg-blue-100 text-blue-700",
           icon: <FaUserAlt />,
         };
       case "dinas_kesehatan":
         return {
-          text: "Dinas Kesehatan",
+          text: t("users.dinkes"),
           color: "bg-green-100 text-green-700",
           icon: <FaUserMd />,
         };
       case "pemangku_kepentingan":
         return {
-          text: "Pemangku Kepentingan",
+          text: t("users.pemangku"),
           color: "bg-purple-100 text-purple-700",
           icon: <FaUserTie />,
         };
@@ -427,13 +427,13 @@ export default function Users() {
             {filteredUsers.length > itemsPerPage && (
               <div className="bg-gray-50/50 p-5 flex flex-col md:flex-row justify-between items-center gap-4 border-t border-gray-100">
                 <p className="text-xs font-bold text-gray-400">
-                  Menampilkan{" "}
+                  {t("app.showing")}{" "}
                   <span className="text-gray-700">{indexOfFirstItem + 1}</span>{" "}
-                  hingga{" "}
+                  {t("users.b")}{" "}
                   <span className="text-gray-700">
                     {Math.min(indexOfLastItem, filteredUsers.length)}
                   </span>{" "}
-                  dari{" "}
+                  {t("users.c")}{" "}
                   <span className="text-gray-700">{filteredUsers.length}</span>{" "}
                   data
                 </p>
@@ -497,7 +497,7 @@ export default function Users() {
                   onChange={handleInputChange}
                   required
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-sigizi-green transition text-sm"
-                  placeholder="Masukkan nama..."
+                  placeholder={t("users.holderTambah1")}
                 />
               </div>
               <div>
@@ -511,7 +511,7 @@ export default function Users() {
                   onChange={handleInputChange}
                   required
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-sigizi-green transition text-sm"
-                  placeholder="email@contoh.com"
+                  placeholder={t("users.holderTambah2")}
                 />
               </div>
               <div>
@@ -525,7 +525,7 @@ export default function Users() {
                   onChange={handleInputChange}
                   required
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-sigizi-green transition text-sm"
-                  placeholder="Minimal 6 karakter"
+                  placeholder={t("users.holderTambah3")}
                 />
               </div>
               <div>
@@ -538,12 +538,12 @@ export default function Users() {
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-sigizi-green transition text-sm font-bold text-gray-700 cursor-pointer"
                 >
-                  <option value="orang_tua">Orang Tua</option>
-                  <option value="dinas_kesehatan">Dinas Kesehatan</option>
+                  <option value="orang_tua">{t("users.orangTua")}</option>
+                  <option value="dinas_kesehatan">{t("users.dinkes")}</option>
                   <option value="pemangku_kepentingan">
-                    Pemangku Kepentingan
+                    {t("users.pemangku")}
                   </option>
-                  <option value="super_admin">Super Admin</option>
+                  <option value="super_admin">{t("users.admin")}</option>
                 </select>
               </div>
               <div className="pt-4 flex gap-3">
@@ -572,7 +572,7 @@ export default function Users() {
           <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden transform transition-all">
             <div className="bg-blue-600 px-6 py-4 flex justify-between items-center text-white">
               <h2 className="text-lg font-black uppercase tracking-widest flex items-center gap-2">
-                Edit Pengguna
+                {t("users.editPenggunaTitle")}
               </h2>
               <button
                 onClick={() => setShowEditModal(false)}
@@ -584,7 +584,7 @@ export default function Users() {
             <form onSubmit={handleUpdateUser} className="p-6 space-y-4">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">
-                  Nama Lengkap
+                  {t("users.namaLengkap")}
                 </label>
                 <input
                   type="text"
@@ -597,7 +597,7 @@ export default function Users() {
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">
-                  Email Aktif
+                  {t("users.emailAktif")}
                 </label>
                 <input
                   type="email"
@@ -610,7 +610,7 @@ export default function Users() {
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">
-                  Kata Sandi Baru
+                  {t("users.kataSandiBaru")}
                 </label>
                 <input
                   type="password"
@@ -618,12 +618,12 @@ export default function Users() {
                   value={formData.password}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition text-sm"
-                  placeholder="(Kosongkan jika tidak ingin diubah)"
+                  placeholder={t("users.holderEdit")}
                 />
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">
-                  Hak Akses (Role)
+                  {t("users.hakAksesRole")}
                 </label>
                 <select
                   name="role"
@@ -631,12 +631,12 @@ export default function Users() {
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition text-sm font-bold text-gray-700 cursor-pointer"
                 >
-                  <option value="orang_tua">Orang Tua</option>
-                  <option value="dinas_kesehatan">Dinas Kesehatan</option>
+                  <option value="orang_tua">{t("users.orangTua")}</option>
+                  <option value="dinas_kesehatan">{t("users.dinkes")}</option>
                   <option value="pemangku_kepentingan">
-                    Pemangku Kepentingan
+                    {t("users.pemangku")}
                   </option>
-                  <option value="super_admin">Super Admin</option>
+                  <option value="super_admin">{t("users.admin")}</option>
                 </select>
               </div>
               <div className="pt-4 flex gap-3">
@@ -645,13 +645,13 @@ export default function Users() {
                   onClick={() => setShowEditModal(false)}
                   className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold uppercase tracking-widest text-xs transition"
                 >
-                  Batal
+                  {t("users.batal")}
                 </button>
                 <button
                   type="submit"
                   className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold uppercase tracking-widest text-xs shadow-lg transition"
                 >
-                  Perbarui Data
+                  {t("users.perbaruiData")}
                 </button>
               </div>
             </form>

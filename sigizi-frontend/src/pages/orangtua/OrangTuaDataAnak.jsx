@@ -475,9 +475,9 @@ export default function OrangTuaDataAnak() {
   const formatAge = (age) => {
     if (!age) return "-";
     const parts = [];
-    if (age.years > 0) parts.push(`${age.years} thn`);
-    if (age.months > 0) parts.push(`${age.months} bln`);
-    if (age.days > 0) parts.push(`${age.days} hr`);
+    if (age.years > 0) parts.push(`${age.years} ${t("ortu.dashboard.thn")}`);
+    if (age.months > 0) parts.push(`${age.months} ${t("dataAnak.bln")}`);
+    if (age.days > 0) parts.push(`${age.days} ${t("ortu.dataAnak.hr")}`);
     return parts.length === 0 ? "< 1 hari" : parts.join(" ");
   };
 
@@ -529,7 +529,7 @@ export default function OrangTuaDataAnak() {
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-emerald-600 text-xl"
               />
             </div>
-            <p className="mt-6 text-gray-600 font-medium">Memuat data...</p>
+            <p className="mt-6 text-gray-600 font-medium">{t("app.loading")}</p>
           </div>
         </div>
       </div>
@@ -545,7 +545,7 @@ export default function OrangTuaDataAnak() {
         <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-emerald-100 px-8 py-6 sticky top-0 z-20">
           <div className="flex items-center gap-4">
             <div>
-              <h1 className="text-xl font-bold text-gray-800">Data Anak</h1>
+              <h1 className="text-xl font-bold text-gray-800">{t("ortu.dataAnak.title")}</h1>
               <p className="text-gray-500 text-sm mt-0.5">
                 {t("ortu.dataAnak.subtitle")}
               </p>
@@ -697,7 +697,7 @@ export default function OrangTuaDataAnak() {
                   />
                 </div>
                 <h3 className="font-bold text-blue-800 text-lg">
-                  Mode Super Admin
+                  {t("ortu.dataAnak.modeSuperAdmin")}
                 </h3>
               </div>
               <select
@@ -713,8 +713,7 @@ export default function OrangTuaDataAnak() {
               </select>
               <p className="text-xs text-blue-500 mt-3 flex items-center gap-1.5">
                 <FontAwesomeIcon icon={fas.faInfoCircle} />
-                Pemilihan anak hanya untuk tampilan saat ini, tidak tersimpan
-                antar menu
+                {t("ortu.dataAnak.infoSuperAdmin")}
               </p>
             </div>
           )}
@@ -732,12 +731,12 @@ export default function OrangTuaDataAnak() {
                   </div>
                   <div>
                     <h3 className="font-bold text-gray-800 text-lg">
-                      Hasil Analisis Gizi
+                      {t("ortu.dataAnak.hasilAnalisisGizi")}
                     </h3>
                     <div className="grid grid-cols-3 gap-6 mt-3">
                       <div>
                         <p className="text-xs text-gray-500 font-medium">
-                          Usia
+                          {t("ortu.dataAnak.usia")}
                         </p>
                         <p className="font-bold text-gray-800">
                           {analysisResult.umur_bulan} bulan
@@ -753,7 +752,7 @@ export default function OrangTuaDataAnak() {
                       </div>
                       <div>
                         <p className="text-xs text-gray-500 font-medium">
-                          Status Gizi
+                          {t("ortu.dataAnak.statusGizi")}
                         </p>
                         <span
                           className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${getStatusBadge(analysisResult.status_gizi)}`}
@@ -808,7 +807,7 @@ export default function OrangTuaDataAnak() {
                                   {displayAnakData.nama_anak}
                                 </p>
                                 <p className="text-sm text-gray-500">
-                                  Lahir: {displayAnakData.tanggal_lahir}
+                                  {t("ortu.dashboard.lahir")} {displayAnakData.tanggal_lahir}
                                 </p>
                               </div>
                             </>
@@ -1038,7 +1037,7 @@ export default function OrangTuaDataAnak() {
                           icon={fas.faCalendar}
                           className="text-blue-400"
                         />{" "}
-                        Tanggal Lahir
+                        {t("ortu.dataAnak.tanggalLahirAnak")}
                       </p>
                       <p className="font-bold text-gray-800">
                         {displayAnakData.tanggal_lahir}
@@ -1050,15 +1049,15 @@ export default function OrangTuaDataAnak() {
                           icon={fas.faClock}
                           className="text-emerald-400"
                         />{" "}
-                        Usia Saat Ini
+                        {t("ortu.dataAnak.usiaSaatIni")}
                       </p>
                       <p className="font-bold text-emerald-600 text-xl">
                         {formattedAge}
                       </p>
                       {ageDetail && ageDetail.totalMonths > 0 && (
                         <p className="text-xs text-gray-400 mt-1">
-                          ({ageDetail.totalMonths} bulan, {ageDetail.totalDays}{" "}
-                          hari)
+                          ({ageDetail.totalMonths} {t("dataAnak.bln")}, {ageDetail.totalDays}{" "}
+                          {t("ortu.dataAnak.hr")})
                         </p>
                       )}
                     </div>
@@ -1068,12 +1067,12 @@ export default function OrangTuaDataAnak() {
                           icon={fas.faVenusMars}
                           className="text-purple-400"
                         />{" "}
-                        Jenis Kelamin
+                        {t("ortu.dataAnak.jenisKelamin")}
                       </p>
                       <p className="font-bold text-gray-800">
                         {displayAnakData.jenis_kelamin === "L"
-                          ? "Laki-laki"
-                          : "Perempuan"}
+                          ? t("ortu.dataAnak.lakiLaki")
+                          : t("ortu.dataAnak.perempuan")}
                       </p>
                     </div>
                     <div className="bg-gradient-to-br from-amber-50 to-white rounded-xl p-4 border border-amber-100">
@@ -1082,12 +1081,16 @@ export default function OrangTuaDataAnak() {
                           icon={fas.faCheckCircle}
                           className="text-amber-400"
                         />{" "}
-                        Status Verifikasi
+                        {t("ortu.dataAnak.statusVerifikasi")}
                       </p>
                       <p
                         className={`font-bold ${displayAnakData.status_verifikasi === "Disetujui" ? "text-emerald-600" : "text-amber-600"}`}
                       >
-                        {displayAnakData.status_verifikasi || "Menunggu"}
+                        {displayAnakData.status_verifikasi === "Disetujui" 
+                          ? t("ortu.dashboard.verifikasiDisetujui")
+                          : displayAnakData.status_verifikasi === "Ditolak"
+                            ? t("ortu.dashboard.verifikasiDitolak")
+                            : t("ortu.dashboard.verifikasiMenunggu")}
                       </p>
                     </div>
                   </div>
@@ -1109,7 +1112,7 @@ export default function OrangTuaDataAnak() {
                     />
                   </div>
                   <h3 className="text-xl font-bold text-gray-800">
-                    Riwayat Gizi
+                    {t("ortu.dataAnak.riwayatGizi")}
                   </h3>
                 </div>
                 <div className="overflow-x-auto">
@@ -1117,22 +1120,22 @@ export default function OrangTuaDataAnak() {
                     <thead className="bg-gray-50/80">
                       <tr>
                         <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                          Tanggal
+                          {t("app.date")}
                         </th>
                         <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                          Usia saat Ukur
+                          {t("ortu.dataAnak.saatUkur")}
                         </th>
                         <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                          Tinggi (cm)
+                          {t("ortu.dataAnak.tinggiBadanCm")}
                         </th>
                         <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                          Berat (kg)
+                          {t("ortu.dataAnak.beratBadanKg")}
                         </th>
                         <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                          L. Kepala (cm)
+                          {t("ortu.dataAnak.lingkarKepalaCm")}
                         </th>
                         <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                          Status Gizi
+                          {t("ortu.dataAnak.statusGizi")}
                         </th>
                         <th className="px-5 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                           Z-Score
@@ -1195,13 +1198,13 @@ export default function OrangTuaDataAnak() {
                   />
                 </div>
                 <p className="text-gray-600 font-bold text-lg">
-                  Belum ada data pengukuran untuk anak ini
+                  {t("ortu.dataAnak.belumAdaDataPengukuran")}
                 </p>
                 <button
                   onClick={() => setShowUpdateForm(true)}
                   className="mt-4 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-8 py-3 rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-md font-bold"
                 >
-                  Tambah Pengukuran Pertama
+                  {t("ortu.dataAnak.tambahPengukuranPertama")}
                 </button>
               </div>
             )}
@@ -1245,7 +1248,7 @@ export default function OrangTuaDataAnak() {
                     Lengkapi Data Diri Orangtua
                   </h2>
                   <p className="text-sm text-emerald-100 mt-0.5">
-                    Data ini diperlukan sebelum menambah data anak
+                    {t("ortu.dataAnak.dataDiperlukan")}
                   </p>
                 </div>
               </div>
@@ -1278,7 +1281,7 @@ export default function OrangTuaDataAnak() {
                     icon={fas.faCalendar}
                     className="text-emerald-500"
                   />{" "}
-                  Tanggal Lahir
+                  {t("ortu.dataAnak.tanggalLahirAnak")}
                 </label>
                 <input
                   type="date"
@@ -1302,7 +1305,7 @@ export default function OrangTuaDataAnak() {
                     icon={fas.faLocationDot}
                     className="text-emerald-500"
                   />{" "}
-                  Domisili (Kabupaten/Kota)
+                  {t("ortu.dataAnak.domisiliKabKota")}
                 </label>
                 <select
                   value={profilForm.wilayah_id}
@@ -1312,7 +1315,7 @@ export default function OrangTuaDataAnak() {
                   required
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white shadow-sm transition-all"
                 >
-                  <option value="">-- Pilih Kabupaten/Kota --</option>
+                  <option value="">-- {t("inputWilayah.pilihKabupatenKota")} --</option>
                   {wilayahList.map((w) => (
                     <option key={w.id} value={w.id}>
                       {w.nama_kabupaten}
@@ -1328,7 +1331,7 @@ export default function OrangTuaDataAnak() {
                     icon={fas.faMoneyBillWave}
                     className="text-emerald-500"
                   />{" "}
-                  Penghasilan per Bulan
+                  {t("ortu.dataAnak.penghasilanPerBulan")}
                 </label>
                 <select
                   value={profilForm.penghasilan_range}
@@ -1341,7 +1344,7 @@ export default function OrangTuaDataAnak() {
                   required
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white shadow-sm transition-all"
                 >
-                  <option value="">-- Pilih Rentang Penghasilan --</option>
+                  <option value="">{t("ortu.dataAnak.pilihRentangPenghasilan")}</option>
                   {PENGHASILAN_OPTIONS.map((opt) => (
                     <option key={opt} value={opt}>
                       Rp {opt}
@@ -1357,7 +1360,7 @@ export default function OrangTuaDataAnak() {
                     icon={fas.faGraduationCap}
                     className="text-emerald-500"
                   />{" "}
-                  Pendidikan Terakhir Ibu
+                  {t("ortu.dataAnak.pendidikanTerakhirIbu")}
                 </label>
                 <select
                   value={profilForm.pendidikan_ibu}
@@ -1370,7 +1373,7 @@ export default function OrangTuaDataAnak() {
                   required
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white shadow-sm transition-all"
                 >
-                  <option value="">-- Pilih Pendidikan Terakhir --</option>
+                  <option value="">{t("ortu.dataAnak.pilihPendidikan")}</option>
                   {PENDIDIKAN_OPTIONS.map((opt) => (
                     <option key={opt} value={opt}>
                       {opt}
@@ -1387,7 +1390,7 @@ export default function OrangTuaDataAnak() {
                       icon={fas.faToilet}
                       className="text-emerald-500"
                     />{" "}
-                    Sanitasi
+                    {t("dataAnak.sanitasi")}
                   </label>
                   <select
                     value={profilForm.sanitasi}
@@ -1397,9 +1400,9 @@ export default function OrangTuaDataAnak() {
                     required
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white shadow-sm transition-all"
                   >
-                    <option value="">-- Pilih --</option>
-                    <option value="Baik">Baik</option>
-                    <option value="Buruk">Buruk</option>
+                    <option value="">-- {t("app.select")} --</option>
+                    <option value="Baik">{t("ortu.dashboard.baik")}</option>
+                    <option value="Buruk">{t("ortu.dashboard.buruk")}</option>
                   </select>
                 </div>
                 <div>
@@ -1408,7 +1411,7 @@ export default function OrangTuaDataAnak() {
                       icon={fas.faDroplet}
                       className="text-emerald-500"
                     />{" "}
-                    Kualitas Air
+                    {t("dataAnak.kualitasAir")}
                   </label>
                   <select
                     value={profilForm.kualitas_air}
@@ -1421,9 +1424,9 @@ export default function OrangTuaDataAnak() {
                     required
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white shadow-sm transition-all"
                   >
-                    <option value="">-- Pilih --</option>
-                    <option value="Bersih">Bersih</option>
-                    <option value="Kotor">Kotor</option>
+                    <option value="">-- {t("app.select")} --</option>
+                    <option value="Bersih">{t("ortu.dashboard.bersih")}</option>
+                    <option value="Kotor">{t("ortu.dashboard.kotor")}</option>
                   </select>
                 </div>
               </div>
@@ -1435,10 +1438,10 @@ export default function OrangTuaDataAnak() {
                     icon={fas.faHospital}
                     className="text-emerald-500"
                   />{" "}
-                  Akses Layanan Kesehatan
+                  {t("ortu.dataAnak.aksesLayananKesehatan")}
                 </label>
                 <div className="flex gap-3">
-                  {["Mudah", "Sulit"].map((opt) => (
+                  {[t("ortu.dataAnak.mudah"), t("ortu.dataAnak.sulit")].map((opt) => (
                     <label
                       key={opt}
                       className={`flex-1 flex items-center justify-center gap-2 py-3.5 border-2 rounded-xl cursor-pointer transition-all font-bold text-sm ${
@@ -1487,7 +1490,7 @@ export default function OrangTuaDataAnak() {
                   }}
                   className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-xl font-bold transition-all"
                 >
-                  Batal
+                  {t("app.cancel")}
                 </button>
                 <button
                   type="submit"
@@ -1499,7 +1502,7 @@ export default function OrangTuaDataAnak() {
                   ) : (
                     <FontAwesomeIcon icon={fas.faSave} />
                   )}
-                  Simpan Data Diri
+                  {t("ortu.dataAnak.simpanDataDiri")}
                 </button>
               </div>
             </form>
@@ -1560,7 +1563,7 @@ export default function OrangTuaDataAnak() {
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm transition-all"
                 >
-                  <option value="L">{t("ortu.dataAnak.lakilaki")}</option>
+                  <option value="L">{t("ortu.dataAnak.lakiLaki")}</option>
                   <option value="P">{t("ortu.dataAnak.perempuan")}</option>
                 </select>
               </div>
@@ -1616,7 +1619,7 @@ export default function OrangTuaDataAnak() {
                     icon={fas.faLocationDot}
                     className="text-blue-500"
                   />
-                  Wilayah anak: <strong>{profilData.nama_kabupaten}</strong>
+                  {t("ortu.dataAnak.wilayahAnak")}: <strong>{profilData.nama_kabupaten}</strong>
                 </div>
               )}
               <div className="flex gap-3 pt-4">
@@ -1625,13 +1628,13 @@ export default function OrangTuaDataAnak() {
                   onClick={() => setShowAddForm(false)}
                   className="flex-1 bg-gray-100 hover:bg-gray-200 py-3 rounded-xl font-bold transition-all"
                 >
-                  Batal
+                  {t("app.cancel")}
                 </button>
                 <button
                   type="submit"
                   className="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-3 rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition-all font-bold shadow-md"
                 >
-                  <FontAwesomeIcon icon={fas.faSave} className="mr-2" /> Simpan
+                  <FontAwesomeIcon icon={fas.faSave} className="mr-2" /> {t("app.save")}
                 </button>
               </div>
             </form>
@@ -1649,7 +1652,7 @@ export default function OrangTuaDataAnak() {
                   <FontAwesomeIcon icon={fas.faChartLine} className="text-xl" />
                 </div>
                 <h2 className="text-xl font-bold">
-                  Update Pertumbuhan - {displayAnakData.nama_anak}
+                  {t("ortu.dataAnak.updatePertumbuhan")} - {displayAnakData.nama_anak}
                 </h2>
               </div>
             </div>
@@ -1663,14 +1666,14 @@ export default function OrangTuaDataAnak() {
                     icon={fas.faInfoCircle}
                     className="text-blue-500"
                   />
-                  Usia saat ini:{" "}
+                  {t("ortu.dataAnak.usiaSaatIni")}:{" "}
                   <strong className="text-blue-700">{formattedAge}</strong>
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1.5">
-                    Tinggi Badan (cm)
+                    {t("ortu.dataAnak.tinggiBadanCm")}
                   </label>
                   <input
                     type="number"
@@ -1685,7 +1688,7 @@ export default function OrangTuaDataAnak() {
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1.5">
-                    Berat Badan (kg)
+                    {t("ortu.dataAnak.beratBadanKg")}
                   </label>
                   <input
                     type="number"
@@ -1701,7 +1704,7 @@ export default function OrangTuaDataAnak() {
               </div>
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1.5">
-                  Lingkar Kepala (cm) - Opsional
+                  {t("ortu.dataAnak.lingkarKepalaCm")} - Opsional
                 </label>
                 <input
                   type="number"
@@ -1719,7 +1722,7 @@ export default function OrangTuaDataAnak() {
                     icon={fas.faLightbulb}
                     className="text-amber-500"
                   />
-                  Pengukuran dicatat dengan tanggal hari ini (
+                  {t("ortu.dataAnak.pengukuranHariIni")} (
                   {new Date().toLocaleDateString("id-ID")})
                 </p>
               </div>
@@ -1729,7 +1732,7 @@ export default function OrangTuaDataAnak() {
                   onClick={() => setShowUpdateForm(false)}
                   className="flex-1 bg-gray-100 hover:bg-gray-200 py-3 rounded-xl font-bold transition-all"
                 >
-                  Batal
+                  {t("app.cancel")}
                 </button>
                 <button
                   type="submit"

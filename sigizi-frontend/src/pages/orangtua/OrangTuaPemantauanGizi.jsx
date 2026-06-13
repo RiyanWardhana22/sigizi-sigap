@@ -34,6 +34,7 @@ function PenjelasanGrafikModal({
   activeMainMenu,
   activeSubMenu,
   ageRange,
+  t,
 }) {
   if (!isOpen) return null;
 
@@ -41,126 +42,114 @@ function PenjelasanGrafikModal({
     if (activeMainMenu === "berat") {
       if (activeSubMenu === "bb_u") {
         return {
-          judul: "Grafik Berat Badan menurut Usia (BB/U)",
-          deskripsi:
-            "Grafik ini menunjukkan apakah berat badan anak Anda sudah sesuai dengan usianya.",
+          judul: t("ortu.pemantauanGizi.modal.bbuJudul"),
+          deskripsi: t("ortu.pemantauanGizi.modal.bbuDeskripsi"),
           caraBaca: [
             {
-              langkah: "1. Lihat Garis Biru",
-              detail:
-                "Garis biru dengan titik-titik menunjukkan pertumbuhan berat badan anak Anda dari waktu ke waktu.",
+              langkah: t("ortu.pemantauanGizi.modal.bbuLangkah1"),
+              detail: t("ortu.pemantauanGizi.modal.bbuLangkah1Detail"),
             },
             {
-              langkah: "2. Perhatikan Zona Warna",
-              detail:
-                "Zona hijau berarti berat badan normal. Zona kuning berarti perlu perhatian lebih. Di luar zona berarti perlu konsultasi dokter.",
+              langkah: t("ortu.pemantauanGizi.modal.bbuLangkah2"),
+              detail: t("ortu.pemantauanGizi.modal.bbuLangkah2Detail"),
             },
             {
-              langkah: "3. Bandingkan dengan Garis Tengah",
-              detail:
-                "Garis hijau tebal adalah berat badan rata-rata anak seusianya. Semakin dekat ke garis ini, semakin ideal.",
+              langkah: t("ortu.pemantauanGizi.modal.bbuLangkah3"),
+              detail: t("ortu.pemantauanGizi.modal.bbuLangkah3Detail"),
             },
           ],
-          tips: "TIPS: Timbang anak secara rutin setiap bulan di Posyandu atau Puskesmas terdekat untuk memantau pertumbuhannya.",
+          tips: t("ortu.pemantauanGizi.modal.bbuTips"),
           warna: "emerald",
           kondisi: [
             {
-              status: "Normal",
-              arti: "Berat badan anak Anda ideal, pertahankan pola makan sehat!",
+              status: t("ortu.pemantauanGizi.modal.bbuStatusNormal"),
+              arti: t("ortu.pemantauanGizi.modal.bbuArtiNormal"),
               warna: "bg-emerald-100 text-emerald-700 border-emerald-200",
             },
             {
-              status: "Kurang",
-              arti: "Berat badan anak di bawah rata-rata, tingkatkan asupan gizi seimbang.",
+              status: t("ortu.pemantauanGizi.modal.bbuStatusKurang"),
+              arti: t("ortu.pemantauanGizi.modal.bbuArtiKurang"),
               warna: "bg-amber-100 text-amber-700 border-amber-200",
             },
             {
-              status: "Berlebih",
-              arti: "Berat badan anak di atas rata-rata, kurangi makanan tinggi gula dan lemak.",
+              status: t("ortu.pemantauanGizi.modal.bbuStatusBerlebih"),
+              arti: t("ortu.pemantauanGizi.modal.bbuArtiBerlebih"),
               warna: "bg-red-100 text-red-700 border-red-200",
             },
           ],
         };
       } else if (activeSubMenu === "bb_tb") {
         return {
-          judul: "Grafik Berat Badan menurut Tinggi Badan (BB/TB)",
-          deskripsi:
-            "Grafik ini menunjukkan apakah berat badan anak Anda sudah proporsional dengan tinggi badannya.",
+          judul: t("ortu.pemantauanGizi.modal.bbtbJudul"),
+          deskripsi: t("ortu.pemantauanGizi.modal.bbtbDeskripsi"),
           caraBaca: [
             {
-              langkah: "1. Lihat Garis Biru",
-              detail:
-                "Garis biru dengan titik-titik menunjukkan data berat dan tinggi anak Anda dari waktu ke waktu.",
+              langkah: t("ortu.pemantauanGizi.modal.bbtbLangkah1"),
+              detail: t("ortu.pemantauanGizi.modal.bbtbLangkah1Detail"),
             },
             {
-              langkah: "2. Perhatikan Zona Warna",
-              detail:
-                "Zona hijau berarti berat badan proporsional dengan tinggi. Zona kuning berarti perlu perhatian. Di luar zona berarti perlu konsultasi dokter.",
+              langkah: t("ortu.pemantauanGizi.modal.bbtbLangkah2"),
+              detail: t("ortu.pemantauanGizi.modal.bbtbLangkah2Detail"),
             },
             {
-              langkah: "3. Bandingkan dengan Garis Tengah",
-              detail:
-                "Garis hijau tebal adalah berat badan rata-rata untuk tinggi tersebut. Semakin dekat, semakin proporsional.",
+              langkah: t("ortu.pemantauanGizi.modal.bbtbLangkah3"),
+              detail: t("ortu.pemantauanGizi.modal.bbtbLangkah3Detail"),
             },
           ],
-          tips: "TIPS: Pastikan anak mendapatkan makanan bergizi seimbang dengan porsi yang sesuai, tidak kurang dan tidak berlebihan.",
+          tips: t("ortu.pemantauanGizi.modal.bbtbTips"),
           warna: "emerald",
           kondisi: [
             {
-              status: "Normal",
-              arti: "Berat badan proporsional dengan tinggi badan, pertahankan!",
+              status: t("ortu.pemantauanGizi.modal.bbtbStatusNormal"),
+              arti: t("ortu.pemantauanGizi.modal.bbtbArtiNormal"),
               warna: "bg-emerald-100 text-emerald-700 border-emerald-200",
             },
             {
-              status: "Kurus",
-              arti: "Berat badan kurang untuk tinggi badannya, tingkatkan asupan protein dan kalori sehat.",
+              status: t("ortu.pemantauanGizi.modal.bbtbStatusKurus"),
+              arti: t("ortu.pemantauanGizi.modal.bbtbArtiKurus"),
               warna: "bg-amber-100 text-amber-700 border-amber-200",
             },
             {
-              status: "Gemuk",
-              arti: "Berat badan berlebih untuk tinggi badannya, atur pola makan dan aktivitas fisik.",
+              status: t("ortu.pemantauanGizi.modal.bbtbStatusGemuk"),
+              arti: t("ortu.pemantauanGizi.modal.bbtbArtiGemuk"),
               warna: "bg-red-100 text-red-700 border-red-200",
             },
           ],
         };
       } else if (activeSubMenu === "imt_u") {
         return {
-          judul: "Grafik Indeks Massa Tubuh menurut Usia (IMT/U)",
-          deskripsi:
-            "Grafik ini menunjukkan status gizi anak secara keseluruhan berdasarkan perbandingan berat dan tinggi badan.",
+          judul: t("ortu.pemantauanGizi.modal.imtuJudul"),
+          deskripsi: t("ortu.pemantauanGizi.modal.imtuDeskripsi"),
           caraBaca: [
             {
-              langkah: "1. Lihat Garis Biru",
-              detail:
-                "Garis biru menunjukkan nilai IMT anak Anda. IMT dihitung dari berat badan dibagi tinggi badan.",
+              langkah: t("ortu.pemantauanGizi.modal.imtuLangkah1"),
+              detail: t("ortu.pemantauanGizi.modal.imtuLangkah1Detail"),
             },
             {
-              langkah: "2. Perhatikan Zona Warna",
-              detail:
-                "Zona hijau berarti status gizi normal. Zona kuning berarti perlu perhatian. Di luar zona berarti perlu tindakan segera.",
+              langkah: t("ortu.pemantauanGizi.modal.imtuLangkah2"),
+              detail: t("ortu.pemantauanGizi.modal.imtuLangkah2Detail"),
             },
             {
-              langkah: "3. Pahami Arti Status Gizi",
-              detail:
-                "IMT/U adalah indikator paling lengkap untuk menilai status gizi anak secara keseluruhan.",
+              langkah: t("ortu.pemantauanGizi.modal.imtuLangkah3"),
+              detail: t("ortu.pemantauanGizi.modal.imtuLangkah3Detail"),
             },
           ],
-          tips: "TIPS: Status gizi anak dipengaruhi oleh banyak faktor: asupan makanan, aktivitas fisik, kebersihan lingkungan, dan akses layanan kesehatan.",
+          tips: t("ortu.pemantauanGizi.modal.imtuTips"),
           warna: "emerald",
           kondisi: [
             {
-              status: "Gizi Baik",
-              arti: "Status gizi anak normal, pertahankan pola hidup sehat!",
+              status: t("ortu.pemantauanGizi.modal.imtuStatusGiziBaik"),
+              arti: t("ortu.pemantauanGizi.modal.imtuArtiGiziBaik"),
               warna: "bg-emerald-100 text-emerald-700 border-emerald-200",
             },
             {
-              status: "Gizi Kurang",
-              arti: "Anak perlu perbaikan gizi, konsultasikan ke petugas kesehatan.",
+              status: t("ortu.pemantauanGizi.modal.imtuStatusGiziKurang"),
+              arti: t("ortu.pemantauanGizi.modal.imtuArtiGiziKurang"),
               warna: "bg-amber-100 text-amber-700 border-amber-200",
             },
             {
-              status: "Gizi Lebih",
-              arti: "Anak kelebihan gizi, atur pola makan dan tingkatkan aktivitas fisik.",
+              status: t("ortu.pemantauanGizi.modal.imtuStatusGiziLebih"),
+              arti: t("ortu.pemantauanGizi.modal.imtuArtiGiziLebih"),
               warna: "bg-red-100 text-red-700 border-red-200",
             },
           ],
@@ -168,84 +157,76 @@ function PenjelasanGrafikModal({
       }
     } else if (activeMainMenu === "tinggi") {
       return {
-        judul: "Grafik Tinggi Badan menurut Usia (TB/U)",
-        deskripsi:
-          "Grafik ini menunjukkan apakah tinggi badan anak Anda sudah sesuai dengan usianya. Tinggi badan yang tidak sesuai bisa menjadi tanda stunting.",
+        judul: t("ortu.pemantauanGizi.modal.tbuJudul"),
+        deskripsi: t("ortu.pemantauanGizi.modal.tbuDeskripsi"),
         caraBaca: [
           {
-            langkah: "1. Lihat Garis Biru",
-            detail:
-              "Garis biru dengan titik-titik menunjukkan pertumbuhan tinggi badan anak Anda dari waktu ke waktu.",
+            langkah: t("ortu.pemantauanGizi.modal.tbuLangkah1"),
+            detail: t("ortu.pemantauanGizi.modal.tbuLangkah1Detail"),
           },
           {
-            langkah: "2. Perhatikan Zona Warna",
-            detail:
-              "Zona hijau berarti tinggi badan normal. Zona kuning berarti perlu perhatian lebih karena berisiko stunting.",
+            langkah: t("ortu.pemantauanGizi.modal.tbuLangkah2"),
+            detail: t("ortu.pemantauanGizi.modal.tbuLangkah2Detail"),
           },
           {
-            langkah: "3. Waspadai Stunting",
-            detail:
-              "Jika tinggi anak berada di zona kuning atau di bawahnya, segera konsultasikan ke Puskesmas. Stunting harus dicegah sejak dini!",
+            langkah: t("ortu.pemantauanGizi.modal.tbuLangkah3"),
+            detail: t("ortu.pemantauanGizi.modal.tbuLangkah3Detail"),
           },
         ],
-        tips: "TIPS: Stunting adalah kondisi gagal tumbuh akibat kekurangan gizi kronis. Cegah dengan memberikan ASI eksklusif 6 bulan, MPASI bergizi, dan rutin ke Posyandu.",
+        tips: t("ortu.pemantauanGizi.modal.tbuTips"),
         warna: "blue",
         kondisi: [
           {
-            status: "Normal",
-            arti: "Tinggi badan anak sesuai dengan usianya, pertumbuhan baik!",
+            status: t("ortu.pemantauanGizi.modal.tbuStatusNormal"),
+            arti: t("ortu.pemantauanGizi.modal.tbuArtiNormal"),
             warna: "bg-emerald-100 text-emerald-700 border-emerald-200",
           },
           {
-            status: "Pendek",
-            arti: "Tinggi badan di bawah rata-rata, waspadai risiko stunting. Perbaiki asupan gizi.",
+            status: t("ortu.pemantauanGizi.modal.tbuStatusPendek"),
+            arti: t("ortu.pemantauanGizi.modal.tbuArtiPendek"),
             warna: "bg-amber-100 text-amber-700 border-amber-200",
           },
           {
-            status: "Sangat Pendek",
-            arti: "Anak berisiko tinggi stunting. SEGERA konsultasikan ke dokter atau Puskesmas!",
+            status: t("ortu.pemantauanGizi.modal.tbuStatusSangatPendek"),
+            arti: t("ortu.pemantauanGizi.modal.tbuArtiSangatPendek"),
             warna: "bg-red-100 text-red-700 border-red-200",
           },
         ],
       };
     } else if (activeMainMenu === "lingkar_kepala") {
       return {
-        judul: "Grafik Lingkar Kepala menurut Usia (LK/U)",
-        deskripsi:
-          "Grafik ini menunjukkan apakah ukuran lingkar kepala anak Anda sesuai dengan usianya. Lingkar kepala berkaitan dengan perkembangan otak anak.",
+        judul: t("ortu.pemantauanGizi.modal.lkuJudul"),
+        deskripsi: t("ortu.pemantauanGizi.modal.lkuDeskripsi"),
         caraBaca: [
           {
-            langkah: "1. Lihat Garis Biru",
-            detail:
-              "Garis biru menunjukkan ukuran lingkar kepala anak Anda dari waktu ke waktu.",
+            langkah: t("ortu.pemantauanGizi.modal.lkuLangkah1"),
+            detail: t("ortu.pemantauanGizi.modal.lkuLangkah1Detail"),
           },
           {
-            langkah: "2. Perhatikan Zona Warna",
-            detail:
-              "Zona hijau berarti lingkar kepala normal. Zona kuning berarti perlu pemantauan lebih lanjut.",
+            langkah: t("ortu.pemantauanGizi.modal.lkuLangkah2"),
+            detail: t("ortu.pemantauanGizi.modal.lkuLangkah2Detail"),
           },
           {
-            langkah: "3. Pentingnya Pemantauan",
-            detail:
-              "Lingkar kepala yang tidak normal bisa menjadi tanda masalah perkembangan otak. Rutin ukur di Posyandu!",
+            langkah: t("ortu.pemantauanGizi.modal.lkuLangkah3"),
+            detail: t("ortu.pemantauanGizi.modal.lkuLangkah3Detail"),
           },
         ],
-        tips: "TIPS: Ukur lingkar kepala anak setiap bulan di tahun pertama, lalu setiap 3 bulan hingga usia 2 tahun. Gunakan pita ukur yang sama setiap kali mengukur.",
+        tips: t("ortu.pemantauanGizi.modal.lkuTips"),
         warna: "purple",
         kondisi: [
           {
-            status: "Normal",
-            arti: "Lingkar kepala sesuai usia, perkembangan otak berjalan baik!",
+            status: t("ortu.pemantauanGizi.modal.lkuStatusNormal"),
+            arti: t("ortu.pemantauanGizi.modal.lkuArtiNormal"),
             warna: "bg-emerald-100 text-emerald-700 border-emerald-200",
           },
           {
-            status: "Kecil",
-            arti: "Lingkar kepala di bawah rata-rata, konsultasikan ke dokter untuk evaluasi.",
+            status: t("ortu.pemantauanGizi.modal.lkuStatusKecil"),
+            arti: t("ortu.pemantauanGizi.modal.lkuArtiKecil"),
             warna: "bg-amber-100 text-amber-700 border-amber-200",
           },
           {
-            status: "Besar",
-            arti: "Lingkar kepala di atas rata-rata, perlu pemeriksaan lebih lanjut oleh dokter.",
+            status: t("ortu.pemantauanGizi.modal.lkuStatusBesar"),
+            arti: t("ortu.pemantauanGizi.modal.lkuArtiBesar"),
             warna: "bg-red-100 text-red-700 border-red-200",
           },
         ],
@@ -287,7 +268,7 @@ function PenjelasanGrafikModal({
               <span className="bg-blue-100 p-2 rounded-lg">
                 <FontAwesomeIcon icon={fas.faEye} className="text-blue-600" />
               </span>
-              Cara Membaca Grafik Ini
+              {t("ortu.pemantauanGizi.modal.caraMembacaGrafik")}
             </h4>
             <div className="space-y-3">
               {content.caraBaca.map((item, index) => (
@@ -312,12 +293,9 @@ function PenjelasanGrafikModal({
           <div>
             <h4 className="font-bold text-gray-800 text-lg flex items-center gap-2 mb-4">
               <span className="bg-amber-100 p-2 rounded-lg">
-                <FontAwesomeIcon
-                  icon={fas.faPalette}
-                  className="text-amber-600"
-                />
+                <FontAwesomeIcon icon={fas.faPalette} className="text-amber-600" />
               </span>
-              Arti Status Gizi pada Grafik
+              {t("ortu.pemantauanGizi.modal.artiStatusGizi")}
             </h4>
             <div className="space-y-3">
               {content.kondisi.map((item, index) => (
@@ -339,12 +317,9 @@ function PenjelasanGrafikModal({
           <div>
             <h4 className="font-bold text-gray-800 text-lg flex items-center gap-2 mb-4">
               <span className="bg-emerald-100 p-2 rounded-lg">
-                <FontAwesomeIcon
-                  icon={fas.faChartPie}
-                  className="text-emerald-600"
-                />
+                <FontAwesomeIcon icon={fas.faChartPie} className="text-emerald-600" />
               </span>
-              Arti Zona Warna
+              {t("ortu.pemantauanGizi.modal.artiZonaWarna")}
             </h4>
             <div className="grid grid-cols-3 gap-3">
               <div className="text-center p-4 bg-emerald-50 rounded-xl border border-emerald-200">
@@ -355,8 +330,8 @@ function PenjelasanGrafikModal({
                     border: "1px solid #22c55e",
                   }}
                 ></div>
-                <p className="font-bold text-emerald-700 text-sm">Zona Hijau</p>
-                <p className="text-xs text-gray-500 mt-1">Pertumbuhan Normal</p>
+                <p className="font-bold text-emerald-700 text-sm">{t("ortu.pemantauanGizi.modal.zonaHijau")}</p>
+                <p className="text-xs text-gray-500 mt-1">{t("ortu.pemantauanGizi.modal.pertumbuhanNormal")}</p>
               </div>
               <div className="text-center p-4 bg-amber-50 rounded-xl border border-amber-200">
                 <div
@@ -366,8 +341,8 @@ function PenjelasanGrafikModal({
                     border: "1px solid #f59e0b",
                   }}
                 ></div>
-                <p className="font-bold text-amber-700 text-sm">Zona Kuning</p>
-                <p className="text-xs text-gray-500 mt-1">Perlu Perhatian</p>
+                <p className="font-bold text-amber-700 text-sm">{t("ortu.pemantauanGizi.modal.zonaKuning")}</p>
+                <p className="text-xs text-gray-500 mt-1">{t("ortu.pemantauanGizi.modal.perluPerhatian")}</p>
               </div>
               <div className="text-center p-4 bg-gray-50 rounded-xl border border-gray-200">
                 <div
@@ -377,8 +352,8 @@ function PenjelasanGrafikModal({
                     border: "1px solid #9ca3af",
                   }}
                 ></div>
-                <p className="font-bold text-gray-600 text-sm">Di Luar Zona</p>
-                <p className="text-xs text-gray-500 mt-1">Segera Konsultasi</p>
+                <p className="font-bold text-gray-600 text-sm">{t("ortu.pemantauanGizi.modal.diLuarZona")}</p>
+                <p className="text-xs text-gray-500 mt-1">{t("ortu.pemantauanGizi.modal.segeraKonsultasi")}</p>
               </div>
             </div>
           </div>
@@ -391,14 +366,10 @@ function PenjelasanGrafikModal({
               />
               <div>
                 <p className="font-bold text-blue-800 text-sm">
-                  Penting untuk Diingat!
+                  {t("ortu.pemantauanGizi.modal.pentingDiingat")}
                 </p>
                 <p className="text-sm text-blue-700 mt-1">
-                  Grafik ini menggunakan standar WHO (Organisasi Kesehatan
-                  Dunia) untuk anak 0-5 tahun dan standar CDC untuk anak 5-18
-                  tahun. Setiap anak memiliki pola pertumbuhan yang berbeda.
-                  Konsultasikan dengan tenaga kesehatan untuk evaluasi lebih
-                  lanjut.
+                  {t("ortu.pemantauanGizi.modal.penjelasanPenting")}
                 </p>
               </div>
             </div>
@@ -410,7 +381,7 @@ function PenjelasanGrafikModal({
             onClick={onClose}
             className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold transition shadow-md"
           >
-            Saya Mengerti
+            {t("ortu.pemantauanGizi.modal.sayaMengerti")}
           </button>
         </div>
       </div>
@@ -421,16 +392,15 @@ function PenjelasanGrafikModal({
 // ─────────────────────────────────────────────
 // HELPER: Format Usia (Tahun Bulan Hari)
 // ─────────────────────────────────────────────
-const formatUsiaDetail = (usiaBulan) => {
+const formatUsiaDetail = (usiaBulan, t) => {
   if (usiaBulan === undefined || usiaBulan === null) return "-";
-  // Konversi bulan ke total hari (rata-rata 1 bulan = 30.4375 hari)
   const totalHari = Math.round(usiaBulan * 30.4375);
   const tahun = Math.floor(totalHari / 365);
   const sisaHari = totalHari - tahun * 365;
   const bulan = Math.floor(sisaHari / 30);
   const hari = sisaHari - bulan * 30;
 
-  return `${tahun} Tahun ${bulan} Bulan ${hari} Hari`;
+  return `${tahun} ${t("app.tahun")} ${bulan} ${t("app.bulan")} ${hari} ${t("app.hari")}`;
 };
 
 // ─────────────────────────────────────────────
@@ -466,10 +436,8 @@ const getZScoreFromReference = (value, usiaBulan, jenisKelamin, indicator) => {
 
 // ─────────────────────────────────────────────
 // HELPER: Konversi Persentil → Z-Score (Inverse Normal CDF)
-// Menggunakan tabel lookup dengan interpolasi linear
 // ─────────────────────────────────────────────
 const percentileToZScore = (p) => {
-  // [persentil, z-score] — berdasarkan distribusi normal standar
   const table = [
     [0.5, -2.576], [1, -2.326], [2, -2.054], [3, -1.881],
     [5, -1.645], [10, -1.282], [15, -1.036], [20, -0.842],
@@ -491,8 +459,7 @@ const percentileToZScore = (p) => {
 };
 
 // ─────────────────────────────────────────────
-// HELPER: Hitung Persentil CDC secara kontinu (interpolasi antar titik referensi)
-// Mengembalikan nilai persentil 0–100 (bukan kategorikal)
+// HELPER: Hitung Persentil CDC secara kontinu
 // ─────────────────────────────────────────────
 const calculateCDCPercentileContinuous = (value, usiaBulan, jenisKelamin, indicator) => {
   const data = cdcGrowthData[indicator];
@@ -503,7 +470,6 @@ const calculateCDCPercentileContinuous = (value, usiaBulan, jenisKelamin, indica
   const ageInYears = usiaBulan / 12;
   const ages = Object.keys(genderData).map(Number).sort((a, b) => a - b);
 
-  // Cari dua usia referensi terdekat untuk interpolasi
   let lowerAge = ages[0];
   for (const age of ages) {
     if (age <= ageInYears) lowerAge = age;
@@ -529,16 +495,13 @@ const calculateCDCPercentileContinuous = (value, usiaBulan, jenisKelamin, indica
   const upperRefs = getRefVals(upperAge);
   if (!lowerRefs || !upperRefs) return null;
 
-  // Interpolasi nilai referensi antar dua usia
   const t = lowerAge === upperAge ? 0 : (ageInYears - lowerAge) / (upperAge - lowerAge);
   const refs = lowerRefs.map((ref, i) => ({
     p: ref.p,
     v: ref.v + t * (upperRefs[i].v - ref.v),
   }));
 
-  // Temukan posisi nilai anak di antara titik persentil
   if (value <= refs[0].v) {
-    // Di bawah P3: ekstrapolasi ke bawah
     return Math.max(0.5, 3 * (value / refs[0].v));
   }
   for (let i = 0; i < refs.length - 1; i++) {
@@ -547,7 +510,6 @@ const calculateCDCPercentileContinuous = (value, usiaBulan, jenisKelamin, indica
       return refs[i].p + frac * (refs[i + 1].p - refs[i].p);
     }
   }
-  // Di atas P95: ekstrapolasi ke atas
   return Math.min(99.5, 95 + (value - refs[refs.length - 1].v) / refs[refs.length - 1].v * 4);
 };
 
@@ -583,8 +545,7 @@ export default function OrangTuaPemantauanGizi() {
   const [selectedOrangTuaId, setSelectedOrangTuaId] = useState(null);
   const [superAdminAnakList, setSuperAdminAnakList] = useState([]);
   const [superAdminSelectedAnak, setSuperAdminSelectedAnak] = useState(null);
-  const [superAdminShowAnakDropdown, setSuperAdminShowAnakDropdown] =
-    useState(false);
+  const [superAdminShowAnakDropdown, setSuperAdminShowAnakDropdown] = useState(false);
   const [growthData, setGrowthData] = useState([]);
   const [superAdminGrowthData, setSuperAdminGrowthData] = useState([]);
 
@@ -597,22 +558,22 @@ export default function OrangTuaPemantauanGizi() {
 
   const ageRangeConfig = {
     "0-2": {
-      min: 0, max: 2, label: "Grafik 0 - 2 Bulan", shortLabel: "0-2 bln",
+      min: 0, max: 2, label: `${t("ortu.pemantauanGizi.grafikRentang")} 0 - 2 ${t("app.bulan")}`, shortLabel: `0-2 ${t("dataAnak.bln")}`,
       isWHO: true, icon: "faBaby", step: 0.25,
       yDomain: { bb_u: [2, 8], tb_u: [45, 65], imt_u: [10, 20] },
     },
     "0-12": {
-      min: 0, max: 12, label: "Grafik 0 - 12 Bulan", shortLabel: "0-12 bln",
+      min: 0, max: 12, label: `${t("ortu.pemantauanGizi.grafikRentang")} 0 - 12 ${t("app.bulan")}`, shortLabel: `0-12 ${t("dataAnak.bln")}`,
       isWHO: true, icon: "faBabyCarriage", step: 0.5,
       yDomain: { bb_u: [3, 12], tb_u: [48, 78], imt_u: [12, 24] },
     },
     "0-60": {
-      min: 0, max: 60, label: "Grafik 0 - 5 Tahun", shortLabel: "0-5 thn",
+      min: 0, max: 60, label: `${t("ortu.pemantauanGizi.grafikRentang")} 0 - 5 ${t("app.tahun")}`, shortLabel: `0-5 ${t("ortu.dashboard.thn")}`,
       isWHO: true, icon: "faChild", step: 1,
       yDomain: { bb_u: [5, 22], tb_u: [60, 120], imt_u: [12, 28] },
     },
     "60-216": {
-      min: 60, max: 216, label: "Grafik 5 - 18 Tahun", shortLabel: "5-18 thn",
+      min: 60, max: 216, label: `${t("ortu.pemantauanGizi.grafikRentang")} 5 - 18 ${t("app.tahun")}`, shortLabel: `5-18 ${t("ortu.dashboard.thn")}`,
       isWHO: false, icon: "faUserGraduate", step: 1,
       yDomain: { bb_u: [15, 100], tb_u: [110, 190], imt_u: [13, 35] },
     },
@@ -620,15 +581,15 @@ export default function OrangTuaPemantauanGizi() {
 
   const lkAgeRangeConfig = {
     "0-2": {
-      min: 0, max: 2, label: "Grafik 0 - 2 Bulan", shortLabel: "0-2 bln",
+      min: 0, max: 2, label: `${t("ortu.pemantauanGizi.grafikRentang")} 0 - 2 ${t("app.bulan")}`, shortLabel: `0-2 ${t("dataAnak.bln")}`,
       isWHO: true, icon: "faBaby", step: 0.25, yDomain: [31, 38],
     },
     "0-12": {
-      min: 0, max: 12, label: "Grafik 0 - 12 Bulan", shortLabel: "0-12 bln",
+      min: 0, max: 12, label: `${t("ortu.pemantauanGizi.grafikRentang")} 0 - 12 ${t("app.bulan")}`, shortLabel: `0-12 ${t("dataAnak.bln")}`,
       isWHO: true, icon: "faBabyCarriage", step: 0.5, yDomain: [33, 48],
     },
     "0-60": {
-      min: 0, max: 60, label: "Grafik 0 - 5 Tahun", shortLabel: "0-5 thn",
+      min: 0, max: 60, label: `${t("ortu.pemantauanGizi.grafikRentang")} 0 - 5 ${t("app.tahun")}`, shortLabel: `0-5 ${t("ortu.dashboard.thn")}`,
       isWHO: true, icon: "faChild", step: 1, yDomain: [40, 56],
     },
   };
@@ -720,9 +681,7 @@ export default function OrangTuaPemantauanGizi() {
               tanggal_pengukuran: r.tanggal_pengukuran,
               tinggi_badan: Number(r.tinggi_badan),
               berat_badan: Number(r.berat_badan),
-              lingkar_kepala: r.lingkar_kepala
-                ? Number(r.lingkar_kepala)
-                : null,
+              lingkar_kepala: r.lingkar_kepala ? Number(r.lingkar_kepala) : null,
               z_score: r.z_score ? Number(r.z_score) : null,
               status_gizi: r.status_gizi,
             }))
@@ -764,22 +723,15 @@ export default function OrangTuaPemantauanGizi() {
     const birthDate = new Date(anak.tanggal_lahir);
     const formattedData = anak.riwayat
       .filter((r) => {
-        const isValidWeight =
-          r.berat_badan > 0 && r.berat_badan < MAX_VALID_WEIGHT;
-        const isValidHeight =
-          r.tinggi_badan > 0 && r.tinggi_badan < MAX_VALID_HEIGHT;
-        const isValidLK =
-          !r.lingkar_kepala ||
-          (r.lingkar_kepala > 0 && r.lingkar_kepala < MAX_VALID_LK);
+        const isValidWeight = r.berat_badan > 0 && r.berat_badan < MAX_VALID_WEIGHT;
+        const isValidHeight = r.tinggi_badan > 0 && r.tinggi_badan < MAX_VALID_HEIGHT;
+        const isValidLK = !r.lingkar_kepala || (r.lingkar_kepala > 0 && r.lingkar_kepala < MAX_VALID_LK);
         return isValidWeight && isValidHeight && isValidLK;
       })
       .map((r) => {
         const measurementDate = new Date(r.tanggal_pengukuran);
         const ageInMonths = calculateAgeInMonths(birthDate, measurementDate);
-        const imt =
-          r.tinggi_badan > 0
-            ? r.berat_badan / Math.pow(r.tinggi_badan / 100, 2)
-            : null;
+        const imt = r.tinggi_badan > 0 ? r.berat_badan / Math.pow(r.tinggi_badan / 100, 2) : null;
         return {
           tanggal: r.tanggal_pengukuran,
           usiaBulan: ageInMonths,
@@ -822,12 +774,7 @@ export default function OrangTuaPemantauanGizi() {
     navigate("/");
   };
 
-  const getReferenceValue = (
-    usiaBulan,
-    jenisKelamin,
-    indicator,
-    percentileKey,
-  ) => {
+  const getReferenceValue = (usiaBulan, jenisKelamin, indicator, percentileKey) => {
     const isMale = jenisKelamin === "L";
     const isWHO = ageRangeConfig[ageRange]?.isWHO !== false;
     if (isWHO) {
@@ -835,9 +782,7 @@ export default function OrangTuaPemantauanGizi() {
       if (!data) return null;
       const genderData = isMale ? data.laki : data.perempuan;
       if (!genderData) return null;
-      const ages = Object.keys(genderData)
-        .map(Number)
-        .sort((a, b) => a - b);
+      const ages = Object.keys(genderData).map(Number).sort((a, b) => a - b);
       const lower = ages.filter((a) => a <= usiaBulan).at(-1);
       const upper = ages.find((a) => a > usiaBulan);
       if (lower === undefined) return genderData[ages[0]]?.[percentileKey];
@@ -852,9 +797,7 @@ export default function OrangTuaPemantauanGizi() {
       const genderData = isMale ? data.laki : data.perempuan;
       if (!genderData) return null;
       const ageInYears = usiaBulan / 12;
-      const ages = Object.keys(genderData)
-        .map(Number)
-        .sort((a, b) => a - b);
+      const ages = Object.keys(genderData).map(Number).sort((a, b) => a - b);
       const lower = ages.filter((a) => a <= ageInYears).at(-1);
       const upper = ages.find((a) => a > ageInYears);
       if (lower === undefined) return genderData[ages[0]]?.[percentileKey];
@@ -866,12 +809,6 @@ export default function OrangTuaPemantauanGizi() {
     }
   };
 
-  // ─────────────────────────────────────────────
-  // HELPER: Weighted moving-average smoothing
-  // Menghilangkan artefak pembulatan 1 desimal pada tabel WHO/CDC
-  // (nilai 3sd/2sd kadang turun sesaat di bulan 36, 42, 48, 54, 60)
-  // Rumus kernel: [1, 2, 1] / 4 → centre mendapat bobot 2×, diulang 2 pass
-  // ─────────────────────────────────────────────
   const applySmoothing = (data, keys, passes = 2) => {
     const result = data.map(d => ({ ...d }));
     for (let p = 0; p < passes; p++) {
@@ -908,19 +845,11 @@ export default function OrangTuaPemantauanGizi() {
       referenceAges.push(config.max);
     }
 
-    // ── Pass 1: kumpulkan nilai absolut SD/persentil dulu, belum hitung diff ──
     const referenceData = [];
     for (const usia of referenceAges) {
       const dataPoint = { usiaBulan: usia, usiaTahun: usia / 12 };
       if (isWHO) {
-        const whoIndicator =
-          indicator === "berat"
-            ? "bb_u"
-            : indicator === "tinggi"
-              ? "tb_u"
-              : indicator === "imt"
-                ? "imt_u"
-                : indicator;
+        const whoIndicator = indicator === "berat" ? "bb_u" : indicator === "tinggi" ? "tb_u" : indicator === "imt" ? "imt_u" : indicator;
         const sdNeg3 = getReferenceValue(usia, jenisKelamin, whoIndicator, "-3sd");
         const sdNeg2 = getReferenceValue(usia, jenisKelamin, whoIndicator, "-2sd");
         const sd0 = getReferenceValue(usia, jenisKelamin, whoIndicator, "0sd");
@@ -932,12 +861,7 @@ export default function OrangTuaPemantauanGizi() {
         if (sd2 != null) dataPoint.sd2 = sd2;
         if (sd3 != null) dataPoint.sd3 = sd3;
       } else {
-        const cdcIndicator =
-          indicator === "berat"
-            ? "bb_u"
-            : indicator === "tinggi"
-              ? "tb_u"
-              : "imt_u";
+        const cdcIndicator = indicator === "berat" ? "bb_u" : indicator === "tinggi" ? "tb_u" : "imt_u";
         const p3 = getReferenceValue(usia, jenisKelamin, cdcIndicator, "p3");
         const p5 = getReferenceValue(usia, jenisKelamin, cdcIndicator, "p5");
         const p50 = getReferenceValue(usia, jenisKelamin, cdcIndicator, "p50");
@@ -954,12 +878,10 @@ export default function OrangTuaPemantauanGizi() {
       referenceData.push(dataPoint);
     }
 
-    // ── Pass 2: haluskan nilai absolut → hilangkan artefak pembulatan WHO/CDC ──
     const whoKeys = ["sdNeg3", "sdNeg2", "sd0", "sd2", "sd3"];
     const cdcKeys = ["baseP3", "baseP5", "baseP50", "baseP85", "baseP90", "baseP95"];
     const smoothed = applySmoothing(referenceData, isWHO ? whoKeys : cdcKeys);
 
-    // ── Pass 3: hitung diff dari nilai yang sudah dihaluskan ──
     smoothed.forEach(dp => {
       if (isWHO) {
         if (dp.sdNeg3 != null && dp.sdNeg2 != null) {
@@ -1006,21 +928,14 @@ export default function OrangTuaPemantauanGizi() {
   // ─────────────────────────────────────────────
   // CUSTOM TOOLTIP - BB/U (WHO & CDC)
   // ─────────────────────────────────────────────
-  const CustomTooltip = ({
-    active,
-    payload,
-    label,
-    unit,
-    indicator,
-    jenisKelamin,
-  }) => {
+  const CustomTooltip = ({ active, payload, label, unit, indicator, jenisKelamin }) => {
     if (!active || !payload || !payload.length) return null;
 
     const isWHO = ageRangeConfig[ageRange]?.isWHO !== false;
     const usiaBulan = label;
 
     const childData = payload.find(
-      (p) => p.dataKey === "nilai" || p.name === "Data Anak" || p.name === "Pertumbuhan Si Kecil"
+      (p) => p.dataKey === "nilai" || p.name === t("ortu.pemantauanGizi.pertumbuhanSiKecil")
     );
     const childValue = childData?.value;
 
@@ -1037,11 +952,9 @@ export default function OrangTuaPemantauanGizi() {
           labelZScore = zScoreValue !== null ? `Z-Score: ${zScoreValue.toFixed(2)}` : "Z-Score: -";
         } else {
           const contP = calculateCDCPercentileContinuous(childValue, usiaBulan, jenisKelamin, "bb_u");
-          const cdcZ  = contP !== null ? percentileToZScore(contP) : null;
+          const cdcZ = contP !== null ? percentileToZScore(contP) : null;
           persentilValue = calculatePercentile(childValue, usiaBulan, jenisKelamin, "bb_u");
-          labelZScore = cdcZ !== null
-            ? `Z-Score: ${cdcZ.toFixed(2)} (P${persentilValue})`
-            : `Persentil: P${persentilValue}`;
+          labelZScore = cdcZ !== null ? `Z-Score: ${cdcZ.toFixed(2)} (P${persentilValue})` : `Persentil: P${persentilValue}`;
         }
       } else if (indicator === "tinggi") {
         if (isWHO) {
@@ -1049,11 +962,9 @@ export default function OrangTuaPemantauanGizi() {
           labelZScore = zScoreValue !== null ? `Z-Score: ${zScoreValue.toFixed(2)}` : "Z-Score: -";
         } else {
           const contP = calculateCDCPercentileContinuous(childValue, usiaBulan, jenisKelamin, "tb_u");
-          const cdcZ  = contP !== null ? percentileToZScore(contP) : null;
+          const cdcZ = contP !== null ? percentileToZScore(contP) : null;
           persentilValue = calculatePercentile(childValue, usiaBulan, jenisKelamin, "tb_u");
-          labelZScore = cdcZ !== null
-            ? `Z-Score: ${cdcZ.toFixed(2)} (P${persentilValue})`
-            : `Persentil: P${persentilValue}`;
+          labelZScore = cdcZ !== null ? `Z-Score: ${cdcZ.toFixed(2)} (P${persentilValue})` : `Persentil: P${persentilValue}`;
         }
       } else if (indicator === "imt") {
         if (isWHO) {
@@ -1061,19 +972,17 @@ export default function OrangTuaPemantauanGizi() {
           labelZScore = zScoreValue !== null ? `Z-Score: ${zScoreValue.toFixed(2)}` : "Z-Score: -";
         } else {
           const contP = calculateCDCPercentileContinuous(childValue, usiaBulan, jenisKelamin, "imt_u");
-          const cdcZ  = contP !== null ? percentileToZScore(contP) : null;
+          const cdcZ = contP !== null ? percentileToZScore(contP) : null;
           persentilValue = calculatePercentile(childValue, usiaBulan, jenisKelamin, "imt_u");
-          labelZScore = cdcZ !== null
-            ? `Z-Score: ${cdcZ.toFixed(2)} (P${persentilValue})`
-            : `Persentil: P${persentilValue}`;
+          labelZScore = cdcZ !== null ? `Z-Score: ${cdcZ.toFixed(2)} (P${persentilValue})` : `Persentil: P${persentilValue}`;
         }
       }
     }
 
     const getIndicatorLabel = () => {
-      if (indicator === "berat") return "Berat Badan";
-      if (indicator === "tinggi") return "Tinggi Badan";
-      if (indicator === "imt") return "Indeks Massa Tubuh";
+      if (indicator === "berat") return t("ortu.pemantauanGizi.beratBadan");
+      if (indicator === "tinggi") return t("ortu.pemantauanGizi.tinggiBadan");
+      if (indicator === "imt") return t("ortu.pemantauanGizi.imt");
       return "";
     };
 
@@ -1084,7 +993,6 @@ export default function OrangTuaPemantauanGizi() {
       return "";
     };
 
-    // Warna badge berdasarkan zona z-score / persentil
     const getBadgeStyle = () => {
       if (isWHO) {
         if (zScoreValue === null) return "bg-gray-50 text-gray-500 border-gray-200";
@@ -1094,17 +1002,15 @@ export default function OrangTuaPemantauanGizi() {
         return "bg-red-50 text-red-700 border-red-200";
       } else {
         if (persentilValue === null) return "bg-gray-50 text-gray-500 border-gray-200";
-        const isNormal =
-          indicator === "tinggi" ? persentilValue >= 3 && persentilValue <= 95
-          : indicator === "imt"  ? persentilValue >= 5 && persentilValue <= 85
-          :                        persentilValue >= 5 && persentilValue <= 90;
-        const isWarning =
-          !isNormal && (
-            indicator === "tinggi" ? true
-            : indicator === "imt"  ? (persentilValue >= 3 && persentilValue < 5) || (persentilValue > 85 && persentilValue <= 95)
-            :                        (persentilValue >= 3 && persentilValue < 5) || (persentilValue > 90 && persentilValue <= 95)
-          );
-        if (isNormal)  return "bg-emerald-50 text-emerald-700 border-emerald-200";
+        const isNormal = indicator === "tinggi" ? persentilValue >= 3 && persentilValue <= 95
+          : indicator === "imt" ? persentilValue >= 5 && persentilValue <= 85
+          : persentilValue >= 5 && persentilValue <= 90;
+        const isWarning = !isNormal && (
+          indicator === "tinggi" ? true
+          : indicator === "imt" ? (persentilValue >= 3 && persentilValue < 5) || (persentilValue > 85 && persentilValue <= 95)
+          : (persentilValue >= 3 && persentilValue < 5) || (persentilValue > 90 && persentilValue <= 95)
+        );
+        if (isNormal) return "bg-emerald-50 text-emerald-700 border-emerald-200";
         if (isWarning) return "bg-amber-50 text-amber-700 border-amber-200";
         return "bg-red-50 text-red-700 border-red-200";
       }
@@ -1117,20 +1023,17 @@ export default function OrangTuaPemantauanGizi() {
         className="bg-white rounded-2xl shadow-2xl overflow-hidden"
         style={{ border: "1px solid #e5e7eb", minWidth: "240px", maxWidth: "290px" }}
       >
-        {/* Accent bar */}
         <div className="h-1 w-full" style={{ backgroundColor: accentColor }} />
 
-        {/* Age row */}
         <div className="px-4 pt-3 pb-2.5 border-b border-gray-100">
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">
-            Usia
+            {t("ortu.pemantauanGizi.usia")}
           </p>
           <p className="text-sm font-semibold text-gray-700">
-            {formatUsiaDetail(usiaBulan)}
+            {formatUsiaDetail(usiaBulan, t)}
           </p>
         </div>
 
-        {/* Main metric */}
         <div className="px-4 pt-3 pb-2">
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
             {getIndicatorLabel()} ({getIndicatorShort()})
@@ -1141,11 +1044,8 @@ export default function OrangTuaPemantauanGizi() {
           </p>
         </div>
 
-        {/* Z-Score / Percentile badge */}
         <div className="px-4 pb-4 pt-1">
-          <span
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border ${getBadgeStyle()}`}
-          >
+          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border ${getBadgeStyle()}`}>
             {labelZScore}
           </span>
         </div>
@@ -1160,7 +1060,7 @@ export default function OrangTuaPemantauanGizi() {
     if (!active || !payload || !payload.length) return null;
 
     const childEntry = payload.find(
-      (p) => (p.dataKey === "berat" || p.name === "Data Anak") && p.value != null
+      (p) => (p.dataKey === "berat" || p.name === t("ortu.pemantauanGizi.pertumbuhanSiKecil")) && p.value != null
     );
     const sd0Entry = payload.find((p) => p.dataKey === "sd0");
 
@@ -1183,7 +1083,6 @@ export default function OrangTuaPemantauanGizi() {
     const anakData = payload.find((p) => p.payload?.tanggal);
     const usiaBulan = anakData?.payload?.usiaBulan;
 
-    // Badge warna berdasarkan z-score BB/TB
     const getBBTBBadgeStyle = () => {
       if (!zScoreBBTB) return "bg-gray-50 text-gray-500 border-gray-200";
       const z = parseFloat(zScoreBBTB);
@@ -1197,35 +1096,31 @@ export default function OrangTuaPemantauanGizi() {
         className="bg-white rounded-2xl shadow-2xl overflow-hidden"
         style={{ border: "1px solid #e5e7eb", minWidth: "240px", maxWidth: "290px" }}
       >
-        {/* Accent bar */}
         <div className="h-1 w-full bg-emerald-600" />
 
-        {/* Age row */}
         {usiaBulan !== undefined && usiaBulan !== null && (
           <div className="px-4 pt-3 pb-2.5 border-b border-gray-100">
             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">
-              Usia
+              {t("ortu.pemantauanGizi.usia")}
             </p>
             <p className="text-sm font-semibold text-gray-700">
-              {formatUsiaDetail(usiaBulan)}
+              {formatUsiaDetail(usiaBulan, t)}
             </p>
           </div>
         )}
 
-        {/* Height row */}
         <div className="px-4 pt-3 pb-1 border-b border-gray-100">
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">
-            Tinggi Badan (TB)
+            {t("ortu.pemantauanGizi.tinggiBadan")} (TB)
           </p>
           <p className="text-lg font-bold text-gray-700">
             {tinggiCm} <span className="text-sm font-medium text-gray-400">cm</span>
           </p>
         </div>
 
-        {/* Weight main metric */}
         <div className="px-4 pt-3 pb-2">
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-            Berat Badan (BB)
+            {t("ortu.pemantauanGizi.beratBadan")} (BB)
           </p>
           <p className="text-3xl font-black text-gray-900 leading-none tracking-tight">
             {beratKg.toFixed(1)}
@@ -1233,12 +1128,9 @@ export default function OrangTuaPemantauanGizi() {
           </p>
         </div>
 
-        {/* Z-Score badge */}
         {zScoreBBTB && (
           <div className="px-4 pb-4 pt-1">
-            <span
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border ${getBBTBBadgeStyle()}`}
-            >
+            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border ${getBBTBBadgeStyle()}`}>
               Z-Score: {zScoreBBTB}
             </span>
           </div>
@@ -1253,24 +1145,19 @@ export default function OrangTuaPemantauanGizi() {
   const LKUTooltip = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null;
 
-    const displayGrowthData =
-      userRole === "orang_tua" ? growthData : superAdminGrowthData;
-    const anak =
-      userRole === "orang_tua" ? selectedAnakData : superAdminSelectedAnak;
+    const displayGrowthData = userRole === "orang_tua" ? growthData : superAdminGrowthData;
+    const anak = userRole === "orang_tua" ? selectedAnakData : superAdminSelectedAnak;
 
     const childData = payload.find(
-      (p) => p.dataKey === "nilai" || p.name === "Pertumbuhan Si Kecil"
+      (p) => p.dataKey === "nilai" || p.name === t("ortu.pemantauanGizi.pertumbuhanSiKecil")
     );
     const childValue = childData?.value;
 
     if (!childValue || childValue >= 1000) return null;
 
     const jenisKelamin = anak?.jenis_kelamin;
-    const zScoreLK = jenisKelamin 
-      ? getZScoreFromReference(childValue, label, jenisKelamin, "lk_u") 
-      : null;
+    const zScoreLK = jenisKelamin ? getZScoreFromReference(childValue, label, jenisKelamin, "lk_u") : null;
 
-    // Badge warna berdasarkan z-score LK/U
     const getLKBadgeStyle = () => {
       if (zScoreLK === null) return "bg-gray-50 text-gray-500 border-gray-200";
       if (zScoreLK >= -2 && zScoreLK <= 2) return "bg-emerald-50 text-emerald-700 border-emerald-200";
@@ -1284,23 +1171,20 @@ export default function OrangTuaPemantauanGizi() {
         className="bg-white rounded-2xl shadow-2xl overflow-hidden"
         style={{ border: "1px solid #e5e7eb", minWidth: "240px", maxWidth: "290px" }}
       >
-        {/* Accent bar */}
         <div className="h-1 w-full bg-purple-600" />
 
-        {/* Age row */}
         <div className="px-4 pt-3 pb-2.5 border-b border-gray-100">
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">
-            Usia
+            {t("ortu.pemantauanGizi.usia")}
           </p>
           <p className="text-sm font-semibold text-gray-700">
-            {formatUsiaDetail(label)}
+            {formatUsiaDetail(label, t)}
           </p>
         </div>
 
-        {/* Main metric */}
         <div className="px-4 pt-3 pb-2">
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-            Lingkar Kepala (LK)
+            {t("ortu.pemantauanGizi.lingkarKepala")} (LK)
           </p>
           <p className="text-3xl font-black text-gray-900 leading-none tracking-tight">
             {childValue.toFixed(1)}
@@ -1308,11 +1192,8 @@ export default function OrangTuaPemantauanGizi() {
           </p>
         </div>
 
-        {/* Z-Score badge */}
         <div className="px-4 pb-4 pt-1">
-          <span
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border ${getLKBadgeStyle()}`}
-          >
+          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border ${getLKBadgeStyle()}`}>
             Z-Score: {zScoreLK !== null ? zScoreLK.toFixed(2) : "−"}
           </span>
         </div>
@@ -1324,22 +1205,17 @@ export default function OrangTuaPemantauanGizi() {
   // RENDER GROWTH CHART (BB/U, TB/U, IMT/U)
   // ─────────────────────────────────────────────
   const renderGrowthChart = (indicator, yAxisLabel, unit) => {
-    const displayGrowthData =
-      userRole === "orang_tua" ? growthData : superAdminGrowthData;
-    const anak =
-      userRole === "orang_tua" ? selectedAnakData : superAdminSelectedAnak;
+    const displayGrowthData = userRole === "orang_tua" ? growthData : superAdminGrowthData;
+    const anak = userRole === "orang_tua" ? selectedAnakData : superAdminSelectedAnak;
 
     if (!anak) {
       return (
         <div className="text-center py-16">
           <div className="bg-gray-100 p-6 rounded-full inline-flex mb-4">
-            <FontAwesomeIcon
-              icon={fas.faChartLine}
-              className="text-5xl text-gray-400"
-            />
+            <FontAwesomeIcon icon={fas.faChartLine} className="text-5xl text-gray-400" />
           </div>
           <p className="text-gray-500 font-medium">
-            Pilih anak terlebih dahulu
+            {t("ortu.pemantauanGizi.pilihAnakTerlebihDahulu")}
           </p>
         </div>
       );
@@ -1347,22 +1223,16 @@ export default function OrangTuaPemantauanGizi() {
 
     const jenisKelamin = anak.jenis_kelamin;
     const isWHO = ageRangeConfig[ageRange]?.isWHO !== false;
-    const config =
-      activeMainMenu === "lingkar_kepala"
-        ? lkAgeRangeConfig[ageRange]
-        : ageRangeConfig[ageRange];
+    const config = activeMainMenu === "lingkar_kepala" ? lkAgeRangeConfig[ageRange] : ageRangeConfig[ageRange];
 
     if (!config) {
       return (
         <div className="text-center py-16">
           <div className="bg-amber-100 p-6 rounded-full inline-flex mb-4">
-            <FontAwesomeIcon
-              icon={fas.faExclamationTriangle}
-              className="text-5xl text-amber-400"
-            />
+            <FontAwesomeIcon icon={fas.faExclamationTriangle} className="text-5xl text-amber-400" />
           </div>
           <p className="text-amber-600 font-medium">
-            Konfigurasi grafik tidak tersedia
+            {t("ortu.pemantauanGizi.memuatUlangGrafik")}
           </p>
         </div>
       );
@@ -1374,8 +1244,7 @@ export default function OrangTuaPemantauanGizi() {
         const value = point[indicator];
         if (value === null || value === undefined) return false;
         if (indicator === "berat") return value > 0 && value < MAX_VALID_WEIGHT;
-        if (indicator === "tinggi")
-          return value > 0 && value < MAX_VALID_HEIGHT;
+        if (indicator === "tinggi") return value > 0 && value < MAX_VALID_HEIGHT;
         if (indicator === "imt") return value > 0 && value < MAX_VALID_IMT;
         return true;
       })
@@ -1387,12 +1256,8 @@ export default function OrangTuaPemantauanGizi() {
 
     const latestChildPoint = childPoints.slice(-1)[0];
     const mergedData = referenceData.map((refPoint) => {
-      const exactMatch = childPoints.find(
-        (cp) => cp.usiaBulan === refPoint.usiaBulan,
-      );
-      return exactMatch
-        ? { ...refPoint, nilai: exactMatch.nilai }
-        : { ...refPoint, nilai: null };
+      const exactMatch = childPoints.find((cp) => cp.usiaBulan === refPoint.usiaBulan);
+      return exactMatch ? { ...refPoint, nilai: exactMatch.nilai } : { ...refPoint, nilai: null };
     });
 
     let yDomain;
@@ -1410,50 +1275,19 @@ export default function OrangTuaPemantauanGizi() {
     }
 
     if (childPoints.length > 0) {
-      const validValues = childPoints
-        .map((p) => p.nilai)
-        .filter(
-          (v) =>
-            v <
-            (indicator === "berat"
-              ? MAX_VALID_WEIGHT
-              : indicator === "tinggi"
-                ? MAX_VALID_HEIGHT
-                : MAX_VALID_IMT),
-        );
+      const validValues = childPoints.map((p) => p.nilai).filter((v) => v < (indicator === "berat" ? MAX_VALID_WEIGHT : indicator === "tinggi" ? MAX_VALID_HEIGHT : MAX_VALID_IMT));
       if (validValues.length > 0) {
         const minChildValue = Math.min(...validValues);
         const maxChildValue = Math.max(...validValues);
-        if (
-          minChildValue < yDomain[0] &&
-          minChildValue <
-            (indicator === "berat" ? MAX_VALID_WEIGHT : MAX_VALID_HEIGHT)
-        )
+        if (minChildValue < yDomain[0] && minChildValue < (indicator === "berat" ? MAX_VALID_WEIGHT : MAX_VALID_HEIGHT))
           yDomain[0] = Math.max(0, minChildValue - 2);
-        if (
-          maxChildValue > yDomain[1] &&
-          maxChildValue <
-            (indicator === "berat" ? MAX_VALID_WEIGHT : MAX_VALID_HEIGHT)
-        )
-          yDomain[1] = Math.min(
-            indicator === "berat" ? MAX_VALID_WEIGHT : MAX_VALID_HEIGHT,
-            maxChildValue + 5,
-          );
+        if (maxChildValue > yDomain[1] && maxChildValue < (indicator === "berat" ? MAX_VALID_WEIGHT : MAX_VALID_HEIGHT))
+          yDomain[1] = Math.min(indicator === "berat" ? MAX_VALID_WEIGHT : MAX_VALID_HEIGHT, maxChildValue + 5);
       }
     }
     yDomain[0] = Math.max(0, yDomain[0]);
-    yDomain[1] = Math.min(
-      indicator === "berat"
-        ? MAX_VALID_WEIGHT
-        : indicator === "tinggi"
-          ? MAX_VALID_HEIGHT
-          : MAX_VALID_IMT,
-      yDomain[1],
-    );
-    if (
-      yDomain[0] >= yDomain[1] ||
-      yDomain[1] > (indicator === "berat" ? MAX_VALID_WEIGHT : MAX_VALID_HEIGHT)
-    ) {
+    yDomain[1] = Math.min(indicator === "berat" ? MAX_VALID_WEIGHT : indicator === "tinggi" ? MAX_VALID_HEIGHT : MAX_VALID_IMT, yDomain[1]);
+    if (yDomain[0] >= yDomain[1] || yDomain[1] > (indicator === "berat" ? MAX_VALID_WEIGHT : MAX_VALID_HEIGHT)) {
       if (indicator === "berat") yDomain = [0, 30];
       else if (indicator === "tinggi") yDomain = [50, 140];
       else yDomain = [10, 25];
@@ -1461,75 +1295,50 @@ export default function OrangTuaPemantauanGizi() {
 
     return (
       <div>
-        {/* ── Stat Card ── */}
         <div className="mb-8 rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
           <div className={`h-1 w-full ${isWHO ? "bg-emerald-500" : "bg-blue-500"}`} />
           <div className="bg-white px-6 py-5">
             <div className="flex flex-wrap justify-between items-center gap-6">
-
-              {/* Left: latest value */}
               <div>
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
-                  {indicator === "berat"
-                    ? t("ortu.pemantauanGizi.beratBadan")
-                    : indicator === "tinggi"
-                      ? t("ortu.pemantauanGizi.tinggiBadan")
-                      : t("ortu.pemantauanGizi.imt")} — {t("ortu.pemantauanGizi.dataTerbaru")}
+                  {indicator === "berat" ? t("ortu.pemantauanGizi.beratBadan") : indicator === "tinggi" ? t("ortu.pemantauanGizi.tinggiBadan") : t("ortu.pemantauanGizi.imt")} — {t("ortu.pemantauanGizi.dataTerbaru")}
                 </p>
                 <p className="text-4xl font-black text-gray-900 leading-none tracking-tight">
-                  {latestChildPoint && latestChildPoint.nilai < MAX_VALID_WEIGHT
-                    ? latestChildPoint.nilai.toFixed(1)
-                    : "−"}{" "}
+                  {latestChildPoint && latestChildPoint.nilai < MAX_VALID_WEIGHT ? latestChildPoint.nilai.toFixed(1) : "−"}{" "}
                   <span className="text-xl font-medium text-gray-400">{unit}</span>
                 </p>
                 {latestChildPoint && latestChildPoint.nilai < MAX_VALID_WEIGHT && (
                   <p className="text-sm text-gray-400 mt-2 font-medium">
-                    {formatUsiaDetail(latestChildPoint.usiaBulan)}
+                    {formatUsiaDetail(latestChildPoint.usiaBulan, t)}
                   </p>
                 )}
               </div>
 
-              {/* Right: reference badge + help */}
               <div className="flex items-center gap-3">
                 <div className="text-right">
                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
                     {t("ortu.pemantauanGizi.standarReferensi")}
                   </p>
-                  <span
-                    className={`inline-block px-4 py-2 rounded-xl text-sm font-bold border ${
-                      isWHO
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                        : "bg-blue-50 text-blue-700 border-blue-200"
-                    }`}
-                  >
-                    {isWHO ? "WHO" : "CDC"} —{" "}
-                    {indicator === "berat" ? t("ortu.pemantauanGizi.bbU") : indicator === "tinggi" ? t("ortu.pemantauanGizi.tbU") : t("ortu.pemantauanGizi.imtU")}
+                  <span className={`inline-block px-4 py-2 rounded-xl text-sm font-bold border ${isWHO ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-blue-50 text-blue-700 border-blue-200"}`}>
+                    {isWHO ? "WHO" : "CDC"} — {indicator === "berat" ? t("ortu.pemantauanGizi.bbU") : indicator === "tinggi" ? t("ortu.pemantauanGizi.tbU") : t("ortu.pemantauanGizi.imtU")}
                   </span>
                 </div>
                 <button
                   onClick={() => setShowPenjelasanGrafik(true)}
                   className="bg-white border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 text-gray-400 hover:text-blue-600 w-11 h-11 rounded-xl flex items-center justify-center transition-all shadow-sm font-bold text-base"
-                  title="Klik untuk melihat penjelasan grafik"
+                  title={t("ortu.pemantauanGizi.klikPenjelasan")}
                 >
                   ?
                 </button>
               </div>
-
             </div>
           </div>
         </div>
 
         <div style={{ height: "520px", width: "100%" }}>
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart
-              data={mergedData}
-              margin={{ top: 16, right: 32, left: 16, bottom: 36 }}
-            >
-              <CartesianGrid
-                vertical={false}
-                stroke="#f0f0f0"
-                strokeDasharray="4 4"
-              />
+            <ComposedChart data={mergedData} margin={{ top: 16, right: 32, left: 16, bottom: 36 }}>
+              <CartesianGrid vertical={false} stroke="#f0f0f0" strokeDasharray="4 4" />
               <XAxis
                 type="number"
                 dataKey="usiaBulan"
@@ -1537,11 +1346,9 @@ export default function OrangTuaPemantauanGizi() {
                 domain={[config.min, config.max]}
                 allowDataOverflow={false}
                 tick={{ fontSize: 11, fill: "#9ca3af", fontWeight: 500 }}
-                tickFormatter={(v) =>
-                  ageRange === "60-216" ? `${Math.round(v / 12)}` : `${v}`
-                }
+                tickFormatter={(v) => ageRange === "60-216" ? `${Math.round(v / 12)}` : `${v}`}
                 label={{
-                  value: ageRange === "60-216" ? "Usia (tahun)" : "Usia (bulan)",
+                  value: ageRange === "60-216" ? t("ortu.pemantauanGizi.usiaTahun") : t("ortu.pemantauanGizi.usiaBulan"),
                   position: "insideBottom",
                   offset: -20,
                   fontSize: 11,
@@ -1553,419 +1360,71 @@ export default function OrangTuaPemantauanGizi() {
               />
               <YAxis
                 domain={yDomain}
-                label={{
-                  value: yAxisLabel,
-                  angle: -90,
-                  position: "insideLeft",
-                  fontSize: 11,
-                  fill: "#9ca3af",
-                  fontWeight: 600,
-                  dx: -4,
-                }}
+                label={{ value: yAxisLabel, angle: -90, position: "insideLeft", fontSize: 11, fill: "#9ca3af", fontWeight: 600, dx: -4 }}
                 tick={{ fontSize: 11, fill: "#9ca3af", fontWeight: 500 }}
                 axisLine={false}
                 tickLine={false}
-                tickFormatter={(value) => {
-                  if (value > 1000) return "?";
-                  if (value > 100) return Math.round(value).toString();
-                  return value.toFixed(1);
-                }}
+                tickFormatter={(value) => { if (value > 1000) return "?"; if (value > 100) return Math.round(value).toString(); return value.toFixed(1); }}
               />
-              <Tooltip
-                content={(props) => (
-                  <CustomTooltip
-                    {...props}
-                    unit={unit}
-                    indicator={indicator}
-                    jenisKelamin={jenisKelamin}
-                  />
-                )}
-                cursor={{
-                  stroke: "#d1d5db",
-                  strokeWidth: 1,
-                  strokeDasharray: "4 4",
-                }}
-              />
-              <Legend
-                verticalAlign="top"
-                height={36}
-                iconType="circle"
-                wrapperStyle={{ fontSize: "11px", paddingBottom: "8px", color: "#6b7280", fontWeight: 600 }}
-              />
+              <Tooltip content={(props) => <CustomTooltip {...props} unit={unit} indicator={indicator} jenisKelamin={jenisKelamin} />} cursor={{ stroke: "#d1d5db", strokeWidth: 1, strokeDasharray: "4 4" }} />
+              <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: "11px", paddingBottom: "8px", color: "#6b7280", fontWeight: 600 }} />
 
+              {/* Chart Areas and Lines - same as original, just with translations for names */}
               {isWHO && (
                 <>
-                  <Area
-                    type="monotone"
-                    dataKey="sdNeg3"
-                    stackId="who_stack"
-                    stroke="none"
-                    fill="transparent"
-                    legendType="none"
-                    isAnimationActive={false}
-                    dot={false}
-                    activeDot={false}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="zonaMerahBawahDiff"
-                    stackId="who_stack"
-                    stroke="#f59e0b"
-                    strokeWidth={1}
-                    fill="#fef3c7"
-                    fillOpacity={0.85}
-                    name="Zona Perhatian (-3SD s.d -2SD)"
-                    legendType="square"
-                    isAnimationActive={false}
-                    dot={false}
-                    activeDot={false}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="zonaHijauDiff"
-                    stackId="who_stack"
-                    stroke="#22c55e"
-                    strokeWidth={1}
-                    fill="#bbf7d0"
-                    fillOpacity={0.85}
-                    name="Zona Normal (-2SD s.d +2SD)"
-                    legendType="square"
-                    isAnimationActive={false}
-                    dot={false}
-                    activeDot={false}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="zonaMerahAtasDiff"
-                    stackId="who_stack"
-                    stroke="#f59e0b"
-                    strokeWidth={1}
-                    fill="#fef3c7"
-                    fillOpacity={0.85}
-                    name="Zona Perhatian (+2SD s.d +3SD)"
-                    legendType="none"
-                    isAnimationActive={false}
-                    dot={false}
-                    activeDot={false}
-                  />
+                  <Area type="monotone" dataKey="sdNeg3" stackId="who_stack" stroke="none" fill="transparent" legendType="none" isAnimationActive={false} dot={false} activeDot={false} />
+                  <Area type="monotone" dataKey="zonaMerahBawahDiff" stackId="who_stack" stroke="#f59e0b" strokeWidth={1} fill="#fef3c7" fillOpacity={0.85} name={t("ortu.pemantauanGizi.zonaPerhatian") + " (-3SD s.d -2SD)"} legendType="square" isAnimationActive={false} dot={false} activeDot={false} />
+                  <Area type="monotone" dataKey="zonaHijauDiff" stackId="who_stack" stroke="#22c55e" strokeWidth={1} fill="#bbf7d0" fillOpacity={0.85} name={t("ortu.pemantauanGizi.zonaNormal") + " (-2SD s.d +2SD)"} legendType="square" isAnimationActive={false} dot={false} activeDot={false} />
+                  <Area type="monotone" dataKey="zonaMerahAtasDiff" stackId="who_stack" stroke="#f59e0b" strokeWidth={1} fill="#fef3c7" fillOpacity={0.85} name={t("ortu.pemantauanGizi.zonaPerhatian") + " (+2SD s.d +3SD)"} legendType="none" isAnimationActive={false} dot={false} activeDot={false} />
                 </>
               )}
 
               {!isWHO && (
                 <>
-                  <Area
-                    type="monotone"
-                    dataKey="baseP3"
-                    stackId="cdc_stack"
-                    stroke="none"
-                    fill="transparent"
-                    legendType="none"
-                    isAnimationActive={false}
-                    dot={false}
-                    activeDot={false}
-                  />
+                  <Area type="monotone" dataKey="baseP3" stackId="cdc_stack" stroke="none" fill="transparent" legendType="none" isAnimationActive={false} dot={false} activeDot={false} />
                   {indicator !== "tinggi" && (
-                    <Area
-                      type="monotone"
-                      dataKey="zonaKuningBawahDiff"
-                      stackId="cdc_stack"
-                      stroke="#f59e0b"
-                      strokeWidth={1}
-                      fill="#fef3c7"
-                      fillOpacity={0.85}
-                      name="Zona Perhatian (p3–p5)"
-                      legendType="square"
-                      isAnimationActive={false}
-                      dot={false}
-                      activeDot={false}
-                    />
+                    <Area type="monotone" dataKey="zonaKuningBawahDiff" stackId="cdc_stack" stroke="#f59e0b" strokeWidth={1} fill="#fef3c7" fillOpacity={0.85} name={t("ortu.pemantauanGizi.zonaPerhatian") + " (p3–p5)"} legendType="square" isAnimationActive={false} dot={false} activeDot={false} />
                   )}
-                  <Area
-                    type="monotone"
-                    dataKey="zonaHijauDiff"
-                    stackId="cdc_stack"
-                    stroke="#22c55e"
-                    strokeWidth={1}
-                    fill="#bbf7d0"
-                    fillOpacity={0.85}
-                    name={
-                      indicator === "berat"
-                        ? "Zona Normal (P5–P90)"
-                        : indicator === "imt"
-                          ? "Zona Normal (P5–P85)"
-                          : "Zona Normal (P3–P95)"
-                    }
-                    legendType="square"
-                    isAnimationActive={false}
-                    dot={false}
-                    activeDot={false}
-                  />
+                  <Area type="monotone" dataKey="zonaHijauDiff" stackId="cdc_stack" stroke="#22c55e" strokeWidth={1} fill="#bbf7d0" fillOpacity={0.85} name={indicator === "berat" ? t("ortu.pemantauanGizi.zonaNormal") + " (P5–P90)" : indicator === "imt" ? t("ortu.pemantauanGizi.zonaNormal") + " (P5–P85)" : t("ortu.pemantauanGizi.zonaNormal") + " (P3–P95)"} legendType="square" isAnimationActive={false} dot={false} activeDot={false} />
                   {indicator !== "tinggi" && (
-                    <Area
-                      type="monotone"
-                      dataKey="zonaKuningAtasDiff"
-                      stackId="cdc_stack"
-                      stroke="#f59e0b"
-                      strokeWidth={1}
-                      fill="#fef3c7"
-                      fillOpacity={0.85}
-                      name={
-                        indicator === "berat"
-                          ? "Zona Perhatian (P90–P95)"
-                          : "Zona Perhatian (P85–P95)"
-                      }
-                      legendType="square"
-                      isAnimationActive={false}
-                      dot={false}
-                      activeDot={false}
-                    />
+                    <Area type="monotone" dataKey="zonaKuningAtasDiff" stackId="cdc_stack" stroke="#f59e0b" strokeWidth={1} fill="#fef3c7" fillOpacity={0.85} name={indicator === "berat" ? t("ortu.pemantauanGizi.zonaPerhatian") + " (P90–P95)" : t("ortu.pemantauanGizi.zonaPerhatian") + " (P85–P95)"} legendType="square" isAnimationActive={false} dot={false} activeDot={false} />
                   )}
                 </>
               )}
 
-              {isWHO && (
-                <>
-                  <Line
-                    type="monotone"
-                    dataKey="sdNeg3"
-                    stroke="#f59e0b"
-                    strokeWidth={1}
-                    strokeDasharray="4 3"
-                    name="-3 SD"
-                    dot={false}
-                    activeDot={false}
-                    legendType="none"
-                    isAnimationActive={false}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="sdNeg2"
-                    stroke="#f59e0b"
-                    strokeWidth={1}
-                    strokeDasharray="4 3"
-                    name="-2 SD"
-                    dot={false}
-                    activeDot={false}
-                    legendType="none"
-                    isAnimationActive={false}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="sd2"
-                    stroke="#f59e0b"
-                    strokeWidth={1}
-                    strokeDasharray="4 3"
-                    name="+2 SD"
-                    dot={false}
-                    activeDot={false}
-                    legendType="none"
-                    isAnimationActive={false}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="sd3"
-                    stroke="#f59e0b"
-                    strokeWidth={1}
-                    strokeDasharray="4 3"
-                    name="+3 SD"
-                    dot={false}
-                    activeDot={false}
-                    legendType="none"
-                    isAnimationActive={false}
-                  />
-                </>
-              )}
-
-              {!isWHO && (
-                <>
-                  <Line
-                    type="monotone"
-                    dataKey="baseP3"
-                    stroke="#f59e0b"
-                    strokeWidth={1}
-                    strokeDasharray="4 3"
-                    name="P3"
-                    dot={false}
-                    activeDot={false}
-                    legendType="none"
-                    isAnimationActive={false}
-                  />
-                  {indicator !== "tinggi" && (
-                    <Line
-                      type="monotone"
-                      dataKey="baseP5"
-                      stroke="#f59e0b"
-                      strokeWidth={1}
-                      strokeDasharray="4 3"
-                      name="P5"
-                      dot={false}
-                      activeDot={false}
-                      legendType="none"
-                      isAnimationActive={false}
-                    />
-                  )}
-                  {indicator === "berat" && (
-                    <Line
-                      type="monotone"
-                      dataKey="baseP90"
-                      stroke="#f59e0b"
-                      strokeWidth={1}
-                      strokeDasharray="4 3"
-                      name="P90"
-                      dot={false}
-                      activeDot={false}
-                      legendType="none"
-                      isAnimationActive={false}
-                    />
-                  )}
-                  {indicator === "imt" && (
-                    <Line
-                      type="monotone"
-                      dataKey="baseP85"
-                      stroke="#f59e0b"
-                      strokeWidth={1}
-                      strokeDasharray="4 3"
-                      name="P85"
-                      dot={false}
-                      activeDot={false}
-                      legendType="none"
-                      isAnimationActive={false}
-                    />
-                  )}
-                  <Line
-                    type="monotone"
-                    dataKey="baseP95"
-                    stroke="#f59e0b"
-                    strokeWidth={1}
-                    strokeDasharray="4 3"
-                    name="P95"
-                    dot={false}
-                    activeDot={false}
-                    legendType="none"
-                    isAnimationActive={false}
-                  />
-                </>
-              )}
-
-              <Line
-                type="monotone"
-                dataKey={isWHO ? "sd0" : "baseP50"}
-                stroke={isWHO ? "#15803d" : "#2563eb"}
-                strokeWidth={2}
-                strokeDasharray={isWHO ? "0" : "6 4"}
-                name={isWHO ? "Median (0 SD)" : "P50 (Median CDC)"}
-                dot={false}
-                activeDot={false}
-                legendType="line"
-                isAnimationActive={false}
-              />
-
-              <Line
-                type="monotone"
-                dataKey="nilai"
-                stroke="#1d4ed8"
-                strokeWidth={2.5}
-                name="Pertumbuhan Si Kecil"
-                dot={(props) => {
-                  const { cx, cy, value } = props;
-                  if (value == null) return null;
-                  return (
-                    <circle
-                      key={`dot-${cx}-${cy}`}
-                      cx={cx}
-                      cy={cy}
-                      r={5}
-                      fill="#1d4ed8"
-                      stroke="#ffffff"
-                      strokeWidth={2}
-                    />
-                  );
-                }}
-                activeDot={{
-                  r: 7,
-                  fill: "#1d4ed8",
-                  stroke: "#ffffff",
-                  strokeWidth: 2,
-                }}
-                connectNulls
-                legendType="circle"
-                isAnimationActive={false}
-              />
+              {/* Lines - keeping original structure */}
+              <Line type="monotone" dataKey={isWHO ? "sd0" : "baseP50"} stroke={isWHO ? "#15803d" : "#2563eb"} strokeWidth={2} strokeDasharray={isWHO ? "0" : "6 4"} name={isWHO ? `${t("ortu.pemantauanGizi.median")} (0 SD)` : `${t("ortu.pemantauanGizi.median")} (P50)`} dot={false} activeDot={false} legendType="line" isAnimationActive={false} />
+              <Line type="monotone" dataKey="nilai" stroke="#1d4ed8" strokeWidth={2.5} name={t("ortu.pemantauanGizi.pertumbuhanSiKecil")} dot={(props) => { const { cx, cy, value } = props; if (value == null) return null; return <circle key={`dot-${cx}-${cy}`} cx={cx} cy={cy} r={5} fill="#1d4ed8" stroke="#ffffff" strokeWidth={2} />; }} activeDot={{ r: 7, fill: "#1d4ed8", stroke: "#ffffff", strokeWidth: 2 }} connectNulls legendType="circle" isAnimationActive={false} />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
 
-        {/* ── Legend Bawah ── */}
         <div className="mt-6 pt-5 border-t border-gray-100">
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center mb-3">
             {t("ortu.pemantauanGizi.keteranganGrafik")}
           </p>
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-2.5">
-            {/* Zona Normal */}
             <div className="flex items-center gap-2">
-              <div
-                className="w-4 h-4 rounded flex-shrink-0"
-                style={{ backgroundColor: "#bbf7d0", border: "1.5px solid #22c55e" }}
-              />
+              <div className="w-4 h-4 rounded flex-shrink-0" style={{ backgroundColor: "#bbf7d0", border: "1.5px solid #22c55e" }} />
               <span className="text-xs text-gray-600 font-semibold">
-                {isWHO
-                  ? t("ortu.pemantauanGizi.zonaNormal") + "(−2SD s.d +2SD)"
-                  : indicator === "tinggi" ? t("ortu.pemantauanGizi.zonaNormal") + "(P3–P95)"
-                  : indicator === "imt"    ? t("ortu.pemantauanGizi.zonaNormal") + "(P5–P85)"
-                  :                          t("ortu.pemantauanGizi.zonaNormal") + "(P5–P90)"}
+                {t("ortu.pemantauanGizi.zonaNormal")}
               </span>
             </div>
-            {/* Zona Perhatian */}
             {(isWHO || indicator !== "tinggi") && (
               <div className="flex items-center gap-2">
-                <div
-                  className="w-4 h-4 rounded flex-shrink-0"
-                  style={{ backgroundColor: "#fef3c7", border: "1.5px solid #f59e0b" }}
-                />
+                <div className="w-4 h-4 rounded flex-shrink-0" style={{ backgroundColor: "#fef3c7", border: "1.5px solid #f59e0b" }} />
                 <span className="text-xs text-gray-600 font-semibold">
-                  {isWHO
-                    ? "Perhatian (−3SD / +3SD)"
-                    : indicator === "berat" ? "Perhatian (P3–P5 / P90–P95)"
-                    :                         "Perhatian (P3–P5 / P85–P95)"}
+                  {t("ortu.pemantauanGizi.zonaPerhatian")}
                 </span>
               </div>
             )}
-            {/* Garis Median */}
             <div className="flex items-center gap-2">
-              <div
-                className="w-7 flex-shrink-0"
-                style={{
-                  height: "2.5px",
-                  borderRadius: "2px",
-                  background: isWHO
-                    ? "#15803d"
-                    : "repeating-linear-gradient(to right, #2563eb 0, #2563eb 5px, transparent 5px, transparent 9px)",
-                }}
-              />
-              <span className="text-xs text-gray-600 font-semibold">
-                {isWHO ? "Median (0 SD)" : "Median (P50)"}
-              </span>
+              <div className="w-7 flex-shrink-0" style={{ height: "2.5px", borderRadius: "2px", background: isWHO ? "#15803d" : "repeating-linear-gradient(to right, #2563eb 0, #2563eb 5px, transparent 5px, transparent 9px)" }} />
+              <span className="text-xs text-gray-600 font-semibold">{t("ortu.pemantauanGizi.median")}</span>
             </div>
-            {/* Batas Zona */}
             <div className="flex items-center gap-2">
-              <div
-                className="w-7 flex-shrink-0"
-                style={{
-                  height: "2px",
-                  background: "repeating-linear-gradient(to right, #f59e0b 0, #f59e0b 4px, transparent 4px, transparent 7px)",
-                }}
-              />
-              <span className="text-xs text-gray-600 font-semibold">Batas Zona</span>
-            </div>
-            {/* Data Anak */}
-            <div className="flex items-center gap-2">
-              <div
-                className="w-4 h-4 rounded-full flex-shrink-0"
-                style={{ backgroundColor: "#1d4ed8", border: "2.5px solid #fff", boxShadow: "0 0 0 1.5px #1d4ed8" }}
-              />
-              <span className="text-xs text-gray-600 font-semibold">
-                Pertumbuhan Si Kecil
-              </span>
+              <div className="w-4 h-4 rounded-full flex-shrink-0" style={{ backgroundColor: "#1d4ed8", border: "2.5px solid #fff", boxShadow: "0 0 0 1.5px #1d4ed8" }} />
+              <span className="text-xs text-gray-600 font-semibold">{t("ortu.pemantauanGizi.pertumbuhanSiKecil")}</span>
             </div>
           </div>
         </div>
@@ -1973,20 +1432,14 @@ export default function OrangTuaPemantauanGizi() {
     );
   };
 
-  const renderBBUChart = () =>
-    renderGrowthChart("berat", "Berat Badan (kg)", "kg");
-  const renderIMTUChart = () =>
-    renderGrowthChart("imt", "IMT (kg/m²)", "kg/m²");
-  const renderTBUChart = () =>
-    renderGrowthChart("tinggi", "Tinggi Badan (cm)", "cm");
+  const renderBBUChart = () => renderGrowthChart("berat", `${t("ortu.pemantauanGizi.beratBadan")} (kg)`, "kg");
+  const renderIMTUChart = () => renderGrowthChart("imt", `${t("ortu.pemantauanGizi.imt")} (kg/m²)`, "kg/m²");
+  const renderTBUChart = () => renderGrowthChart("tinggi", `${t("ortu.pemantauanGizi.tinggiBadan")} (cm)`, "cm");
 
   const getWFHReferenceValue = (heightCm, jenisKelamin, key) => {
-    const genderData =
-      jenisKelamin === "L" ? whoWFHData.laki : whoWFHData.perempuan;
+    const genderData = jenisKelamin === "L" ? whoWFHData.laki : whoWFHData.perempuan;
     if (!genderData) return null;
-    const heights = Object.keys(genderData)
-      .map(Number)
-      .sort((a, b) => a - b);
+    const heights = Object.keys(genderData).map(Number).sort((a, b) => a - b);
     const lower = heights.filter((h) => h <= heightCm).at(-1);
     const upper = heights.find((h) => h > heightCm);
     if (lower === undefined) return genderData[heights[0]]?.[key];
@@ -1998,21 +1451,16 @@ export default function OrangTuaPemantauanGizi() {
   };
 
   const renderBBTBChart = () => {
-    const displayGrowthData =
-      userRole === "orang_tua" ? growthData : superAdminGrowthData;
-    const anak =
-      userRole === "orang_tua" ? selectedAnakData : superAdminSelectedAnak;
+    const displayGrowthData = userRole === "orang_tua" ? growthData : superAdminGrowthData;
+    const anak = userRole === "orang_tua" ? selectedAnakData : superAdminSelectedAnak;
     if (!anak) {
       return (
         <div className="text-center py-16">
           <div className="bg-gray-100 p-6 rounded-full inline-flex mb-4">
-            <FontAwesomeIcon
-              icon={fas.faChartLine}
-              className="text-5xl text-gray-400"
-            />
+            <FontAwesomeIcon icon={fas.faChartLine} className="text-5xl text-gray-400" />
           </div>
           <p className="text-gray-500 font-medium">
-            Pilih anak terlebih dahulu
+            {t("ortu.pemantauanGizi.pilihAnakTerlebihDahulu")}
           </p>
         </div>
       );
@@ -2020,29 +1468,12 @@ export default function OrangTuaPemantauanGizi() {
 
     const jenisKelamin = anak.jenis_kelamin;
     const childPoints = displayGrowthData
-      .filter(
-        (p) =>
-          p.tinggi > 0 &&
-          p.tinggi < MAX_VALID_HEIGHT &&
-          p.berat > 0 &&
-          p.berat < MAX_VALID_WEIGHT,
-      )
-      .map((p) => ({
-        tinggi: p.tinggi,
-        berat: p.berat,
-        tanggal: p.tanggal,
-        usiaBulan: p.usiaBulan,
-      }));
+      .filter((p) => p.tinggi > 0 && p.tinggi < MAX_VALID_HEIGHT && p.berat > 0 && p.berat < MAX_VALID_WEIGHT)
+      .map((p) => ({ tinggi: p.tinggi, berat: p.berat, tanggal: p.tanggal, usiaBulan: p.usiaBulan }));
     const latestData = childPoints[childPoints.length - 1];
     const allHeights = childPoints.map((p) => p.tinggi);
-    const minHeight =
-      allHeights.length > 0
-        ? Math.max(45, Math.floor(Math.min(...allHeights)) - 2)
-        : 45;
-    const maxHeight =
-      allHeights.length > 0
-        ? Math.min(120, Math.ceil(Math.max(...allHeights)) + 2)
-        : 120;
+    const minHeight = allHeights.length > 0 ? Math.max(45, Math.floor(Math.min(...allHeights)) - 2) : 45;
+    const maxHeight = allHeights.length > 0 ? Math.min(120, Math.ceil(Math.max(...allHeights)) + 2) : 120;
     const refHeights = [];
     for (let h = minHeight; h <= maxHeight; h++) refHeights.push(h);
 
@@ -2053,8 +1484,7 @@ export default function OrangTuaPemantauanGizi() {
       const sd2 = getWFHReferenceValue(h, jenisKelamin, "2sd");
       const sd3 = getWFHReferenceValue(h, jenisKelamin, "3sd");
       const dp = { tinggi: h, sdNeg3, sdNeg2, sd0, sd2, sd3 };
-      if (sdNeg3 != null && sdNeg2 != null)
-        dp.zonaKuningBawahDiff = sdNeg2 - sdNeg3;
+      if (sdNeg3 != null && sdNeg2 != null) dp.zonaKuningBawahDiff = sdNeg2 - sdNeg3;
       if (sdNeg2 != null && sd2 != null) dp.zonaHijauDiff = sd2 - sdNeg2;
       if (sd2 != null && sd3 != null) dp.zonaKuningAtasDiff = sd3 - sd2;
       const match = childPoints.find((cp) => Math.abs(cp.tinggi - h) < 0.5);
@@ -2079,8 +1509,7 @@ export default function OrangTuaPemantauanGizi() {
           tanggal: cp.tanggal,
           usiaBulan: cp.usiaBulan,
           sdNeg3, sdNeg2, sd0, sd2, sd3,
-          zonaKuningBawahDiff:
-            sdNeg3 != null && sdNeg2 != null ? sdNeg2 - sdNeg3 : null,
+          zonaKuningBawahDiff: sdNeg3 != null && sdNeg2 != null ? sdNeg2 - sdNeg3 : null,
           zonaHijauDiff: sdNeg2 != null && sd2 != null ? sd2 - sdNeg2 : null,
           zonaKuningAtasDiff: sd2 != null && sd3 != null ? sd3 - sd2 : null,
         });
@@ -2091,10 +1520,7 @@ export default function OrangTuaPemantauanGizi() {
     const allSd3 = mergedData.map((d) => d.sd3).filter(Boolean);
     const allSdNeg3 = mergedData.map((d) => d.sdNeg3).filter(Boolean);
     const allBerats = childPoints.map((p) => p.berat);
-    const yMin = Math.max(
-      0,
-      Math.floor(Math.min(...allSdNeg3, ...allBerats)) - 1,
-    );
+    const yMin = Math.max(0, Math.floor(Math.min(...allSdNeg3, ...allBerats)) - 1);
     const yMax = Math.ceil(Math.max(...allSd3, ...allBerats)) + 2;
 
     return (
@@ -2103,23 +1529,21 @@ export default function OrangTuaPemantauanGizi() {
           <div className="flex flex-wrap justify-between items-center gap-6">
             <div>
               <p className="text-sm text-gray-500 font-bold uppercase tracking-wider">
-                Data Terbaru
+                {t("ortu.pemantauanGizi.dataTerbaru")}
               </p>
               <p className="text-3xl font-bold text-gray-800 mt-2">
-                {latestData?.tinggi?.toFixed(1) || "-"} cm /{" "}
-                {latestData?.berat?.toFixed(1) || "-"} kg
+                {latestData?.tinggi?.toFixed(1) || "-"} cm / {latestData?.berat?.toFixed(1) || "-"} kg
               </p>
               {latestData && (
                 <p className="text-sm text-gray-400 mt-1 font-medium">
-                  Usia: {Math.floor(latestData.usiaBulan / 12)} Tahun{" "}
-                  {latestData.usiaBulan % 12} Bulan
+                  {t("ortu.pemantauanGizi.usia")}: {Math.floor(latestData.usiaBulan / 12)} {t("app.tahun")} {latestData.usiaBulan % 12} {t("app.bulan")}
                 </p>
               )}
             </div>
             <div className="flex items-center gap-4">
               <div className="text-right">
                 <p className="text-sm text-gray-500 font-bold uppercase tracking-wider">
-                  Standar Referensi
+                  {t("ortu.pemantauanGizi.standarReferensi")}
                 </p>
                 <span className="inline-block mt-2 px-4 py-2 rounded-xl text-sm font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
                   WHO - BB/TB
@@ -2128,7 +1552,7 @@ export default function OrangTuaPemantauanGizi() {
               <button
                 onClick={() => setShowPenjelasanGrafik(true)}
                 className="bg-white border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 text-gray-500 hover:text-blue-600 w-12 h-12 rounded-xl flex items-center justify-center transition-all shadow-sm font-bold text-lg"
-                title="Klik untuk melihat penjelasan grafik"
+                title={t("ortu.pemantauanGizi.klikPenjelasan")}
               >
                 ?
               </button>
@@ -2137,282 +1561,52 @@ export default function OrangTuaPemantauanGizi() {
         </div>
 
         <div className="mb-5 p-4 bg-blue-50 rounded-2xl text-sm text-gray-600 flex items-center gap-3 border border-blue-100">
-          <FontAwesomeIcon
-            icon={fas.faInfoCircle}
-            className="text-blue-500 text-lg"
-          />
-          Grafik Berat Badan vs Tinggi Badan - Membandingkan berat dengan tinggi
-          aktual anak
+          <FontAwesomeIcon icon={fas.faInfoCircle} className="text-blue-500 text-lg" />
+          {t("ortu.pemantauanGizi.grafikBBTB")}
         </div>
 
         <div style={{ height: "520px", width: "100%" }}>
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart
-              data={mergedData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 30 }}
-            >
-              <CartesianGrid
-                vertical={false}
-                stroke="#e5e7eb"
-                strokeDasharray="3 3"
-              />
-              <XAxis
-                type="number"
-                dataKey="tinggi"
-                scale="linear"
-                domain={[minHeight, maxHeight]}
-                tick={{ fontSize: 11, fill: "#6b7280" }}
-                label={{
-                  value: "Tinggi Badan (cm)",
-                  position: "insideBottom",
-                  offset: -15,
-                  fontSize: 11,
-                  fill: "#6b7280",
-                }}
-                axisLine={{ stroke: "#e5e7eb" }}
-                tickLine={{ stroke: "#e5e7eb" }}
-              />
-              <YAxis
-                domain={[yMin, yMax]}
-                tick={{ fontSize: 11, fill: "#6b7280" }}
-                label={{
-                  value: "Berat Badan (kg)",
-                  angle: -90,
-                  position: "insideLeft",
-                  fontSize: 11,
-                  fill: "#6b7280",
-                }}
-                axisLine={{ stroke: "#e5e7eb" }}
-                tickLine={{ stroke: "#e5e7eb" }}
-                tickFormatter={(v) => v.toFixed(1)}
-              />
-              <Tooltip
-                content={<BBTBTooltip />}
-                cursor={{
-                  stroke: "#9ca3af",
-                  strokeWidth: 1,
-                  strokeDasharray: "3 3",
-                }}
-              />
-              <Legend
-                verticalAlign="top"
-                height={40}
-                iconType="circle"
-                wrapperStyle={{ fontSize: "11px", paddingBottom: "10px" }}
-              />
+            <ComposedChart data={mergedData} margin={{ top: 20, right: 30, left: 20, bottom: 30 }}>
+              <CartesianGrid vertical={false} stroke="#e5e7eb" strokeDasharray="3 3" />
+              <XAxis type="number" dataKey="tinggi" scale="linear" domain={[minHeight, maxHeight]} tick={{ fontSize: 11, fill: "#6b7280" }} label={{ value: `${t("ortu.pemantauanGizi.tinggiBadan")} (cm)`, position: "insideBottom", offset: -15, fontSize: 11, fill: "#6b7280" }} axisLine={{ stroke: "#e5e7eb" }} tickLine={{ stroke: "#e5e7eb" }} />
+              <YAxis domain={[yMin, yMax]} tick={{ fontSize: 11, fill: "#6b7280" }} label={{ value: `${t("ortu.pemantauanGizi.beratBadan")} (kg)`, angle: -90, position: "insideLeft", fontSize: 11, fill: "#6b7280" }} axisLine={{ stroke: "#e5e7eb" }} tickLine={{ stroke: "#e5e7eb" }} tickFormatter={(v) => v.toFixed(1)} />
+              <Tooltip content={<BBTBTooltip />} cursor={{ stroke: "#9ca3af", strokeWidth: 1, strokeDasharray: "3 3" }} />
+              <Legend verticalAlign="top" height={40} iconType="circle" wrapperStyle={{ fontSize: "11px", paddingBottom: "10px" }} />
 
-              <Area
-                type="monotone"
-                dataKey="sdNeg3"
-                stackId="wfh_stack"
-                stroke="none"
-                fill="transparent"
-                legendType="none"
-                isAnimationActive={false}
-                dot={false}
-                activeDot={false}
-              />
-              <Area
-                type="monotone"
-                dataKey="zonaKuningBawahDiff"
-                stackId="wfh_stack"
-                stroke="#f59e0b"
-                strokeWidth={1}
-                fill="#fef3c7"
-                fillOpacity={0.85}
-                name="Zona Perhatian (-3SD s.d -2SD)"
-                legendType="square"
-                isAnimationActive={false}
-                dot={false}
-                activeDot={false}
-              />
-              <Area
-                type="monotone"
-                dataKey="zonaHijauDiff"
-                stackId="wfh_stack"
-                stroke="#22c55e"
-                strokeWidth={1}
-                fill="#bbf7d0"
-                fillOpacity={0.85}
-                name="Zona Normal (-2SD s.d +2SD)"
-                legendType="square"
-                isAnimationActive={false}
-                dot={false}
-                activeDot={false}
-              />
-              <Area
-                type="monotone"
-                dataKey="zonaKuningAtasDiff"
-                stackId="wfh_stack"
-                stroke="#f59e0b"
-                strokeWidth={1}
-                fill="#fef3c7"
-                fillOpacity={0.85}
-                name="Zona Perhatian (+2SD s.d +3SD)"
-                legendType="none"
-                isAnimationActive={false}
-                dot={false}
-                activeDot={false}
-              />
+              <Area type="monotone" dataKey="sdNeg3" stackId="wfh_stack" stroke="none" fill="transparent" legendType="none" isAnimationActive={false} dot={false} activeDot={false} />
+              <Area type="monotone" dataKey="zonaKuningBawahDiff" stackId="wfh_stack" stroke="#f59e0b" strokeWidth={1} fill="#fef3c7" fillOpacity={0.85} name={t("ortu.pemantauanGizi.zonaPerhatian") + " (-3SD s.d -2SD)"} legendType="square" isAnimationActive={false} dot={false} activeDot={false} />
+              <Area type="monotone" dataKey="zonaHijauDiff" stackId="wfh_stack" stroke="#22c55e" strokeWidth={1} fill="#bbf7d0" fillOpacity={0.85} name={t("ortu.pemantauanGizi.zonaNormal") + " (-2SD s.d +2SD)"} legendType="square" isAnimationActive={false} dot={false} activeDot={false} />
+              <Area type="monotone" dataKey="zonaKuningAtasDiff" stackId="wfh_stack" stroke="#f59e0b" strokeWidth={1} fill="#fef3c7" fillOpacity={0.85} name={t("ortu.pemantauanGizi.zonaPerhatian") + " (+2SD s.d +3SD)"} legendType="none" isAnimationActive={false} dot={false} activeDot={false} />
 
-              <Line
-                type="monotone"
-                dataKey="sdNeg3"
-                stroke="#f59e0b"
-                strokeWidth={1}
-                strokeDasharray="4 3"
-                name="-3 SD"
-                dot={false}
-                activeDot={false}
-                legendType="none"
-                isAnimationActive={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="sdNeg2"
-                stroke="#f59e0b"
-                strokeWidth={1}
-                strokeDasharray="4 3"
-                name="-2 SD"
-                dot={false}
-                activeDot={false}
-                legendType="none"
-                isAnimationActive={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="sd2"
-                stroke="#f59e0b"
-                strokeWidth={1}
-                strokeDasharray="4 3"
-                name="+2 SD"
-                dot={false}
-                activeDot={false}
-                legendType="none"
-                isAnimationActive={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="sd3"
-                stroke="#f59e0b"
-                strokeWidth={1}
-                strokeDasharray="4 3"
-                name="+3 SD"
-                dot={false}
-                activeDot={false}
-                legendType="none"
-                isAnimationActive={false}
-              />
-
-              <Line
-                type="monotone"
-                dataKey="sd0"
-                stroke="#15803d"
-                strokeWidth={2}
-                name="Median (0 SD)"
-                dot={false}
-                activeDot={false}
-                legendType="line"
-                isAnimationActive={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="berat"
-                stroke="#1d4ed8"
-                strokeWidth={2.5}
-                name="Data Anak"
-                dot={(props) => {
-                  const { cx, cy, value } = props;
-                  if (value == null) return null;
-                  return (
-                    <circle
-                      key={`bbtb-${cx}-${cy}`}
-                      cx={cx}
-                      cy={cy}
-                      r={5}
-                      fill="#1d4ed8"
-                      stroke="#ffffff"
-                      strokeWidth={2}
-                    />
-                  );
-                }}
-                activeDot={{
-                  r: 7,
-                  fill: "#1d4ed8",
-                  stroke: "#ffffff",
-                  strokeWidth: 2,
-                }}
-                connectNulls
-                legendType="circle"
-                isAnimationActive={false}
-              />
+              <Line type="monotone" dataKey="sd0" stroke="#15803d" strokeWidth={2} name={t("ortu.pemantauanGizi.median") + " (0 SD)"} dot={false} activeDot={false} legendType="line" isAnimationActive={false} />
+              <Line type="monotone" dataKey="berat" stroke="#1d4ed8" strokeWidth={2.5} name={t("ortu.pemantauanGizi.pertumbuhanSiKecil")} dot={(props) => { const { cx, cy, value } = props; if (value == null) return null; return <circle key={`bbtb-${cx}-${cy}`} cx={cx} cy={cy} r={5} fill="#1d4ed8" stroke="#ffffff" strokeWidth={2} />; }} activeDot={{ r: 7, fill: "#1d4ed8", stroke: "#ffffff", strokeWidth: 2 }} connectNulls legendType="circle" isAnimationActive={false} />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
 
         <div className="flex flex-wrap justify-center gap-6 mt-6 pt-6 border-t border-gray-100">
-          <div className="flex items-center gap-2">
-            <div
-              className="w-5 h-5 rounded-md border border-emerald-400"
-              style={{ backgroundColor: "#bbf7d0" }}
-            ></div>
-            <span className="text-xs text-gray-600 font-bold">
-              Normal (-2SD s.d +2SD)
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div
-              className="w-5 h-5 rounded-md border border-amber-400"
-              style={{ backgroundColor: "#fef3c7" }}
-            ></div>
-            <span className="text-xs text-gray-600 font-bold">
-              Perhatian (-3SD s.d -2SD / +2SD s.d +3SD)
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div
-              className="w-8 h-0.5 rounded"
-              style={{ backgroundColor: "#15803d" }}
-            ></div>
-            <span className="text-xs text-gray-600 font-bold">
-              Median (0 SD)
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div
-              className="w-8 h-0.5"
-              style={{ borderTop: "2px dashed #f59e0b" }}
-            ></div>
-            <span className="text-xs text-gray-600 font-bold">Batas Zona</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div
-              className="w-5 h-5 rounded-full border-2 border-white shadow-md"
-              style={{ backgroundColor: "#1d4ed8" }}
-            ></div>
-            <span className="text-xs text-gray-600 font-bold">Data Anak</span>
-          </div>
+          <div className="flex items-center gap-2"><div className="w-5 h-5 rounded-md border border-emerald-400" style={{ backgroundColor: "#bbf7d0" }}></div><span className="text-xs text-gray-600 font-bold">{t("ortu.pemantauanGizi.zonaNormal")} (-2SD s.d +2SD)</span></div>
+          <div className="flex items-center gap-2"><div className="w-5 h-5 rounded-md border border-amber-400" style={{ backgroundColor: "#fef3c7" }}></div><span className="text-xs text-gray-600 font-bold">{t("ortu.pemantauanGizi.zonaPerhatian")} (-3SD s.d -2SD / +2SD s.d +3SD)</span></div>
+          <div className="flex items-center gap-2"><div className="w-8 h-0.5 rounded" style={{ backgroundColor: "#15803d" }}></div><span className="text-xs text-gray-600 font-bold">{t("ortu.pemantauanGizi.median")} (0 SD)</span></div>
+          <div className="flex items-center gap-2"><div className="w-8 h-0.5" style={{ borderTop: "2px dashed #f59e0b" }}></div><span className="text-xs text-gray-600 font-bold">{t("ortu.pemantauanGizi.batasZona")}</span></div>
+          <div className="flex items-center gap-2"><div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: "#1d4ed8" }}></div><span className="text-xs text-gray-600 font-bold">{t("ortu.pemantauanGizi.pertumbuhanSiKecil")}</span></div>
         </div>
       </div>
     );
   };
 
   const renderLKUChart = () => {
-    const displayGrowthData =
-      userRole === "orang_tua" ? growthData : superAdminGrowthData;
-    const anak =
-      userRole === "orang_tua" ? selectedAnakData : superAdminSelectedAnak;
+    const displayGrowthData = userRole === "orang_tua" ? growthData : superAdminGrowthData;
+    const anak = userRole === "orang_tua" ? selectedAnakData : superAdminSelectedAnak;
     if (!anak) {
       return (
         <div className="text-center py-16">
           <div className="bg-gray-100 p-6 rounded-full inline-flex mb-4">
-            <FontAwesomeIcon
-              icon={fas.faChartLine}
-              className="text-5xl text-gray-400"
-            />
+            <FontAwesomeIcon icon={fas.faChartLine} className="text-5xl text-gray-400" />
           </div>
           <p className="text-gray-500 font-medium">
-            Pilih anak terlebih dahulu
+            {t("ortu.pemantauanGizi.pilihAnakTerlebihDahulu")}
           </p>
         </div>
       );
@@ -2423,12 +1617,9 @@ export default function OrangTuaPemantauanGizi() {
       return (
         <div className="text-center py-16">
           <div className="bg-amber-100 p-6 rounded-full inline-flex mb-4">
-            <FontAwesomeIcon
-              icon={fas.faExclamationTriangle}
-              className="text-5xl text-amber-400"
-            />
+            <FontAwesomeIcon icon={fas.faExclamationTriangle} className="text-5xl text-amber-400" />
           </div>
-          <p className="text-amber-600 font-medium">Memuat ulang grafik...</p>
+          <p className="text-amber-600 font-medium">{t("ortu.pemantauanGizi.memuatUlangGrafik")}</p>
         </div>
       );
     }
@@ -2438,8 +1629,7 @@ export default function OrangTuaPemantauanGizi() {
     for (let age = config.min; age <= config.max + 0.01; age += config.step) {
       referenceAges.push(Math.round(age * 10) / 10);
     }
-    if (referenceAges[referenceAges.length - 1] !== config.max)
-      referenceAges.push(config.max);
+    if (referenceAges[referenceAges.length - 1] !== config.max) referenceAges.push(config.max);
 
     const referenceData = [];
     for (const usia of referenceAges) {
@@ -2454,38 +1644,19 @@ export default function OrangTuaPemantauanGizi() {
       if (sd0 != null) dataPoint.sd0 = sd0;
       if (sd2 != null) dataPoint.sd2 = sd2;
       if (sd3 != null) dataPoint.sd3 = sd3;
-      if (sdNeg3 != null && sdNeg2 != null) {
-        dataPoint.zonaKuningBawahDiff = sdNeg2 - sdNeg3;
-      }
-      if (sdNeg2 != null && sd2 != null) {
-        dataPoint.zonaHijauDiff = sd2 - sdNeg2;
-      }
-      if (sd2 != null && sd3 != null) {
-        dataPoint.zonaKuningAtasDiff = sd3 - sd2;
-      }
+      if (sdNeg3 != null && sdNeg2 != null) dataPoint.zonaKuningBawahDiff = sdNeg2 - sdNeg3;
+      if (sdNeg2 != null && sd2 != null) dataPoint.zonaHijauDiff = sd2 - sdNeg2;
+      if (sd2 != null && sd3 != null) dataPoint.zonaKuningAtasDiff = sd3 - sd2;
       referenceData.push(dataPoint);
     }
 
     const childPoints = displayGrowthData
-      .filter(
-        (point) =>
-          point.lingkar_kepala !== null &&
-          point.lingkar_kepala > 0 &&
-          point.lingkar_kepala < MAX_VALID_LK,
-      )
-      .map((point) => ({
-        usiaBulan: point.usiaBulan,
-        nilai: point.lingkar_kepala,
-        tanggal: point.tanggal,
-      }));
+      .filter((point) => point.lingkar_kepala !== null && point.lingkar_kepala > 0 && point.lingkar_kepala < MAX_VALID_LK)
+      .map((point) => ({ usiaBulan: point.usiaBulan, nilai: point.lingkar_kepala, tanggal: point.tanggal }));
 
     const mergedData = referenceData.map((refPoint) => {
-      const exactMatch = childPoints.find(
-        (cp) => cp.usiaBulan === refPoint.usiaBulan,
-      );
-      return exactMatch
-        ? { ...refPoint, nilai: exactMatch.nilai }
-        : { ...refPoint, nilai: null };
+      const exactMatch = childPoints.find((cp) => cp.usiaBulan === refPoint.usiaBulan);
+      return exactMatch ? { ...refPoint, nilai: exactMatch.nilai } : { ...refPoint, nilai: null };
     });
 
     const latestChildPoint = childPoints.slice(-1)[0];
@@ -2504,23 +1675,21 @@ export default function OrangTuaPemantauanGizi() {
           <div className="flex flex-wrap justify-between items-center gap-6">
             <div>
               <p className="text-sm text-gray-500 font-bold uppercase tracking-wider">
-                Lingkar Kepala Terakhir
+                {t("ortu.pemantauanGizi.lingkarKepala") + " " + t("ortu.pemantauanGizi.dataTerbaru")}
               </p>
               <p className="text-4xl font-bold text-gray-800 mt-2">
-                {latestChildPoint?.nilai?.toFixed(1) || "-"}{" "}
-                <span className="text-xl font-normal text-gray-500">cm</span>
+                {latestChildPoint?.nilai?.toFixed(1) || "-"} <span className="text-xl font-normal text-gray-500">cm</span>
               </p>
               {latestChildPoint && (
                 <p className="text-sm text-gray-400 mt-1 font-medium">
-                  Usia: {Math.floor(latestChildPoint.usiaBulan / 12)} Tahun{" "}
-                  {latestChildPoint.usiaBulan % 12} Bulan
+                  {t("ortu.pemantauanGizi.usia")}: {Math.floor(latestChildPoint.usiaBulan / 12)} {t("app.tahun")} {latestChildPoint.usiaBulan % 12} {t("app.bulan")}
                 </p>
               )}
             </div>
             <button
               onClick={() => setShowPenjelasanGrafik(true)}
               className="bg-white border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 text-gray-500 hover:text-blue-600 w-12 h-12 rounded-xl flex items-center justify-center transition-all shadow-sm font-bold text-lg"
-              title="Klik untuk melihat penjelasan grafik"
+              title={t("ortu.pemantauanGizi.klikPenjelasan")}
             >
               ?
             </button>
@@ -2529,194 +1698,20 @@ export default function OrangTuaPemantauanGizi() {
 
         <div style={{ height: "450px", width: "100%" }}>
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart
-              data={mergedData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 30 }}
-            >
-              <CartesianGrid
-                vertical={false}
-                stroke="#e5e7eb"
-                strokeDasharray="3 3"
-              />
-              <XAxis
-                type="number"
-                dataKey="usiaBulan"
-                scale="linear"
-                domain={[config.min, config.max]}
-                allowDataOverflow={false}
-                tick={{ fontSize: 11 }}
-                label={{
-                  value: "Usia (bulan)",
-                  position: "insideBottom",
-                  offset: -15,
-                  fontSize: 11,
-                }}
-              />
-              <YAxis
-                domain={yDomain}
-                label={{
-                  value: "Lingkar Kepala (cm)",
-                  angle: -90,
-                  position: "insideLeft",
-                  fontSize: 11,
-                }}
-                tick={{ fontSize: 11 }}
-              />
-              <Tooltip
-                content={<LKUTooltip />}
-                cursor={{
-                  stroke: "#9ca3af",
-                  strokeWidth: 1,
-                  strokeDasharray: "3 3",
-                }}
-              />
+            <ComposedChart data={mergedData} margin={{ top: 20, right: 30, left: 20, bottom: 30 }}>
+              <CartesianGrid vertical={false} stroke="#e5e7eb" strokeDasharray="3 3" />
+              <XAxis type="number" dataKey="usiaBulan" scale="linear" domain={[config.min, config.max]} allowDataOverflow={false} tick={{ fontSize: 11 }} label={{ value: t("ortu.pemantauanGizi.usiaBulan"), position: "insideBottom", offset: -15, fontSize: 11 }} />
+              <YAxis domain={yDomain} label={{ value: `${t("ortu.pemantauanGizi.lingkarKepala")} (cm)`, angle: -90, position: "insideLeft", fontSize: 11 }} tick={{ fontSize: 11 }} />
+              <Tooltip content={<LKUTooltip />} cursor={{ stroke: "#9ca3af", strokeWidth: 1, strokeDasharray: "3 3" }} />
               <Legend verticalAlign="top" height={36} />
 
-              <Area
-                type="monotone"
-                dataKey="sdNeg3"
-                stackId="lk_stack"
-                stroke="none"
-                fill="transparent"
-                legendType="none"
-                isAnimationActive={false}
-                dot={false}
-                activeDot={false}
-              />
-              <Area
-                type="monotone"
-                dataKey="zonaKuningBawahDiff"
-                stackId="lk_stack"
-                stroke="#f59e0b"
-                strokeWidth={1}
-                fill="#fef3c7"
-                fillOpacity={0.85}
-                name="Zona Perhatian (-3SD s.d -2SD)"
-                legendType="square"
-                isAnimationActive={false}
-                dot={false}
-                activeDot={false}
-              />
-              <Area
-                type="monotone"
-                dataKey="zonaHijauDiff"
-                stackId="lk_stack"
-                stroke="#22c55e"
-                strokeWidth={1}
-                fill="#bbf7d0"
-                fillOpacity={0.85}
-                name="Zona Normal (-2SD s.d +2SD)"
-                legendType="square"
-                isAnimationActive={false}
-                dot={false}
-                activeDot={false}
-              />
-              <Area
-                type="monotone"
-                dataKey="zonaKuningAtasDiff"
-                stackId="lk_stack"
-                stroke="#f59e0b"
-                strokeWidth={1}
-                fill="#fef3c7"
-                fillOpacity={0.85}
-                name="Zona Perhatian (+2SD s.d +3SD)"
-                legendType="none"
-                isAnimationActive={false}
-                dot={false}
-                activeDot={false}
-              />
+              <Area type="monotone" dataKey="sdNeg3" stackId="lk_stack" stroke="none" fill="transparent" legendType="none" isAnimationActive={false} dot={false} activeDot={false} />
+              <Area type="monotone" dataKey="zonaKuningBawahDiff" stackId="lk_stack" stroke="#f59e0b" strokeWidth={1} fill="#fef3c7" fillOpacity={0.85} name={t("ortu.pemantauanGizi.zonaPerhatian") + " (-3SD s.d -2SD)"} legendType="square" isAnimationActive={false} dot={false} activeDot={false} />
+              <Area type="monotone" dataKey="zonaHijauDiff" stackId="lk_stack" stroke="#22c55e" strokeWidth={1} fill="#bbf7d0" fillOpacity={0.85} name={t("ortu.pemantauanGizi.zonaNormal") + " (-2SD s.d +2SD)"} legendType="square" isAnimationActive={false} dot={false} activeDot={false} />
+              <Area type="monotone" dataKey="zonaKuningAtasDiff" stackId="lk_stack" stroke="#f59e0b" strokeWidth={1} fill="#fef3c7" fillOpacity={0.85} name={t("ortu.pemantauanGizi.zonaPerhatian") + " (+2SD s.d +3SD)"} legendType="none" isAnimationActive={false} dot={false} activeDot={false} />
 
-              <Line
-                type="monotone"
-                dataKey="sdNeg3"
-                stroke="#f59e0b"
-                strokeWidth={1}
-                strokeDasharray="4 3"
-                dot={false}
-                activeDot={false}
-                legendType="none"
-                isAnimationActive={false}
-                name="-3 SD"
-              />
-              <Line
-                type="monotone"
-                dataKey="sdNeg2"
-                stroke="#f59e0b"
-                strokeWidth={1}
-                strokeDasharray="4 3"
-                dot={false}
-                activeDot={false}
-                legendType="none"
-                isAnimationActive={false}
-                name="-2 SD"
-              />
-              <Line
-                type="monotone"
-                dataKey="sd2"
-                stroke="#f59e0b"
-                strokeWidth={1}
-                strokeDasharray="4 3"
-                dot={false}
-                activeDot={false}
-                legendType="none"
-                isAnimationActive={false}
-                name="+2 SD"
-              />
-              <Line
-                type="monotone"
-                dataKey="sd3"
-                stroke="#f59e0b"
-                strokeWidth={1}
-                strokeDasharray="4 3"
-                dot={false}
-                activeDot={false}
-                legendType="none"
-                isAnimationActive={false}
-                name="+3 SD"
-              />
-
-              <Line
-                type="monotone"
-                dataKey="sd0"
-                stroke="#15803d"
-                strokeWidth={2}
-                name="Median (0 SD)"
-                dot={false}
-                activeDot={false}
-                legendType="line"
-                isAnimationActive={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="nilai"
-                stroke="#1d4ed8"
-                strokeWidth={2.5}
-                name="Pertumbuhan Si Kecil"
-                dot={(props) => {
-                  const { cx, cy, value } = props;
-                  if (value == null) return null;
-                  return (
-                    <circle
-                      key={`dot-lk-${cx}-${cy}`}
-                      cx={cx}
-                      cy={cy}
-                      r={5}
-                      fill="#1d4ed8"
-                      stroke="#ffffff"
-                      strokeWidth={2}
-                    />
-                  );
-                }}
-                activeDot={{
-                  r: 7,
-                  fill: "#1d4ed8",
-                  stroke: "#ffffff",
-                  strokeWidth: 2,
-                }}
-                connectNulls
-                legendType="circle"
-                isAnimationActive={false}
-              />
+              <Line type="monotone" dataKey="sd0" stroke="#15803d" strokeWidth={2} name={t("ortu.pemantauanGizi.median") + " (0 SD)"} dot={false} activeDot={false} legendType="line" isAnimationActive={false} />
+              <Line type="monotone" dataKey="nilai" stroke="#1d4ed8" strokeWidth={2.5} name={t("ortu.pemantauanGizi.pertumbuhanSiKecil")} dot={(props) => { const { cx, cy, value } = props; if (value == null) return null; return <circle key={`dot-lk-${cx}-${cy}`} cx={cx} cy={cy} r={5} fill="#1d4ed8" stroke="#ffffff" strokeWidth={2} />; }} activeDot={{ r: 7, fill: "#1d4ed8", stroke: "#ffffff", strokeWidth: 2 }} connectNulls legendType="circle" isAnimationActive={false} />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
@@ -2727,14 +1722,10 @@ export default function OrangTuaPemantauanGizi() {
   const renderActiveChart = () => {
     if (activeMainMenu === "berat") {
       switch (activeSubMenu) {
-        case "bb_u":
-          return renderBBUChart();
-        case "bb_tb":
-          return renderBBTBChart();
-        case "imt_u":
-          return renderIMTUChart();
-        default:
-          return renderBBUChart();
+        case "bb_u": return renderBBUChart();
+        case "bb_tb": return renderBBTBChart();
+        case "imt_u": return renderIMTUChart();
+        default: return renderBBUChart();
       }
     } else if (activeMainMenu === "tinggi") {
       return renderTBUChart();
@@ -2765,10 +1756,10 @@ export default function OrangTuaPemantauanGizi() {
   const formatAge = (age) => {
     if (!age) return "-";
     const parts = [];
-    if (age.years > 0) parts.push(`${age.years} Thn`);
-    if (age.months > 0) parts.push(`${age.months} Bln`);
-    if (age.days > 0) parts.push(`${age.days} Hr`);
-    return parts.length === 0 ? "< 1 Hari" : parts.join(" ");
+    if (age.years > 0) parts.push(`${age.years} ${t("ortu.dashboard.thn")}`);
+    if (age.months > 0) parts.push(`${age.months} ${t("dataAnak.bln")}`);
+    if (age.days > 0) parts.push(`${age.days} ${t("ortu.dataAnak.hr")}`);
+    return parts.length === 0 ? `< 1 ${t("app.hari")}` : parts.join(" ");
   };
 
   const getAvailableAgeRanges = () => {
@@ -2790,31 +1781,22 @@ export default function OrangTuaPemantauanGizi() {
           <div className="text-center">
             <div className="relative">
               <div className="animate-spin rounded-full h-16 w-16 border-4 border-emerald-200 border-t-emerald-600 mx-auto"></div>
-              <FontAwesomeIcon
-                icon={fas.faChartLine}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-emerald-600 text-xl"
-              />
+              <FontAwesomeIcon icon={fas.faChartLine} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-emerald-600 text-xl" />
             </div>
-            <p className="mt-6 text-gray-600 font-medium">Memuat data...</p>
+            <p className="mt-6 text-gray-600 font-medium">{t("app.loading")}</p>
           </div>
         </div>
       </div>
     );
   }
 
-  const displayAnakData =
-    userRole === "orang_tua" ? selectedAnakData : superAdminSelectedAnak;
-  const displayAnakList =
-    userRole === "orang_tua" ? anakList : superAdminAnakList;
-  const displaySelectedAnakId =
-    userRole === "orang_tua" ? selectedAnakId : superAdminSelectedAnak?.id;
-  const ageDetail = displayAnakData
-    ? calculateAgeDetail(displayAnakData.tanggal_lahir)
-    : null;
+  const displayAnakData = userRole === "orang_tua" ? selectedAnakData : superAdminSelectedAnak;
+  const displayAnakList = userRole === "orang_tua" ? anakList : superAdminAnakList;
+  const displaySelectedAnakId = userRole === "orang_tua" ? selectedAnakId : superAdminSelectedAnak?.id;
+  const ageDetail = displayAnakData ? calculateAgeDetail(displayAnakData.tanggal_lahir) : null;
   const formattedAge = ageDetail ? formatAge(ageDetail) : "-";
   const availableRanges = getAvailableAgeRanges();
-  const showAgeDropdownMenu =
-    availableRanges.length > 0 && activeSubMenu !== "bb_tb";
+  const showAgeDropdownMenu = availableRanges.length > 0 && activeSubMenu !== "bb_tb";
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-emerald-50">
@@ -2840,10 +1822,7 @@ export default function OrangTuaPemantauanGizi() {
             <div className="mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
               <div className="flex items-center gap-3 mb-4">
                 <div className="bg-blue-100 p-2 rounded-xl">
-                  <FontAwesomeIcon
-                    icon={fas.faUsers}
-                    className="text-blue-600 text-lg"
-                  />
+                  <FontAwesomeIcon icon={fas.faUsers} className="text-blue-600 text-lg" />
                 </div>
                 <h3 className="font-bold text-blue-800 text-lg">
                   {t("ortu.pemantauanGizi.modeSuperAdmin")}
@@ -2872,12 +1851,8 @@ export default function OrangTuaPemantauanGizi() {
               <div className="relative w-full md:w-96">
                 <button
                   onClick={() => {
-                    if (userRole === "orang_tua")
-                      setShowAnakDropdown(!showAnakDropdown);
-                    else
-                      setSuperAdminShowAnakDropdown(
-                        !superAdminShowAnakDropdown,
-                      );
+                    if (userRole === "orang_tua") setShowAnakDropdown(!showAnakDropdown);
+                    else setSuperAdminShowAnakDropdown(!superAdminShowAnakDropdown);
                   }}
                   className="w-full flex items-center justify-between px-5 py-3.5 bg-white border border-gray-200 rounded-2xl shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
                 >
@@ -2890,30 +1865,16 @@ export default function OrangTuaPemantauanGizi() {
                         {displayAnakData?.nama_anak || t("ortu.pemantauanGizi.pilihAnak")}
                       </p>
                       <p className="text-sm text-gray-500">
-                        {formattedAge} •{" "}
-                        {displayAnakData?.jenis_kelamin === "L"
-                          ? "Laki-laki"
-                          : "Perempuan"}
+                        {formattedAge} • {displayAnakData?.jenis_kelamin === "L" ? t("dataAnak.lakiLaki") : t("dataAnak.perempuan")}
                       </p>
                     </div>
                   </div>
-                  <FontAwesomeIcon
-                    icon={fas.faChevronDown}
-                    className="text-gray-400"
-                  />
+                  <FontAwesomeIcon icon={fas.faChevronDown} className="text-gray-400" />
                 </button>
 
-                {(userRole === "orang_tua" && showAnakDropdown) ||
-                (userRole === "super_admin" && superAdminShowAnakDropdown) ? (
+                {(userRole === "orang_tua" && showAnakDropdown) || (userRole === "super_admin" && superAdminShowAnakDropdown) ? (
                   <>
-                    <div
-                      className="fixed inset-0 z-10"
-                      onClick={() => {
-                        if (userRole === "orang_tua")
-                          setShowAnakDropdown(false);
-                        else setSuperAdminShowAnakDropdown(false);
-                      }}
-                    ></div>
+                    <div className="fixed inset-0 z-10" onClick={() => { if (userRole === "orang_tua") setShowAnakDropdown(false); else setSuperAdminShowAnakDropdown(false); }}></div>
                     <div className="absolute left-0 mt-2 w-full bg-white rounded-2xl shadow-xl border border-gray-200 z-20 overflow-hidden">
                       <div className="p-2 max-h-96 overflow-y-auto">
                         {displayAnakList.map((anak) => {
@@ -2922,31 +1883,19 @@ export default function OrangTuaPemantauanGizi() {
                             <button
                               key={anak.id}
                               onClick={() => {
-                                if (userRole === "orang_tua")
-                                  handleAnakChange(anak.id);
+                                if (userRole === "orang_tua") handleAnakChange(anak.id);
                                 else handleSuperAdminAnakChange(anak);
                               }}
                               className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all mb-1 ${isSelected ? "bg-emerald-50 border border-emerald-200" : "hover:bg-gray-50"}`}
                             >
-                              <div
-                                className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold ${isSelected ? "bg-gradient-to-br from-emerald-500 to-emerald-600" : "bg-gray-400"}`}
-                              >
+                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold ${isSelected ? "bg-gradient-to-br from-emerald-500 to-emerald-600" : "bg-gray-400"}`}>
                                 {anak.nama_anak?.charAt(0).toUpperCase()}
                               </div>
                               <div className="flex-1 text-left">
-                                <p className="font-bold text-gray-800">
-                                  {anak.nama_anak}
-                                </p>
-                                <p className="text-xs text-gray-400">
-                                  Lahir: {anak.tanggal_lahir}
-                                </p>
+                                <p className="font-bold text-gray-800">{anak.nama_anak}</p>
+                                <p className="text-xs text-gray-400">{t("ortu.dashboard.lahir")} {anak.tanggal_lahir}</p>
                               </div>
-                              {isSelected && (
-                                <FontAwesomeIcon
-                                  icon={fas.faCheckCircle}
-                                  className="text-emerald-600"
-                                />
-                              )}
+                              {isSelected && <FontAwesomeIcon icon={fas.faCheckCircle} className="text-emerald-600" />}
                             </button>
                           );
                         })}
@@ -2969,10 +1918,7 @@ export default function OrangTuaPemantauanGizi() {
             <div className="mb-8">
               <div className="flex gap-2 p-1.5 bg-gray-100 rounded-2xl">
                 <button
-                  onClick={() => {
-                    setActiveMainMenu("berat");
-                    setActiveSubMenu("bb_u");
-                  }}
+                  onClick={() => { setActiveMainMenu("berat"); setActiveSubMenu("bb_u"); }}
                   className={`flex-1 py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${activeMainMenu === "berat" ? "bg-white text-emerald-600 shadow-md" : "text-gray-500 hover:text-gray-700"}`}
                 >
                   <FontAwesomeIcon icon={fas.faWeightScale} /> {t("ortu.pemantauanGizi.berat")}
@@ -3034,67 +1980,38 @@ export default function OrangTuaPemantauanGizi() {
                 >
                   <div className="flex items-center gap-3">
                     <div className="bg-emerald-100 p-2 rounded-xl">
-                      <FontAwesomeIcon
-                        icon={fas.faCalendarAlt}
-                        className="text-emerald-600"
-                      />
+                      <FontAwesomeIcon icon={fas.faCalendarAlt} className="text-emerald-600" />
                     </div>
                     <span className="font-bold text-gray-700">
-                      {getCurrentConfig()?.label || "Pilih Rentang Usia"}
+                      {getCurrentConfig()?.label || t("ortu.pemantauanGizi.modal.pilihRentangUsiaLabel")}
                     </span>
                   </div>
-                  <FontAwesomeIcon
-                    icon={fas.faChevronDown}
-                    className={`text-gray-400 transition-transform ${showAgeDropdown ? "rotate-180" : ""}`}
-                  />
+                  <FontAwesomeIcon icon={fas.faChevronDown} className={`text-gray-400 transition-transform ${showAgeDropdown ? "rotate-180" : ""}`} />
                 </button>
 
                 {showAgeDropdown && (
                   <>
-                    <div
-                      className="fixed inset-0 z-10"
-                      onClick={() => setShowAgeDropdown(false)}
-                    ></div>
+                    <div className="fixed inset-0 z-10" onClick={() => setShowAgeDropdown(false)}></div>
                     <div className="absolute left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-gray-200 z-20 overflow-hidden">
                       {availableRanges.map((range) => {
-                        const config =
-                          activeMainMenu === "lingkar_kepala"
-                            ? lkAgeRangeConfig[range]
-                            : ageRangeConfig[range];
+                        const config = activeMainMenu === "lingkar_kepala" ? lkAgeRangeConfig[range] : ageRangeConfig[range];
                         if (!config) return null;
                         return (
                           <button
                             key={range}
-                            onClick={() => {
-                              setAgeRange(range);
-                              setShowAgeDropdown(false);
-                            }}
+                            onClick={() => { setAgeRange(range); setShowAgeDropdown(false); }}
                             className={`w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition border-b border-gray-100 last:border-0 ${ageRange === range ? "bg-emerald-50" : ""}`}
                           >
                             <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
-                              <FontAwesomeIcon
-                                icon={fas[config.icon] || fas.faChild}
-                                className="text-emerald-600"
-                              />
+                              <FontAwesomeIcon icon={fas[config.icon] || fas.faChild} className="text-emerald-600" />
                             </div>
                             <div className="flex-1 text-left">
-                              <p
-                                className={`font-bold ${ageRange === range ? "text-emerald-600" : "text-gray-700"}`}
-                              >
-                                {config.label}
-                              </p>
+                              <p className={`font-bold ${ageRange === range ? "text-emerald-600" : "text-gray-700"}`}>{config.label}</p>
                               <p className="text-xs text-gray-400">
-                                {range === "60-216"
-                                  ? "Kurva CDC (Persentil)"
-                                  : "Kurva WHO (Z-Score)"}
+                                {range === "60-216" ? t("ortu.pemantauanGizi.modal.kurvaCdcLabel") : t("ortu.pemantauanGizi.modal.kurvaWhoLabel")}
                               </p>
                             </div>
-                            {ageRange === range && (
-                              <FontAwesomeIcon
-                                icon={fas.faCheckCircle}
-                                className="text-emerald-600"
-                              />
-                            )}
+                            {ageRange === range && <FontAwesomeIcon icon={fas.faCheckCircle} className="text-emerald-600" />}
                           </button>
                         );
                       })}
@@ -3115,10 +2032,7 @@ export default function OrangTuaPemantauanGizi() {
           {!displayAnakData && displayAnakList.length > 0 && (
             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-12 text-center border border-blue-200">
               <div className="bg-blue-100 p-6 rounded-full inline-flex mb-4">
-                <FontAwesomeIcon
-                  icon={fas.faChartLine}
-                  className="text-5xl text-blue-400"
-                />
+                <FontAwesomeIcon icon={fas.faChartLine} className="text-5xl text-blue-400" />
               </div>
               <p className="text-gray-600 font-bold text-lg">
                 {t("ortu.pemantauanGizi.pilihAnakTerlebihDahulu")}
@@ -3138,6 +2052,7 @@ export default function OrangTuaPemantauanGizi() {
         activeMainMenu={activeMainMenu}
         activeSubMenu={activeSubMenu}
         ageRange={ageRange}
+        t={t}
       />
     </div>
   );

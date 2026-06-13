@@ -227,7 +227,7 @@ export default function Sidebar({ handleLogout }) {
                 {userRole === "super_admin"
                   ? "Super Admin"
                   : userRole === "orang_tua"
-                    ? "Orang Tua"
+                    ? t("app.orangtua")
                     : userRole?.replace("_", " ")}
               </p>
             </div>

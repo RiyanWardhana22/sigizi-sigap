@@ -321,8 +321,8 @@ export default function VerifikasiData() {
                           </div>
                           <div className="text-[10px] font-bold text-emerald-600 uppercase tracking-tight">
                             {anak.jenis_kelamin === "L"
-                              ? "Laki-laki"
-                              : "Perempuan"}
+                              ? t("dataAnak.lakiLaki")
+                              : t("dataAnak.perempuan")}
                           </div>
                         </td>
                         <td className="px-6 py-4 text-sm text-slate-600 font-medium">
@@ -359,7 +359,7 @@ export default function VerifikasiData() {
                         colSpan="4"
                         className="py-20 text-center text-slate-400 font-medium text-sm"
                       >
-                        Data tidak ditemukan.
+                        {t("verifikasi.dataTidakDitemukan")}
                       </td>
                     </tr>
                   )}
@@ -433,7 +433,7 @@ export default function VerifikasiData() {
 
               <div className="mt-8 pt-8 border-t border-slate-800">
                 <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">
-                  Status Verifikasi
+                  {t("ortu.dataAnak.statusVerifikasi")}
                 </p>
                 <div
                   className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs uppercase ${
@@ -468,21 +468,21 @@ export default function VerifikasiData() {
                   <div className="grid grid-cols-3 gap-4">
                     {[
                       {
-                        label: "Tinggi",
+                        label: t("verifikasi.tinggiBadan"),
                         val: selectedAnak.tinggi_badan,
                         unit: "cm",
                         icon: <FaTint className="text-blue-500" />,
                         bg: "bg-blue-50",
                       },
                       {
-                        label: "Berat",
+                        label: t("verifikasi.beratBadan"),
                         val: selectedAnak.berat_badan,
                         unit: "kg",
                         icon: <FaUsers className="text-emerald-500" />,
                         bg: "bg-emerald-50",
                       },
                       {
-                        label: "L. Kepala",
+                        label: t("verifikasi.lingkarKepala"),
                         val: selectedAnak.lingkar_kepala,
                         unit: "cm",
                         icon: <FaBaby className="text-purple-500" />,
@@ -510,7 +510,7 @@ export default function VerifikasiData() {
                   <div className="mt-4 bg-slate-900 rounded-2xl p-5 flex items-center justify-between text-white shadow-xl shadow-slate-200">
                     <div>
                       <p className="text-[10px] font-bold text-slate-500 uppercase mb-1">
-                        Status Gizi (WHO)
+                        {t("verifikasi.statusGiziWho")}
                       </p>
                       {(() => {
                         const style = getStatusGiziStyle(
@@ -544,33 +544,33 @@ export default function VerifikasiData() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {[
                       {
-                        label: "Nama Orang Tua",
+                        label: t("verifikasi.namaOrangTua"),
                         val: selectedAnak.nama_orang_tua,
                         icon: <FaUserAlt />,
                       },
                       {
-                        label: "Pendidikan Ibu",
+                        label: t("verifikasi.pendidikan"),
                         val: selectedAnak.pendidikan_ibu,
                         icon: <FaGraduationCap />,
                       },
                       {
-                        label: "Penghasilan",
+                        label: t("dataAnak.penghasilan"),
                         val: selectedAnak.penghasilan_keluarga,
                         icon: <FaWallet />,
                         color: "text-emerald-600",
                       },
                       {
-                        label: "Sumber Air",
+                        label: t("verifikasi.sumberAir"),
                         val: selectedAnak.sumber_air_bersih,
                         icon: <FaTint />,
                       },
                       {
-                        label: "Sanitasi",
+                        label: t("dataAnak.sanitasi"),
                         val: selectedAnak.fasilitas_sanitasi,
                         icon: <FaToilet />,
                       },
                       {
-                        label: "Akses Kesehatan",
+                        label: t("dataAnak.aksesKesehatan"),
                         val: selectedAnak.akses_kesehatan,
                         icon: <FaHospitalSymbol />,
                       },

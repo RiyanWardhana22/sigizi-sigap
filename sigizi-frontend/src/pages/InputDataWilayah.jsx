@@ -353,13 +353,13 @@ export default function InputDataWilayah() {
                       <span className="bg-blue-100 text-blue-700 w-6 h-6 rounded-full flex items-center justify-center text-xs">
                         1
                       </span>
-                      Data Bayi & Balita
+                      {t("inputWilayah.dataBayiBalita")}
                     </h3>
                     <div className="space-y-5">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
                           <label className="block text-xs font-semibold text-slate-600">
-                            Total Bayi Lahir
+                            {t("inputWilayah.totalBayiLahir")}
                           </label>
                           <input
                             type="number"
@@ -369,12 +369,12 @@ export default function InputDataWilayah() {
                             required
                             min="0"
                             className={inputBaseClass}
-                            placeholder="Contoh: 150"
+                            placeholder={t("inputWilayah.holderTotalLahirBayi")}
                           />
                         </div>
                         <div>
                           <label className="block text-xs font-semibold text-red-600">
-                            Jumlah Bayi BBLR
+                            {t("inputWilayah.jumlahBayiBblr")}
                           </label>
                           <input
                             type="number"
@@ -384,14 +384,14 @@ export default function InputDataWilayah() {
                             required
                             min="0"
                             className={`${inputBaseClass} !border-red-200 !bg-red-50/50 focus:!border-red-500 focus:!ring-red-500/20`}
-                            placeholder="Angka riil"
+                            placeholder={t("inputWilayah.holderAngkaRill")}
                           />
                         </div>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
                           <label className="block text-xs font-semibold text-slate-600">
-                            Total Balita Terukur
+                            {t("inputWilayah.totalBalitaTerukur")}
                           </label>
                           <input
                             type="number"
@@ -401,12 +401,12 @@ export default function InputDataWilayah() {
                             required
                             min="0"
                             className={inputBaseClass}
-                            placeholder="Contoh: 300"
+                            placeholder={t("inputWilayah.holderTotalBalitaUkur")}
                           />
                         </div>
                         <div>
                           <label className="block text-xs font-semibold text-red-600">
-                            Balita Gizi Buruk
+                            {t("inputWilayah.balitaGiziBuruk")}
                           </label>
                           <input
                             type="number"
@@ -416,7 +416,7 @@ export default function InputDataWilayah() {
                             required
                             min="0"
                             className={`${inputBaseClass} !border-red-200 !bg-red-50/50 focus:!border-red-500 focus:!ring-red-500/20`}
-                            placeholder="Angka riil"
+                            placeholder={t("inputWilayah.holderAngkaRill")}
                           />
                         </div>
                       </div>
@@ -429,12 +429,12 @@ export default function InputDataWilayah() {
                       <span className="bg-emerald-100 text-emerald-700 w-6 h-6 rounded-full flex items-center justify-center text-xs">
                         2
                       </span>
-                      Sanitasi & Air Bersih
+                      {t("inputWilayah.sanitasiAirBersih")}
                     </h3>
                     <div className="space-y-5">
                       <div>
                         <label className="block text-xs font-semibold text-slate-600">
-                          Total Kepala Keluarga (KK)
+                          {t("inputWilayah.totalKepalaKeluarga")}
                         </label>
                         <input
                           type="number"
@@ -444,13 +444,13 @@ export default function InputDataWilayah() {
                           required
                           min="0"
                           className={inputBaseClass}
-                          placeholder="Masukkan jumlah seluruh KK"
+                          placeholder={t("inputWilayah.holderTotalKepalaKeluarga")}
                         />
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
                           <label className="block text-xs font-semibold text-emerald-600">
-                            KK dgn Jamban Sehat
+                            {t("inputWilayah.kkJambanSehat")}
                           </label>
                           <input
                             type="number"
@@ -460,12 +460,12 @@ export default function InputDataWilayah() {
                             required
                             min="0"
                             className={`${inputBaseClass} !border-emerald-200 !bg-emerald-50/50 focus:!border-emerald-500 focus:!ring-emerald-500/20`}
-                            placeholder="Angka riil"
+                            placeholder={t("inputWilayah.holderAngkaRill")}
                           />
                         </div>
                         <div>
                           <label className="block text-xs font-semibold text-emerald-600">
-                            KK dgn Air Bersih
+                            {t("inputWilayah.kkAirBersih")}
                           </label>
                           <input
                             type="number"
@@ -475,7 +475,7 @@ export default function InputDataWilayah() {
                             required
                             min="0"
                             className={`${inputBaseClass} !border-emerald-200 !bg-emerald-50/50 focus:!border-emerald-500 focus:!ring-emerald-500/20`}
-                            placeholder="Angka riil"
+                            placeholder={t("inputWilayah.holderAngkaRill")}
                           />
                         </div>
                       </div>
@@ -488,12 +488,12 @@ export default function InputDataWilayah() {
                       <span className="bg-orange-100 text-orange-700 w-6 h-6 rounded-full flex items-center justify-center text-xs">
                         3
                       </span>
-                      Kondisi Sosial Ekonomi
+                      {t("inputWilayah.kondisiSosialEkonomi")}
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                       <div>
                         <label className="block text-xs font-semibold text-slate-600">
-                          Total Ibu Terdata
+                          {t("inputWilayah.totalIbuTerdata")}
                         </label>
                         <input
                           type="number"
@@ -503,12 +503,12 @@ export default function InputDataWilayah() {
                           required
                           min="0"
                           className={inputBaseClass}
-                          placeholder="Masukkan total ibu"
+                          placeholder={t("inputWilayah.holderTotalIbu")}
                         />
                       </div>
                       <div>
                         <label className="block text-xs font-semibold text-orange-600">
-                          Ibu Lulusan SMP ke Bawah
+                          {t("inputWilayah.ibuLulusanSmpKebawah")}
                         </label>
                         <input
                           type="number"
@@ -518,12 +518,12 @@ export default function InputDataWilayah() {
                           required
                           min="0"
                           className={`${inputBaseClass} !border-orange-200 !bg-orange-50/50 focus:!border-orange-500 focus:!ring-orange-500/20`}
-                          placeholder="Angka riil"
+                          placeholder={t("inputWilayah.holderAngkaRill")}
                         />
                       </div>
                       <div>
                         <label className="block text-xs font-semibold text-slate-600">
-                          Rata-rata Penghasilan (Rp)
+                          {t("inputWilayah.rataPenghasilan")}
                         </label>
                         <div className="relative mt-1.5">
                           <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-sm font-semibold">
@@ -550,13 +550,13 @@ export default function InputDataWilayah() {
                       <span className="bg-purple-100 text-purple-700 w-6 h-6 rounded-full flex items-center justify-center text-xs">
                         4
                       </span>
-                      Imunisasi
+                      {t("inputWilayah.imunisasi")}
                     </h3>
                     <div className="space-y-5">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
                           <label className="block text-xs font-semibold text-slate-600">
-                            Total Anak
+                            {t("inputWilayah.totalAnak")}
                           </label>
                           <input
                             type="number"
@@ -565,12 +565,12 @@ export default function InputDataWilayah() {
                             onChange={handleChangeManual}
                             min="0"
                             className={inputBaseClass}
-                            placeholder="Masukkan total anak"
+                            placeholder={t("inputWilayah.holderTotalAnak")}
                           />
                         </div>
                         <div>
                           <label className="block text-xs font-semibold text-purple-600">
-                            Total Anak Menerima Imunisasi
+                            {t("inputWilayah.anakTerimaImunisasi")}
                           </label>
                           <input
                             type="number"
@@ -579,7 +579,7 @@ export default function InputDataWilayah() {
                             onChange={handleChangeManual}
                             min="0"
                             className={`${inputBaseClass} !border-purple-200 !bg-purple-50/50 focus:!border-purple-500 focus:!ring-purple-500/20`}
-                            placeholder="Angka riil"
+                            placeholder={t("inputWilayah.holderAngkaRill")}
                           />
                         </div>
                       </div>
@@ -734,12 +734,10 @@ export default function InputDataWilayah() {
                     <FaFileUpload className="text-3xl text-blue-500" />
                   </div>
                   <h3 className="text-xl font-bold text-slate-800">
-                    Laporan Massal Kosong
+                    {t("inputWilayah.pFileKosong")}
                   </h3>
                   <p className="text-slate-500 mt-2 max-w-md mx-auto text-sm leading-relaxed">
-                    Unduh format template terlebih dahulu, isi data riil agregat
-                    wilayah, lalu unggah kembali di sini untuk memproses
-                    kalkulasi secara otomatis.
+                    {t("inputWilayah.pUploadFile")}
                   </p>
                 </div>
               )}

@@ -51,7 +51,7 @@ export default function DataAnak() {
     { value: "Pra-stunting", label: "Pra-stunting" },
     { value: "Stunting", label: "Stunting" },
     { value: "Wasting", label: "Wasting" },
-    { value: "Gizi Berlebih", label: "Gizi Berlebih" },
+    { value: "Gizi Berlebih", label: t("app.giziLebih") },
   ];
 
   useEffect(() => {
@@ -350,7 +350,7 @@ export default function DataAnak() {
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-emerald-600 text-xl"
               />
             </div>
-            <p className="mt-6 text-gray-600 font-medium">Memuat data...</p>
+            <p className="mt-6 text-gray-600 font-medium">{t("app.loading")}</p>
           </div>
         </div>
       </div>
@@ -390,10 +390,10 @@ export default function DataAnak() {
                   </div>
                   <div>
                     <h2 className="text-lg font-bold text-white">
-                      Daftar Orang Tua
+                      {t("dataAnak.daftarOrangTua")}
                     </h2>
                     <p className="text-emerald-100 text-sm">
-                      Pilih orang tua untuk melihat data anak
+                      {t("dataAnak.pilihOrangTua")}
                     </p>
                   </div>
                 </div>
@@ -531,10 +531,10 @@ export default function DataAnak() {
                             />
                           </div>
                           <p className="text-gray-500 font-medium">
-                            Tidak ada data orang tua
+                            {t("dataAnak.noDataOrangTua")}
                           </p>
                           <p className="text-gray-400 text-sm mt-1">
-                            Data akan muncul setelah ada pendaftaran
+                            {t("dataAnak.dataMunculSetelahPendaftaran")}
                           </p>
                         </div>
                       </td>
@@ -548,7 +548,7 @@ export default function DataAnak() {
             {filteredOrangTua.length > 0 && (
               <div className="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between flex-wrap gap-3">
                 <p className="text-sm text-gray-500">
-                  Menampilkan{" "}
+                  {t("app.showing")}{" "}
                   <span className="font-semibold text-gray-700">
                     {(orangTuaPage - 1) * ITEMS_PER_PAGE + 1}
                   </span>{" "}
@@ -559,11 +559,11 @@ export default function DataAnak() {
                       filteredOrangTua.length,
                     )}
                   </span>{" "}
-                  dari{" "}
+                  {t("app.from")}{" "}
                   <span className="font-semibold text-gray-700">
                     {filteredOrangTua.length}
                   </span>{" "}
-                  orang tua
+                  {t("app.parents")}
                 </p>
                 <div className="flex items-center gap-2">
                   <button
@@ -650,10 +650,10 @@ export default function DataAnak() {
                   </div>
                   <div>
                     <h2 className="text-lg font-bold text-white">
-                      Data Diri Orang Tua
+                      {t("dataAnak.dataDiriOrangTua")}
                     </h2>
                     <p className="text-blue-100 text-sm">
-                      Detail informasi orang tua terpilih
+                      {t("dataAnak.detailInformasi")}
                     </p>
                   </div>
                 </div>
@@ -671,7 +671,7 @@ export default function DataAnak() {
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 font-medium">
-                        Nama Lengkap
+                        {t("dataAnak.namaLengkap")}
                       </p>
                       <p className="font-bold text-gray-800">
                         {selectedOrangTuaData.nama_lengkap}
@@ -703,7 +703,7 @@ export default function DataAnak() {
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 font-medium">
-                        Domisili
+                        {t("dataAnak.domisili")}
                       </p>
                       <p className="font-bold text-gray-800">
                         {selectedOrangTuaData.nama_kabupaten || "-"}
@@ -720,7 +720,7 @@ export default function DataAnak() {
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 font-medium">
-                        Tanggal Lahir
+                        {t("dataAnak.tanggalLahir")}
                       </p>
                       <p className="font-bold text-gray-800">
                         {selectedOrangTuaData.tanggal_lahir || "-"}
@@ -741,7 +741,7 @@ export default function DataAnak() {
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 font-medium">
-                        Pendidikan Ibu
+                        {t("dataAnak.pendidikanIbu")}
                       </p>
                       <p className="font-bold text-gray-800">
                         {selectedOrangTuaData.pendidikan_ibu || "-"}
@@ -758,7 +758,7 @@ export default function DataAnak() {
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 font-medium">
-                        Penghasilan
+                        {t("dataAnak.penghasilan")}
                       </p>
                       <p className="font-bold text-gray-800 text-sm">
                         {selectedOrangTuaData.penghasilan_range
@@ -777,7 +777,7 @@ export default function DataAnak() {
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 font-medium">
-                        Kualitas Air
+                        {t("dataAnak.kualitasAir")}
                       </p>
                       <p className="font-bold text-gray-800">
                         {selectedOrangTuaData.kualitas_air || "-"}
@@ -794,7 +794,7 @@ export default function DataAnak() {
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 font-medium">
-                        Sanitasi
+                        {t("dataAnak.sanitasi")}
                       </p>
                       <p className="font-bold text-gray-800">
                         {selectedOrangTuaData.sanitasi || "-"}
@@ -814,7 +814,7 @@ export default function DataAnak() {
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 font-medium">
-                        Akses Kesehatan
+                        {t("dataAnak.aksesKesehatan")}
                       </p>
                       <p className="font-bold text-gray-800">
                         {selectedOrangTuaData.akses_kesehatan || "-"}
@@ -831,7 +831,7 @@ export default function DataAnak() {
                       className="text-amber-500 text-lg"
                     />
                     <p className="text-sm text-amber-700 font-medium">
-                      Data profil orang tua ini belum lengkap
+                      {t("dataAnak.profilBelumLengkap")}
                     </p>
                   </div>
                 )}
@@ -853,10 +853,10 @@ export default function DataAnak() {
                     </div>
                     <div>
                       <h2 className="text-lg font-bold text-white">
-                        Data Anak
+                        {t("dataAnak.dataAnak")}
                       </h2>
                       <p className="text-emerald-100 text-sm">
-                        {anakList.length} anak terdaftar
+                        {anakList.length} {t("dataAnak.anakTerdaftar")}
                       </p>
                     </div>
                   </div>
@@ -869,7 +869,7 @@ export default function DataAnak() {
                         />
                         <input
                           type="text"
-                          placeholder="Cari nama anak..."
+                          placeholder={t("dataAnak.cariNamaAnak")}
                           value={searchAnak}
                           onChange={(e) => setSearchAnak(e.target.value)}
                           className="pl-10 pr-4 py-2.5 border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/50 bg-white/10 text-white placeholder-white/60 text-sm w-56 backdrop-blur-sm"
@@ -1045,10 +1045,10 @@ export default function DataAnak() {
                     />
                   </div>
                   <p className="text-gray-500 font-medium">
-                    Belum ada data anak untuk orang tua ini
+                    {t("dataAnak.belumAdaData")}
                   </p>
                   <p className="text-gray-400 text-sm mt-1">
-                    Pilih orang tua lain atau tambahkan data anak
+                    {t("dataAnak.pilihOrtuLain")}
                   </p>
                 </div>
               )}
@@ -1064,10 +1064,10 @@ export default function DataAnak() {
                 />
               </div>
               <p className="text-gray-700 font-bold text-lg">
-                Pilih orang tua dari tabel di atas
+                {t("dataAnak.pilihOrangTuaDariTabel")}
               </p>
               <p className="text-gray-500 mt-2">
-                Klik tombol "Pilih" pada baris orang tua untuk melihat data anak
+                {t("dataAnak.klikTombolPilih")}
               </p>
             </div>
           )}

@@ -173,7 +173,7 @@ export default function AnalisisStrategis() {
                         ))
                       ) : (
                         <p className="text-sm text-slate-400 text-center py-4 bg-slate-50 rounded-xl">
-                          Semua wilayah terkendali bulan ini.
+                          {t("analisis.semuaWilayahTerkendali")}
                         </p>
                       )}
                     </div>
@@ -271,7 +271,7 @@ export default function AnalisisStrategis() {
                           yAxisId="right"
                           type="monotone"
                           dataKey="akses_sanitasi"
-                          name="Sanitasi (%)"
+                          name={t("analisis.sanitasi")}
                           stroke="#0ea5e9"
                           strokeWidth={3}
                           dot={{ r: 3 }}
@@ -281,7 +281,7 @@ export default function AnalisisStrategis() {
                           yAxisId="right"
                           type="monotone"
                           dataKey="akses_air"
-                          name="Air Bersih (%)"
+                          name={t("analisis.airbersih")}
                           stroke="#10b981"
                           strokeWidth={3}
                           dot={{ r: 3 }}
@@ -290,7 +290,7 @@ export default function AnalisisStrategis() {
                           yAxisId="right"
                           type="monotone"
                           dataKey="prevalensi_bblr"
-                          name="BBLR (%)"
+                          name={t("analisis.bblr")}
                           stroke="#f59e0b"
                           strokeWidth={3}
                           strokeDasharray="4 4"
@@ -300,7 +300,7 @@ export default function AnalisisStrategis() {
                           yAxisId="right"
                           type="monotone"
                           dataKey="kesehatan_ibu"
-                          name="Pendidikan Ibu (%)"
+                          name={t("analisis.pendidikan")}
                           stroke="#8b5cf6"
                           strokeWidth={3}
                           dot={{ r: 3 }}
@@ -325,33 +325,30 @@ export default function AnalisisStrategis() {
                       <p className="text-sm text-slate-600 leading-relaxed mb-4">
                         Algoritma{" "}
                         <span className="font-semibold text-indigo-600 bg-indigo-50 px-2 ">
-                          Random Forest
+                          {t("analisis.algoritmaRandomForest")}
                         </span>{" "}
-                        memprediksi daerah rentan gizi berdasarkan pelemahan
-                        variabel infrastruktur dan kesehatan, sebelum lonjakan
-                        kasus terjadi.
+                        {t("analisis.deskripsiAI")}
                       </p>
                       <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-100 rounded-lg text-xs font-medium text-slate-500">
-                        <FaCheckCircle className="text-emerald-500" /> Data
-                        Terverifikasi Dinkes
+                        <FaCheckCircle className="text-emerald-500" /> {t("analisis.dataTerverifikasi")}
                       </div>
                     </div>
 
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="bg-rose-50/50 border border-rose-100 p-4 rounded-xl">
                         <div className="flex items-center gap-2 text-rose-600 font-semibold text-xs uppercase tracking-wider mb-2">
-                          <FaExclamationTriangle /> Indikator Krisis
+                          <FaExclamationTriangle /> {t("analisis.indikatorKrisis")}
                         </div>
                         <p className="text-xs text-slate-600">
-                          Sanitasi Layak &lt; 40% <br /> Air Bersih &lt; 40%
+                          {t("analisis.sanitasiLayak")} &lt; 40% <br /> {t("analisis.airBersih")} &lt; 40%
                         </p>
                       </div>
                       <div className="bg-amber-50/50 border border-amber-100 p-4 rounded-xl">
                         <div className="flex items-center gap-2 text-amber-600 font-semibold text-xs uppercase tracking-wider mb-2">
-                          <FaInfoCircle /> Indikator Waspada
+                          <FaInfoCircle /> {t("analisis.indikatorWaspada")}
                         </div>
                         <p className="text-xs text-slate-600">
-                          Pendidikan Ibu &lt; 60% <br /> BBLR &gt; 15%
+                          {t("analisis.pendidikanIbu")} &lt; 60% <br /> BBLR &gt; 15%
                         </p>
                       </div>
                     </div>
@@ -377,18 +374,20 @@ export default function AnalisisStrategis() {
                             <span
                               className={`text-[10px] px-2.5 py-1 rounded-md font-bold ${item.klaster === 2 ? "bg-rose-50 text-rose-600 border border-rose-100" : "bg-amber-50 text-amber-600 border border-amber-100"}`}
                             >
-                              {item.status}
+                              {item.klaster === 2 ? t("analisis.krisisLabel") : t("analisis.waspadaLabel")}
                             </span>
                           </div>
 
                           <p className="text-xs text-slate-500 mb-5 pl-2 leading-relaxed">
-                            {item.pesan}
+                            {item.pesan === "Peringatan otomatis berdasarkan ambang batas infrastruktur." 
+                              ? t("analisis.peringatanOtomatis") 
+                              : item.pesan}
                           </p>
 
                           <div className="grid grid-cols-3 gap-3 pl-2">
                             <div className="bg-slate-50 rounded-lg p-2.5">
                               <div className="text-[10px] text-slate-400 font-medium mb-1">
-                                Sanitasi
+                                {t("dataAnak.sanitasi")}
                               </div>
                               <div
                                 className={`text-sm font-bold ${item.data_mentah.p_sanitasi < 40 ? "text-rose-600" : "text-slate-700"}`}
@@ -398,7 +397,7 @@ export default function AnalisisStrategis() {
                             </div>
                             <div className="bg-slate-50 rounded-lg p-2.5">
                               <div className="text-[10px] text-slate-400 font-medium mb-1">
-                                Air Bersih
+                                {t("analisis.airBersih")}
                               </div>
                               <div
                                 className={`text-sm font-bold ${item.data_mentah.p_air < 40 ? "text-rose-600" : "text-slate-700"}`}
@@ -408,7 +407,7 @@ export default function AnalisisStrategis() {
                             </div>
                             <div className="bg-slate-50 rounded-lg p-2.5">
                               <div className="text-[10px] text-slate-400 font-medium mb-1">
-                                Pendidikan Ibu
+                                {t("dataAnak.pendidikanIbu")}
                               </div>
                               <div
                                 className={`text-sm font-bold ${item.data_mentah.p_ibu < 60 ? "text-rose-600" : "text-slate-700"}`}

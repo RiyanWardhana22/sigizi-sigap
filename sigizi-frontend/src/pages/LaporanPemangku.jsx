@@ -156,8 +156,8 @@ export default function LaporanPemangku() {
                 onChange={(e) => setFilterTahun(e.target.value)}
                 className="bg-transparent text-sm font-semibold text-slate-700 outline-none cursor-pointer"
               >
-                <option value="2025">Tahun 2025</option>
-                <option value="2026">Tahun 2026</option>
+                <option value="2025">{t("laporan.optionTahun1")}</option>
+                <option value="2026">{t("laporan.optionTahun2")}</option>
               </select>
             </div>
           </div>
@@ -196,7 +196,7 @@ export default function LaporanPemangku() {
                     <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
                     <input
                       type="text"
-                      placeholder="Cari wilayah..."
+                      placeholder={t("laporan.cari")}
                       className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:border-slate-400 focus:bg-white transition-colors"
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -319,10 +319,10 @@ export default function LaporanPemangku() {
                     <div className="animate-fadeIn">
                       <div className="mb-6 print:hidden">
                         <h2 className="text-lg font-bold text-slate-800">
-                          Tabel Rekapitulasi
+                          {t("laporan.tabelRekapitulasi")}
                         </h2>
                         <p className="text-sm text-slate-500 mt-1">
-                          Rincian data numerik per Kabupaten/Kota
+                          {t("laporan.rincianDataNumerik")}
                         </p>
                       </div>
 
