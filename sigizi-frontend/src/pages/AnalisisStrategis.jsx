@@ -25,6 +25,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useLanguage } from "../contexts/LanguageContext";
+import LanguageDropdown from "../components/LanguageDropdown";
 
 export default function AnalisisStrategis() {
   const navigate = useNavigate();
@@ -122,6 +123,7 @@ export default function AnalisisStrategis() {
               {t("analisis.title")}
             </h1>
           </div>
+          <LanguageDropdown />
         </header>
 
         <main className="p-6 md:p-8 overflow-y-auto space-y-8 pb-24">

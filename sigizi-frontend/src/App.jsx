@@ -1,6 +1,9 @@
+// ═══ FILE: src/App.jsx (UPDATED) ═══
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AnakProvider } from "./contexts/AnakContext";
+import Homepage from "./pages/Homepage";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
 import InputDataWilayah from "./pages/InputDataWilayah";
@@ -37,7 +40,16 @@ function App() {
     <BrowserRouter>
       <AnakProvider>
         <Routes>
-          <Route path="/" element={<LoginOrRedirect />} />
+          {/* Homepage - Halaman Utama Publik */}
+          <Route path="/" element={<Homepage />} />
+          
+          {/* Login Page */}
+          <Route path="/login" element={<LoginOrRedirect />} />
+          
+          {/* Register Page */}
+          <Route path="/register" element={<Register />} />
+          
+          {/* Redirect Home ke Dashboard atau Orang Tua Dashboard */}
           <Route path="/home" element={<RoleBasedRedirect />} />
 
           {/* Routes untuk Super Admin & Dinas Kesehatan */}

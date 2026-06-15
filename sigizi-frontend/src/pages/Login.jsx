@@ -1,6 +1,7 @@
+// ═══ FILE: src/pages/Login.jsx (REFACTORED) ═══
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaShieldAlt, FaEnvelope, FaLock, FaUser } from "react-icons/fa";
+import { FaEnvelope, FaLock } from "react-icons/fa";
 import {
   Clock,
   Mesh,
@@ -12,6 +13,8 @@ import {
   Vector3,
   WebGLRenderer,
 } from "three";
+import Swal from 'sweetalert2';
+import wmLogo from "../assets/wm.png";
 import { useLanguage } from "../contexts/LanguageContext";
 
 const vertexShader = `
@@ -495,13 +498,10 @@ function FloatingLines({
 
 export default function Login() {
   const { t } = useLanguage();
-  const [isLoginView, setIsLoginView] = useState(true);
-  const [namaLengkap, setNamaLengkap] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -515,82 +515,45 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg("");
-    setSuccessMsg("");
-    if (isLoginView) {
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/login.php`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: email, password: password }),
-          },
-        );
-        const data = await response.json();
-        if (data.status === "success") {
-          if (rememberMe) {
-            localStorage.setItem("rememberedEmail", email);
-          } else {
-            localStorage.removeItem("rememberedEmail");
-          }
 
-          localStorage.setItem("user", JSON.stringify(data.user));
-          if (data.user.role === "orang_tua") {
-            navigate("/orangtua/dashboard");
-          } else {
-            navigate("/dashboard");
-          }
-        } else {
-          setErrorMsg(data.message);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/login.php`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email, password: password }),
         }
-      } catch (error) {
-        console.error("Terjadi kesalahan:", error);
-        setErrorMsg("Tidak dapat terhubung ke server. Pastikan XAMPP menyala.");
-      }
-    } else {
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/register.php`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              nama_lengkap: namaLengkap,
-              email: email,
-              password: password,
-            }),
-          },
-        );
-        const data = await response.json();
+      );
+      const data = await response.json();
 
-        if (data.status === "success") {
-          setSuccessMsg(
-            "Pendaftaran berhasil! Silakan masuk dengan akun Anda.",
-          );
-          setIsLoginView(true);
-          setPassword("");
+      if (data.status === "success") {
+        if (rememberMe) {
+          localStorage.setItem("rememberedEmail", email);
         } else {
-          setErrorMsg(data.message);
+          localStorage.removeItem("rememberedEmail");
         }
-      } catch (error) {
-        console.error("Terjadi kesalahan:", error);
-        setErrorMsg("Tidak dapat terhubung ke server. Pastikan XAMPP menyala.");
+
+        localStorage.setItem("user", JSON.stringify(data.user));
+        if (data.user.role === "orang_tua") {
+          navigate("/orangtua/dashboard");
+        } else {
+          navigate("/dashboard");
+        }
+      } else {
+        setErrorMsg(data.message);
       }
+    } catch (error) {
+      console.error("Terjadi kesalahan:", error);
+      setErrorMsg(t("login.connectionError"));
     }
   };
 
   const handleForgotPassword = (e) => {
     e.preventDefault();
     Swal.fire(
-      "Untuk mengatur ulang kata sandi, silakan hubungi Administrator atau kader Posyandu setempat.",
+      t("login.forgotPasswordMessage")
     );
-  };
-
-  const toggleView = () => {
-    setIsLoginView(!isLoginView);
-    setErrorMsg("");
-    setSuccessMsg("");
-    setPassword("");
   };
 
   return (
@@ -612,18 +575,21 @@ export default function Login() {
         />
       </div>
 
-      {/* Kontainer Form - Glassmorphism */}
       <div className="z-10 w-full max-w-[420px] px-6 relative">
-        <div className="bg-[#080616]/60 backdrop-blur-xl border border-[#285A48]/30 rounded-3xl shadow-[0_0_40px_rgba(40,90,72,0.15)] overflow-hidden">
+        <div className="relative bg-[#080616]/60 backdrop-blur-xl border border-[#285A48]/30 rounded-3xl shadow-[0_0_40px_rgba(40,90,72,0.15)] overflow-hidden">
+          {/* Watermark */}
+          <img
+            src={wmLogo}
+            alt="watermark"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] opacity-[0.06] pointer-events-none select-none"
+            draggable={false}
+          />
           <div className="px-8 pt-10 pb-6 text-center">
-            <div className="flex justify-center mb-4"></div>
             <h2 className="text-2xl font-bold tracking-wide text-white">
               SI-GIZI <span className="text-emerald-400">SIGAP</span>
             </h2>
             <p className="text-slate-400 mt-2 text-sm font-medium">
-              {isLoginView
-                ? t("login.subtitle")
-                : t("login.registerSubtitle")}
+              {t("login.subtitle")}
             </p>
           </div>
 
@@ -633,31 +599,8 @@ export default function Login() {
                 {errorMsg}
               </div>
             )}
-            {successMsg && (
-              <div className="bg-emerald-500/10 border border-emerald-500/50 text-emerald-400 p-3 mb-6 rounded-xl text-sm font-medium text-center animate-fadeIn">
-                {successMsg}
-              </div>
-            )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Field Nama Lengkap */}
-              {!isLoginView && (
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <FaUser className="text-slate-400 group-focus-within:text-emerald-400 transition-colors" />
-                  </div>
-                  <input
-                    type="text"
-                    className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#285A48] focus:border-transparent focus:bg-white/10 transition-all text-sm"
-                    placeholder={t("login.fullNamePlaceholder")}
-                    value={namaLengkap}
-                    onChange={(e) => setNamaLengkap(e.target.value)}
-                    required={!isLoginView}
-                  />
-                </div>
-              )}
-
-              {/* Field Email */}
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <FaEnvelope className="text-slate-400 group-focus-within:text-emerald-400 transition-colors" />
@@ -672,7 +615,6 @@ export default function Login() {
                 />
               </div>
 
-              {/* Field Password */}
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <FaLock className="text-slate-400 group-focus-within:text-emerald-400 transition-colors" />
@@ -687,60 +629,44 @@ export default function Login() {
                 />
               </div>
 
-              {/* Ingat Saya & Lupa Password */}
-              {isLoginView && (
-                <div className="flex items-center justify-between mt-4 pb-2">
-                  <label className="flex items-center text-xs text-slate-400 cursor-pointer hover:text-white transition-colors">
-                    <input
-                      type="checkbox"
-                      className="mr-2 rounded border-white/20 bg-white/5 text-emerald-500 focus:ring-emerald-500 focus:ring-offset-0 w-3.5 h-3.5"
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                    />
-                    {t("login.rememberMe")}
-                  </label>
-                  <button
-                    type="button"
-                    onClick={handleForgotPassword}
-                    className="text-xs font-medium text-emerald-400 hover:text-emerald-300 transition-colors"
-                  >
-                    {t("login.forgotPassword")}
-                  </button>
-                </div>
-              )}
+              <div className="flex items-center justify-between mt-4 pb-2">
+                <label className="flex items-center text-xs text-slate-400 cursor-pointer hover:text-white transition-colors">
+                  <input
+                    type="checkbox"
+                    className="mr-2 rounded border-white/20 bg-white/5 text-emerald-500 focus:ring-emerald-500 focus:ring-offset-0 w-3.5 h-3.5"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                  />
+                  {t("login.rememberMe")}
+                </label>
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  className="text-xs font-medium text-emerald-400 hover:text-emerald-300 transition-colors"
+                >
+                  {t("login.forgotPassword")}
+                </button>
+              </div>
 
-              {/* Tombol Utama */}
               <button
                 type="submit"
                 className="w-full bg-[#285A48] hover:bg-[#1d4235] text-white font-bold py-3.5 px-4 rounded-xl shadow-[0_0_15px_rgba(40,90,72,0.4)] transition-all duration-300 mt-2 text-sm uppercase tracking-wider"
               >
-                {isLoginView ? t("login.loginButton") : t("login.registerButton")}
+                {t("login.loginButton")}
               </button>
             </form>
 
-            {/* Toggle Login/Register */}
             <div className="mt-8 text-center text-xs text-slate-400">
-              {isLoginView ? (
-                <p>
-                  {t("login.noAccount")}{" "}
-                  <button
-                    onClick={toggleView}
-                    className="font-bold text-emerald-400 hover:text-emerald-300 hover:underline transition-colors"
-                  >
-                    {t("login.createAccount")}
-                  </button>
-                </p>
-              ) : (
-                <p>
-                  {t("login.hasAccount")}{" "}
-                  <button
-                    onClick={toggleView}
-                    className="font-bold text-emerald-400 hover:text-emerald-300 hover:underline transition-colors"
-                  >
-                    {t("login.loginHere")}
-                  </button>
-                </p>
-              )}
+              <p>
+                {t("login.noAccount")}{" "}
+                <button
+                  type="button"
+                  onClick={() => navigate("/register")}
+                  className="font-bold text-emerald-400 hover:text-emerald-300 hover:underline transition-colors"
+                >
+                  {t("login.createAccount")}
+                </button>
+              </p>
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
+import LanguageDropdown from '../components/LanguageDropdown';
 
 export default function Layout() {
   // SIMULASI: Nanti ini diambil dari state login/token JWT (Context/Redux)
@@ -16,10 +17,14 @@ export default function Layout() {
       <div className="flex-1 flex flex-col">
         
         {/* Navbar Atas (Opsional, untuk tombol Logout) */}
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-end px-8">
-          <button className="text-sm font-medium text-gray-600 hover:text-red-600 transition-colors">
-            Keluar (Logout)
-          </button>
+        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8">
+          <div></div>
+          <div className="flex items-center gap-3">
+            <LanguageDropdown />
+            <button className="text-sm font-medium text-gray-600 hover:text-red-600 transition-colors">
+              Keluar (Logout)
+            </button>
+          </div>
         </header>
 
         {/* Di sinilah halaman-halaman lain (seperti Dashboard, InputWilayah, Peta) 

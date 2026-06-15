@@ -20,6 +20,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useLanguage } from "../contexts/LanguageContext";
+import LanguageDropdown from "../components/LanguageDropdown";
 
 export default function LaporanPemangku() {
   const navigate = useNavigate();
@@ -99,6 +100,7 @@ export default function LaporanPemangku() {
     );
     setFilteredData(results);
   }, [searchTerm, laporan]);
+
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
@@ -136,19 +138,48 @@ export default function LaporanPemangku() {
         />
       </div>
       <div className="flex-1 flex flex-col relative print:block h-screen overflow-hidden print:h-auto print:overflow-visible">
-        <header className="bg-white border-b border-slate-100 px-8 py-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 z-10 shadow-sm print:shadow-none print:border-b-2 print:border-black print:px-0 print:py-4 print:mb-6">
+        {/* HEADER dengan LanguageDropdown */}
+        <header className="bg-white border-b border-slate-100 px-8 py-5 flex justify-between items-center z-10 shadow-sm print:shadow-none print:border-b-2 print:border-black print:px-0 print:py-4 print:mb-6">
           <div>
             <h1 className="text-xl font-bold text-gray-800 tracking-tight flex items-center gap-2 uppercase">
               {t("laporan.title")}
             </h1>
             <p className="text-xs text-slate-500 mt-1 print:text-slate-800 print:font-medium">
-              {t("laporan.subtitle")} {" "}
-              {filterTahun}
+              {t("laporan.subtitle")} {filterTahun}
             </p>
           </div>
+          <LanguageDropdown />
+        </header>
 
-          {/* Tombol filter disembunyikan saat print */}
-          <div className="flex items-center gap-3 print:hidden">
+        {/* FILTER BAR - Dipindahkan ke antara header dan main */}
+        <div className="bg-white border-b border-slate-100 px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 print:hidden">
+          {/* Tab Sebaran / Tabel */}
+          <div className="flex bg-slate-100/80 p-1 rounded-xl w-full sm:w-auto">
+            <button
+              onClick={() => setActiveTab("sebaran")}
+              className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                activeTab === "sebaran"
+                  ? "bg-white text-slate-800 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700"
+              }`}
+            >
+              {t("laporan.grafikSebaran")}
+            </button>
+            <button
+              onClick={() => setActiveTab("tabel")}
+              className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                activeTab === "tabel"
+                  ? "bg-white text-slate-800 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700"
+              }`}
+            >
+              {t("laporan.tabelRekapitulasi")}
+            </button>
+          </div>
+
+          {/* Kontrol Kanan: Tahun Filter, Search, Export */}
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            {/* Filter Tahun */}
             <div className="flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors">
               <FaCalendarAlt className="text-slate-400 text-sm" />
               <select
@@ -160,66 +191,42 @@ export default function LaporanPemangku() {
                 <option value="2026">{t("laporan.optionTahun2")}</option>
               </select>
             </div>
-          </div>
-        </header>
 
+            {/* Search untuk Tabel (hanya muncul saat tab tabel aktif) */}
+            {activeTab === "tabel" && (
+              <div className="relative w-full sm:w-64">
+                <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
+                <input
+                  type="text"
+                  placeholder={t("laporan.cari")}
+                  className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:border-slate-400 focus:bg-white transition-colors"
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+            )}
+
+            {/* Tombol Export */}
+            <div className="flex gap-2 shrink-0">
+              <button
+                onClick={handleExportCSV}
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 hover:text-slate-800 transition-colors"
+              >
+                <FaFileExcel className="text-emerald-600" />{" "}
+                {t("laporan.excel")}
+              </button>
+              <button
+                onClick={handlePrint}
+                className="flex items-center gap-2 px-4 py-2 bg-[#0A2A20] hover:bg-[#124233] text-white rounded-lg text-sm font-medium shadow-sm transition-colors"
+              >
+                <FaFilePdf className="text-rose-400" /> {t("laporan.pdf")}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* MAIN CONTENT */}
         <main className="p-6 md:p-8 overflow-y-auto pb-24 print:p-0 print:overflow-visible">
           <div className="bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] rounded-2xl border border-slate-100 overflow-hidden print:shadow-none print:border-none print:w-full">
-            {/* Control Bar - Disembunyikan saat di print */}
-            <div className="p-5 border-b border-slate-100 flex flex-col lg:flex-row justify-between items-center gap-4 print:hidden">
-              <div className="flex bg-slate-100/80 p-1 rounded-xl w-full lg:w-auto">
-                <button
-                  onClick={() => setActiveTab("sebaran")}
-                  className={`flex-1 lg:flex-none flex items-center justify-center gap-2 px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    activeTab === "sebaran"
-                      ? "bg-white text-slate-800 shadow-sm"
-                      : "text-slate-500 hover:text-slate-700"
-                  }`}
-                >
-                  {t("laporan.grafikSebaran")}
-                </button>
-                <button
-                  onClick={() => setActiveTab("tabel")}
-                  className={`flex-1 lg:flex-none flex items-center justify-center gap-2 px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    activeTab === "tabel"
-                      ? "bg-white text-slate-800 shadow-sm"
-                      : "text-slate-500 hover:text-slate-700"
-                  }`}
-                >
-                  {t("laporan.tabelRekapitulasi")}
-                </button>
-              </div>
-
-              <div className="flex items-center gap-3 w-full lg:w-auto">
-                {activeTab === "tabel" && (
-                  <div className="relative w-full lg:w-64">
-                    <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
-                    <input
-                      type="text"
-                      placeholder={t("laporan.cari")}
-                      className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:border-slate-400 focus:bg-white transition-colors"
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                  </div>
-                )}
-                <div className="flex gap-2 shrink-0">
-                  <button
-                    onClick={handleExportCSV}
-                    className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 hover:text-slate-800 transition-colors"
-                  >
-                    <FaFileExcel className="text-emerald-600" /> {t("laporan.excel")}
-                  </button>
-                  <button
-                    onClick={handlePrint}
-                    className="flex items-center gap-2 px-4 py-2 bg-[#0A2A20] hover:bg-[#124233] text-white rounded-lg text-sm font-medium shadow-sm transition-colors"
-                  >
-                    <FaFilePdf className="text-rose-400" /> {t("laporan.pdf")}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Content Area */}
             <div className="p-6 md:p-8 print:p-0">
               {loading ? (
                 <div className="py-24 flex flex-col items-center justify-center gap-4 text-[#0A2A20] print:hidden">
@@ -238,7 +245,7 @@ export default function LaporanPemangku() {
                             {t("laporan.grafikKerentananWilayah")}
                           </h2>
                           <p className="text-sm text-slate-500 mt-1">
-                            {t("laporan.distribusiStatusGizi")} 
+                            {t("laporan.distribusiStatusGizi")}
                           </p>
                         </div>
                       </div>
@@ -383,7 +390,7 @@ export default function LaporanPemangku() {
                                   colSpan="5"
                                   className="px-6 py-12 text-center text-slate-500"
                                 >
-                                  Data wilayah tidak ditemukan.
+                                  {t("laporan.dataWilayahTidakDitemukan")}
                                 </td>
                               </tr>
                             )}

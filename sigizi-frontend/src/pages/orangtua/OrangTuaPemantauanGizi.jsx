@@ -24,6 +24,7 @@ import {
   calculateZScore,
 } from "./growthReferences";
 import { useLanguage } from "../../contexts/LanguageContext";
+import LanguageDropdown from "../../components/LanguageDropdown";
 
 // ─────────────────────────────────────────────
 // KOMPONEN: MODAL PENJELASAN GRAFIK
@@ -1803,7 +1804,7 @@ export default function OrangTuaPemantauanGizi() {
       <Sidebar handleLogout={handleLogout} />
 
       <div className="flex-1 flex flex-col">
-        <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-emerald-100 px-8 py-6 sticky top-0 z-20">
+        <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-emerald-100 px-8 py-6 sticky top-0 z-20 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <div>
               <h1 className="text-xl font-bold text-gray-800">
@@ -1814,6 +1815,7 @@ export default function OrangTuaPemantauanGizi() {
               </p>
             </div>
           </div>
+          <LanguageDropdown />
         </header>
 
         <main className="p-8 overflow-y-auto">

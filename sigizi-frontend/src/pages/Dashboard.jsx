@@ -11,6 +11,7 @@ import {
   FaChartArea,
 } from "react-icons/fa";
 import { useLanguage } from "../contexts/LanguageContext";
+import LanguageDropdown from "../components/LanguageDropdown";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -76,6 +77,7 @@ export default function Dashboard() {
               {t("dashboard.welcome")}
             </p>
           </div>
+          <LanguageDropdown />
         </header>
 
         <main className="flex-1 overflow-y-auto p-6 md:p-8 pb-24">

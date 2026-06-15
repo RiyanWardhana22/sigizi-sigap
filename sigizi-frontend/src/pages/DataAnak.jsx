@@ -15,6 +15,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useLanguage } from "../contexts/LanguageContext";
+import LanguageDropdown from "../components/LanguageDropdown";
 
 export default function DataAnak() {
   const navigate = useNavigate();
@@ -361,7 +362,7 @@ export default function DataAnak() {
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-emerald-50">
       <Sidebar handleLogout={handleLogout} />
       <div className="flex-1 flex flex-col">
-        <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-emerald-100 px-8 py-6 sticky top-0 z-20">
+        <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-emerald-100 px-8 py-6 sticky top-0 z-20 flex justify-between items-center">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div>
@@ -374,6 +375,7 @@ export default function DataAnak() {
               </div>
             </div>
           </div>
+          <LanguageDropdown />
         </header>
 
         <main className="p-8 overflow-y-auto">

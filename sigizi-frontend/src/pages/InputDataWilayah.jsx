@@ -12,6 +12,7 @@ import {
   FaKeyboard,
 } from "react-icons/fa";
 import { useLanguage } from "../contexts/LanguageContext";
+import LanguageDropdown from "../components/LanguageDropdown";
 
 const DAFTAR_WILAYAH_SUMUT = [
   "Nias",
@@ -286,6 +287,7 @@ export default function InputDataWilayah() {
               {t("inputWilayah.subtitle")}
             </p>
           </div>
+          <LanguageDropdown />
         </header>
 
         <main className="p-6 sm:p-8 overflow-y-auto w-full max-w-7xl mx-auto">

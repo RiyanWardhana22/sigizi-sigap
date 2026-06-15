@@ -151,6 +151,11 @@ export default function Sidebar({ handleLogout }) {
       >
         <div className="p-6 flex justify-between items-center lg:justify-start gap-3">
           <div className="flex items-center gap-3">
+            <img 
+              src="/logo.png" 
+              alt="SI-GIZI SIGAP Logo" 
+              className="h-10 w-auto object-contain"
+            />
             <h2 className="text-xl font-bold tracking-wide text-white">
               {t("sidebar.siGiziSigap")}<span className="text-emerald-400"></span>
             </h2>

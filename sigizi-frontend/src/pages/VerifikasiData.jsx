@@ -24,6 +24,7 @@ import {
   FaHospitalSymbol,
 } from "react-icons/fa";
 import { useLanguage } from "../contexts/LanguageContext";
+import LanguageDropdown from "../components/LanguageDropdown";
 
 export default function VerifikasiData() {
   const navigate = useNavigate();
@@ -206,6 +207,7 @@ export default function VerifikasiData() {
               </p>
             </div>
           </div>
+          <LanguageDropdown />
         </header>
 
         <main className="flex-1 p-4 md:p-8 overflow-y-auto custom-scrollbar">

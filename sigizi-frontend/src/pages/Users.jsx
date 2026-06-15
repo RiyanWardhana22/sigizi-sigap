@@ -17,6 +17,7 @@ import {
   FaUsers,
 } from "react-icons/fa";
 import { useLanguage } from "../contexts/LanguageContext";
+import LanguageDropdown from "../components/LanguageDropdown";
 
 export default function Users() {
   const navigate = useNavigate();
@@ -232,6 +233,7 @@ export default function Users() {
               {t("users.title")}
             </h1>
           </div>
+          <LanguageDropdown />
         </header>
 
         <main className="flex-1 p-4 md:p-8 overflow-y-auto space-y-6">

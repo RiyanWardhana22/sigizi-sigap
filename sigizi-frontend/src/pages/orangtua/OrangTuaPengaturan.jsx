@@ -5,10 +5,11 @@ import Sidebar from "../../components/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { useLanguage } from "../../contexts/LanguageContext";
+import LanguageDropdown from "../../components/LanguageDropdown";
 
 export default function OrangTuaPengaturan() {
   const navigate = useNavigate();
-  const { t, language, changeLanguage } = useLanguage();
+  const { t } = useLanguage();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -181,7 +182,7 @@ export default function OrangTuaPengaturan() {
       <Sidebar handleLogout={handleLogout} />
 
       <div className="flex-1 flex flex-col">
-        <header className="bg-white shadow px-6 py-4">
+        <header className="bg-white shadow px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <FontAwesomeIcon
               icon={fas.faUserCog}
@@ -189,6 +190,7 @@ export default function OrangTuaPengaturan() {
             />
             <h1 className="text-xl font-bold text-gray-800">{t("ortu.pengaturan.title")}</h1>
           </div>
+          <LanguageDropdown />
         </header>
 
         <main className="p-6 overflow-y-auto">
@@ -397,48 +399,6 @@ export default function OrangTuaPengaturan() {
                   </div>
                 </form>
               )}
-            </div>
-
-            {/* Language Settings Card */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2 mb-4">
-                <FontAwesomeIcon icon={fas.faLanguage} /> {t("ortu.pengaturan.pengaturanBahasa")}
-              </h2>
-              
-              <div className="space-y-4">
-                <p className="text-sm text-gray-500">
-                  {t("ortu.pengaturan.pilihBahasa")}
-                </p>
-                
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => changeLanguage("id")}
-                    className={`flex-1 flex items-center justify-center gap-3 py-3 px-4 rounded-xl font-bold transition-all ${
-                      language === "id"
-                        ? "bg-emerald-600 text-white shadow-md shadow-emerald-200"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}
-                  >
-                    <span className="text-xl">🇮🇩</span>
-                    {t("ortu.pengaturan.bahasaIndonesia")}
-                  </button>
-                  <button
-                    onClick={() => changeLanguage("en")}
-                    className={`flex-1 flex items-center justify-center gap-3 py-3 px-4 rounded-xl font-bold transition-all ${
-                      language === "en"
-                        ? "bg-emerald-600 text-white shadow-md shadow-emerald-200"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}
-                  >
-                    <span className="text-xl">🇬🇧</span>
-                    {t("ortu.pengaturan.bahasaInggris")}
-                  </button>
-                </div>
-                
-                <p className="text-xs text-gray-400 mt-2">
-                  {t("ortu.pengaturan.bahasaAkanBerubah")}
-                </p>
-              </div>
             </div>
           </div>
         </main>

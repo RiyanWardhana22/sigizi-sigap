@@ -6,6 +6,7 @@ import Sidebar from "../../components/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { useLanguage } from "../../contexts/LanguageContext";
+import LanguageDropdown from "../../components/LanguageDropdown";
 
 // ─────────────────────────────────────────────
 // DATA EDUKASI BERDASARKAN STATUS GIZI
@@ -1000,7 +1001,7 @@ export default function OrangTuaDashboard() {
       <Sidebar handleLogout={handleLogout} />
 
       <div className="flex-1 flex flex-col">
-        <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-emerald-100 px-8 py-6 sticky top-0 z-20">
+        <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-emerald-100 px-8 py-6 sticky top-0 z-20 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <div>
               <h1 className="text-xl font-bold text-gray-800">
@@ -1011,6 +1012,7 @@ export default function OrangTuaDashboard() {
               </p>
             </div>
           </div>
+          <LanguageDropdown />
         </header>
 
         <main className="p-8 overflow-y-auto">

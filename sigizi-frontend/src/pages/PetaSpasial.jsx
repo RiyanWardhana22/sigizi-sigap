@@ -4,6 +4,7 @@ import Sidebar from "../components/Sidebar";
 import MapDashboard from "../components/MapDashboard";
 import { FaMapMarkedAlt, FaUserFriends, FaChartArea } from "react-icons/fa";
 import { useLanguage } from "../contexts/LanguageContext";
+import LanguageDropdown from "../components/LanguageDropdown";
 
 export default function PetaSpasial() {
   const navigate = useNavigate();
@@ -31,10 +32,11 @@ export default function PetaSpasial() {
       <Sidebar handleLogout={handleLogout} />
 
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="bg-white border-b border-gray-200 px-8 py-5 flex items-center gap-4 z-10 relative">
+        <header className="bg-white border-b border-gray-200 px-8 py-5 flex items-center gap-4 z-10 relative flex justify-between items-center">
           <h1 className="text-xl font-bold text-gray-800 uppercase tracking-wider">
             {t("peta.title")}
           </h1>
+          <LanguageDropdown />
         </header>
 
         <main className="flex-1 p-6 overflow-y-auto">
