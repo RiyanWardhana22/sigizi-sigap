@@ -57,7 +57,7 @@ export default function HomepageNavbar() {
             <img 
               src="/logo.png" 
               alt="SI-GIZI SIGAP Logo" 
-              className="h-10 w-auto object-contain"
+              className="h-10 w-12 object-contain"
             />
             <span className="font-bold text-lg hidden sm:inline">{t("homepage.footer.brand")}</span>
           </div>
