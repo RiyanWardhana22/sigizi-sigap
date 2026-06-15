@@ -63,17 +63,17 @@ export default function VerifikasiData() {
       const data = await response.json();
       if (data.status === "success") setDataAnak(data.data);
     } catch (error) {
-      console.error("Gagal mengambil data:", error);
+      console.error(t("users.alert2"), error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleVerifikasi = async (id, status) => {
-    const actionText = status === "Disetujui" ? "menyetujui" : "menolak";
-    if (!window.confirm(`Apakah Anda yakin ingin ${actionText} data ini?`))
+    const actionText = status === "Disetujui" ? t("app.setuju") : t("app.menolak");
+    if (!window.confirm(t("verifikasi.konfirmasiAksi", { action: actionText }))) {
       return;
-
+    }
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/verifikasi_anak.php`,
@@ -604,7 +604,7 @@ export default function VerifikasiData() {
                   onClick={closeModal}
                   className="px-6 py-3 text-xs font-bold text-slate-500 uppercase hover:bg-slate-50 rounded-xl transition"
                 >
-                  {t("verifikasi.close")}
+                  {t("app.close")}
                 </button>
                 {selectedAnak.status_verifikasi === "Menunggu" && (
                   <>

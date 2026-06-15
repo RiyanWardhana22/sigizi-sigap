@@ -6,7 +6,7 @@ export default {
   app: {
     name: "SI-GIZI SIGAP",
     loading: "Memuat data...",
-    error: "Terjadi kesalahan",
+    error: "Terjadi kesalahan:",
     success: "Berhasil",
     save: "Simpan",
     cancel: "Batal",
@@ -74,7 +74,7 @@ export default {
     passwordMinLength: "Password minimal 6 karakter.",
     passwordNotMatch: "Password tidak cocok.",
     loginSuccess: "Login berhasil!",
-    registerSuccess: "Pendaftaran berhasil! Silakan masuk.",
+    registerSuccess: "Pendaftaran berhasil! Mengarahkan ke halaman login...",
     logoutSuccess: "Anda telah keluar.",
     dataSaved: "Data berhasil disimpan.",
     dataUpdated: "Data berhasil diperbarui.",
@@ -89,6 +89,11 @@ export default {
     bulan: "Bulan",
     hari: "Hari",
     praStunting: "Pra-Stunting",
+    errorRegister1: "Pendaftaran gagal. Coba lagi.",
+    setuju: "menyetujui",
+    menolak: "menolak",
+    yakin: "Apakah Anda yakin ingin",
+    dataIni: "data ini?",
 
     // Validasi
     validation: {
@@ -149,6 +154,8 @@ export default {
     connectionError: "Tidak dapat terhubung ke server. Pastikan XAMPP menyala.",
     sandiKonfirmasi: "Konfirmasi Kata Sandi",
     register: "Daftar Sekarang",
+    errorSandi1: "Kata sandi tidak cocok!",
+    errorSandi2: "Kata sandi minimal 6 karakter",
   },
 
   // Dashboard Overview
@@ -251,6 +258,7 @@ export default {
     validasiSetujui: "Validasi & Setujui",
     dataTidakDitemukan: "Data tidak ditemukan.",
     pendidikan: "Pendidikan Ibu",
+    konfirmasiAksi: "Apakah Anda yakin ingin {{action}} data ini?",
   },
 
   // Input Data Wilayah
@@ -900,6 +908,8 @@ export default {
       anakTerpapar: "Anak di Bawah 5 Tahun Terdampak",
       risikoKomorbiditas: "Risiko Komorbiditas Penyakit",
       targetBebasStunting: "Target Indonesia Bebas Stunting",
+      lebih: "3x Lebih",
+      juta: "8,5 Juta",
     },
     artikel: {
       badge: "EDUKASI GIZI",

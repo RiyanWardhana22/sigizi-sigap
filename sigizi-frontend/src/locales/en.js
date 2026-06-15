@@ -6,7 +6,7 @@ export default {
   app: {
     name: "SI-GIZI SIGAP",
     loading: "Loading data...",
-    error: "An error occurred",
+    error: "An error occurred:",
     success: "Success",
     save: "Save",
     cancel: "Cancel",
@@ -74,7 +74,7 @@ export default {
     passwordMinLength: "Password must be at least 6 characters.",
     passwordNotMatch: "Passwords do not match.",
     loginSuccess: "Login successful!",
-    registerSuccess: "Registration successful! Please login.",
+    registerSuccess: "Registration successful! Redirecting to the login page...",
     logoutSuccess: "You have been logged out.",
     dataSaved: "Data saved successfully.",
     dataUpdated: "Data updated successfully.",
@@ -88,6 +88,11 @@ export default {
     tahun: "Year",
     bulan: "Month",
     hari: "Day",
+    errorRegister1: "Registration failed. Please try again.",
+    setuju: "approve",
+    menolak: "refuse",
+    yakin: "Are you sure you want to",
+    dataIni: "this data?",
 
     // Validation
     validation: {
@@ -147,7 +152,9 @@ export default {
     emailExists: "Email already registered",
     connectionError: "Cannot connect to server. Please make sure XAMPP is running.",
     sandiKonfirmasi: "Password Confirmation",
-    register: "Sign Up Now"
+    register: "Sign Up Now",
+    errorSandi1: "The password does not match!",
+    errorSandi2: "Password must be at least 6 characters long",
   },
 
   // Dashboard Overview
@@ -247,6 +254,7 @@ export default {
     validasiSetujui: "Validate & Approve",
     dataTidakDitemukan: "Data not found.",
     pendidikan: "mother's education",
+    konfirmasiAksi: "Are you sure you want to {{action}} this data?",
   },
 
   // Regional Data Input
@@ -898,6 +906,8 @@ export default {
       anakTerpapar: "Children Under 5 Years Affected",
       risikoKomorbiditas: "Risk of Comorbidities",
       targetBebasStunting: "Indonesia's Stunting-Free Target",
+      lebih: "3x Higher",
+      juta: "8,5 Million",
     },
     artikel: {
       badge: "NUTRITION EDUCATION",

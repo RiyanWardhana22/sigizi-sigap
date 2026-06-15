@@ -544,7 +544,7 @@ export default function Login() {
         setErrorMsg(data.message);
       }
     } catch (error) {
-      console.error("Terjadi kesalahan:", error);
+      console.error(t("app.error"), error);
       setErrorMsg(t("login.connectionError"));
     }
   };

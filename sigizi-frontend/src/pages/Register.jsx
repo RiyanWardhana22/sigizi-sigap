@@ -512,11 +512,11 @@ export default function Register() {
     setSuccessMsg("");
 
     if (password !== konfirmasiPassword) {
-      setErrorMsg("Kata sandi tidak cocok!");
+      setErrorMsg(t("login.errorSandi1"));
       return;
     }
     if (password.length < 6) {
-      setErrorMsg("Kata sandi minimal 6 karakter");
+      setErrorMsg(t("login.errorSandi2"));
       return;
     }
 
@@ -537,14 +537,14 @@ export default function Register() {
       const data = await response.json();
 
       if (data.status === "success") {
-        setSuccessMsg("Pendaftaran berhasil! Mengarahkan ke halaman login...");
+        setSuccessMsg(t("app.registerSuccess"));
         setTimeout(() => navigate("/login"), 2000);
       } else {
-        setErrorMsg(data.message || "Pendaftaran gagal. Coba lagi.");
+        setErrorMsg(data.message || t("app.errorRegister1"));
       }
     } catch (error) {
       console.error("Terjadi kesalahan:", error);
-      setErrorMsg("Tidak dapat terhubung ke server. Pastikan XAMPP menyala.");
+      setErrorMsg(t("login.connectionError"));
     } finally {
       setIsLoading(false);
     }
