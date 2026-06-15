@@ -207,8 +207,8 @@ export default function Homepage() {
   // Statistik cards data dengan terjemahan
   const statistikData = [
     { angka: "21,5%", labelKey: "homepage.statistik.prevalensi", icon: fas.faChartBar },
-    { angka: "8,5 Juta", labelKey: "homepage.statistik.anakTerpapar", icon: fas.faChildren },
-    { angka: "3x Lebih", labelKey: "homepage.statistik.risikoKomorbiditas", icon: fas.faHeartPulse },
+    { angka: t("homepage.statistik.juta"), labelKey: "homepage.statistik.anakTerpapar", icon: fas.faChildren },
+    { angka: t("homepage.statistik.lebih"), labelKey: "homepage.statistik.risikoKomorbiditas", icon: fas.faHeartPulse },
     { angka: "2045", labelKey: "homepage.statistik.targetBebasStunting", icon: fas.faFlagCheckered },
   ];
 
