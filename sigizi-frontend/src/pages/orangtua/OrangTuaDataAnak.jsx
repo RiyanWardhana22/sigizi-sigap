@@ -129,7 +129,7 @@ export default function OrangTuaDataAnak() {
       const data = await res.json();
       if (data.status === "success") setWilayahList(data.data);
     } catch (e) {
-      console.error("Gagal memuat wilayah:", e);
+      console.error(t("app.errorLoadWilayah"), e);
     }
   };
 
@@ -157,7 +157,7 @@ export default function OrangTuaDataAnak() {
         setShowProfilForm(true);
       }
     } catch (e) {
-      console.error("Gagal memuat profil:", e);
+      console.error(t("app.errorLoadProfile"), e);
       setProfilLengkap(false);
     }
   };
@@ -179,7 +179,7 @@ export default function OrangTuaDataAnak() {
       if (data.status === "success") {
         setProfilMessage({
           type: "success",
-          text: "Data diri berhasil disimpan!",
+          text: t("app.suksesSimpanDatadiri"),
         });
         setProfilLengkap(true);
         const wilayah = wilayahList.find((w) => w.id == profilForm.wilayah_id);
@@ -197,7 +197,7 @@ export default function OrangTuaDataAnak() {
         setProfilMessage({ type: "error", text: data.message });
       }
     } catch (e) {
-      setProfilMessage({ type: "error", text: "Terjadi kesalahan sistem" });
+      setProfilMessage({ type: "error", text: t("app.errorSistem") });
     } finally {
       setProfilSaving(false);
     }
@@ -219,11 +219,11 @@ export default function OrangTuaDataAnak() {
           setLoading(false);
         }
       } else {
-        setError("Gagal memuat data orang tua");
+        setError(t("app.errorLoadOrtu"));
         setLoading(false);
       }
     } catch (error) {
-      setError("Gagal memuat data orang tua: " + error.message);
+      setError(t("app.errorLoadDataOrtu") + error.message);
       setLoading(false);
     }
   };
@@ -271,7 +271,7 @@ export default function OrangTuaDataAnak() {
           setSuperAdminSelectedAnak(null);
         }
       } else {
-        setError(data.message || "Gagal memuat data anak");
+        setError(data.message || t("app.errorLoadAnak"));
         if (role === "orang_tua") updateAnakList([], userId, role);
         else {
           setSuperAdminAnakList([]);
@@ -279,7 +279,7 @@ export default function OrangTuaDataAnak() {
         }
       }
     } catch (error) {
-      setError("Terjadi kesalahan saat memuat data: " + error.message);
+      setError(t("app.errorLoadData") + error.message);
       if (role === "orang_tua") updateAnakList([], userId, role);
       else {
         setSuperAdminAnakList([]);
@@ -357,7 +357,7 @@ export default function OrangTuaDataAnak() {
         Swal.fire({
           position: "top-end",
           icon: "success",
-          title: "Data anak berhasil ditambahkan!",
+          title: t("app.suksesSimpanDataanak"),
           showConfirmButton: false,
           timer: 1500,
         });
@@ -375,10 +375,10 @@ export default function OrangTuaDataAnak() {
           userRole === "super_admin" ? "super_admin" : "orang_tua",
         );
       } else {
-        alert(data.message || "Gagal menambahkan data anak");
+        alert(data.message || t("app.errorSaveAnak"));
       }
     } catch (error) {
-      alert("Gagal menambahkan data anak: " + error.message);
+      alert(t("app.errorSaveDataAnak") + error.message);
     }
   };
 
@@ -432,10 +432,10 @@ export default function OrangTuaDataAnak() {
         );
         setTimeout(() => setShowAnalysis(false), 5000);
       } else {
-        alert(data.message || "Gagal mengupdate data pertumbuhan");
+        alert(data.message || t("app.errorUpdateGrowth"));
       }
     } catch (error) {
-      alert("Terjadi kesalahan: " + error.message);
+      alert(t("app.error") + error.message);
     }
   };
 

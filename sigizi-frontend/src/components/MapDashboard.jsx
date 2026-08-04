@@ -46,6 +46,17 @@ const MapResizer = () => {
 };
 
 // =========================================================================
+// KOMPONEN UNTUK MENANGKAP INSTANCE MAP LEAFLET KE PARENT STATE
+// =========================================================================
+const MapController = ({ onMapReady }) => {
+  const map = useMap();
+  useEffect(() => {
+    if (map) onMapReady(map);
+  }, [map, onMapReady]);
+  return null;
+};
+
+// =========================================================================
 // KOMPONEN SWITCH KUSTOM
 // =========================================================================
 const CustomToggle = ({ label, icon, active, onChange, activeColor }) => (
@@ -70,6 +81,7 @@ export default function MapDashboard({ mode = "balita" }) {
   const [laporan, setLaporan] = useState([]);
   const [agregatML, setAgregatML] = useState([]);
   const [geoJsonData, setGeoJsonData] = useState(null);
+  const [mapInstance, setMapInstance] = useState(null);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLegendOpen, setIsLegendOpen] = useState(true); 
@@ -242,6 +254,30 @@ export default function MapDashboard({ mode = "balita" }) {
       )}
 
       {/* ========================================================= */}
+      {/* KANAN BAWAH: KONTROL ZOOM KUSTOM                         */}
+      {/* ========================================================= */}
+      <div className="absolute bottom-16 right-3 sm:bottom-20 sm:right-4 z-[1000] flex flex-col gap-1 pointer-events-none">
+        <button
+          onClick={() => mapInstance?.zoomIn()}
+          disabled={!mapInstance}
+          className="pointer-events-auto w-9 h-9 bg-white/95 backdrop-blur-md border border-gray-200 rounded-xl shadow-md flex items-center justify-center text-gray-700 hover:bg-gray-50 hover:text-gray-900 active:scale-95 transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed select-none"
+          title="Zoom In"
+          aria-label="Zoom In"
+        >
+          <span className="text-xl font-bold leading-none pb-0.5">+</span>
+        </button>
+        <button
+          onClick={() => mapInstance?.zoomOut()}
+          disabled={!mapInstance}
+          className="pointer-events-auto w-9 h-9 bg-white/95 backdrop-blur-md border border-gray-200 rounded-xl shadow-md flex items-center justify-center text-gray-700 hover:bg-gray-50 hover:text-gray-900 active:scale-95 transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed select-none"
+          title="Zoom Out"
+          aria-label="Zoom Out"
+        >
+          <span className="text-xl font-bold leading-none pb-1">−</span>
+        </button>
+      </div>
+
+      {/* ========================================================= */}
       {/* KIRI BAWAH: LEGENDA PETA */}
       {/* ========================================================= */}
       <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-[1000] flex flex-col items-start gap-2 pointer-events-none">
@@ -309,9 +345,10 @@ export default function MapDashboard({ mode = "balita" }) {
       {/* ========================================================= */}
       {/* KANVAS PETA LEAFLET                                       */}
       {/* ========================================================= */}
-      <MapContainer center={centerPosition} zoom={7} scrollWheelZoom={true} className="w-full h-full z-0" zoomControl={false}>
+      <MapContainer center={centerPosition} zoom={7} scrollWheelZoom={false} className="w-full h-full z-0" zoomControl={false}>
 
         <MapResizer />
+        <MapController onMapReady={setMapInstance} />
         <TileLayer attribution='&copy; OpenStreetMap | Data: Dinkes & BNPB' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
         {/* OVERLAY BNPB */}

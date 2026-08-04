@@ -1,12 +1,40 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import HomepageNavbar from "./HomepageNavbar";
 import { useLanguage } from "../contexts/LanguageContext";
+import heroImage from "../assets/homepage.png";
 
-// Data Artikel dengan key terjemahan
+// --- Custom hook untuk deteksi elemen masuk viewport (animasi scroll) ---
+function useInView(ref, options = { threshold: 0.15, triggerOnce: true }) {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsVisible(true);
+        if (options.triggerOnce) observer.disconnect();
+      } else if (!options.triggerOnce) {
+        setIsVisible(false);
+      }
+    }, options);
+
+    const currentRef = ref.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) observer.unobserve(currentRef);
+    };
+  }, [ref, options]);
+
+  return isVisible;
+}
+
+// --- Data artikel (tetap) ---
 const SEMUA_ARTIKEL = [
   {
     id: "n1",
@@ -100,7 +128,7 @@ const SEMUA_ARTIKEL = [
   },
 ];
 
-// Data Berita dengan key terjemahan
+// --- Data berita (tetap) ---
 const BERITA_DATA_KEYS = [
   {
     id: "b1",
@@ -164,7 +192,7 @@ const BERITA_DATA_KEYS = [
   },
 ];
 
-// Helper untuk warna
+// --- Helper warna ---
 const getWarnaStyle = (warna) => {
   const map = {
     emerald: "bg-emerald-50 text-emerald-600",
@@ -184,7 +212,22 @@ export default function Homepage() {
   const [expandedArtikelId, setExpandedArtikelId] = useState(null);
   const [expandedBeritaId, setExpandedBeritaId] = useState(null);
 
-  // Render artikel dengan terjemahan dinamis
+  // --- Refs untuk setiap section yang akan dianimasi ---
+  const fiturRef = useRef(null);
+  const statistikRef = useRef(null);
+  const artikelRef = useRef(null);
+  const beritaRef = useRef(null);
+  const ctaRef = useRef(null);
+
+  const fiturVisible = useInView(fiturRef);
+  const statistikVisible = useInView(statistikRef);
+  const artikelVisible = useInView(artikelRef);
+  const beritaVisible = useInView(beritaRef);
+  const ctaVisible = useInView(ctaRef);
+
+  const getStaggerDelay = (index, base = 100) => `${index * base}ms`;
+
+  // --- Render data dengan terjemahan ---
   const artikelTampil = SEMUA_ARTIKEL.filter(
     (a) => filterTab === "Semua" || a.status === filterTab
   ).slice(0, 6).map(artikel => ({
@@ -195,7 +238,6 @@ export default function Homepage() {
     waktu: t(artikel.waktuKey),
   }));
 
-  // Render berita dengan terjemahan dinamis
   const beritaTampil = BERITA_DATA_KEYS.map(berita => ({
     ...berita,
     judul: t(berita.judulKey),
@@ -204,7 +246,6 @@ export default function Homepage() {
     kategori: t(berita.kategoriKey),
   }));
 
-  // Statistik cards data dengan terjemahan
   const statistikData = [
     { angka: "21,5%", labelKey: "homepage.statistik.prevalensi", icon: fas.faChartBar },
     { angka: t("homepage.statistik.juta"), labelKey: "homepage.statistik.anakTerpapar", icon: fas.faChildren },
@@ -212,7 +253,6 @@ export default function Homepage() {
     { angka: "2045", labelKey: "homepage.statistik.targetBebasStunting", icon: fas.faFlagCheckered },
   ];
 
-  // Data Fitur dengan terjemahan dinamis
   const fiturData = [
     {
       icon: fas.faChartLine,
@@ -263,10 +303,10 @@ export default function Homepage() {
     <div className="scroll-smooth">
       <HomepageNavbar />
 
-      {/* SECTION 1: HERO */}
+      {/* ===== HERO ===== (animasi saat load, tanpa observer) */}
       <section
         id="beranda"
-        className="relative min-h-screen pt-20 overflow-hidden"
+        className="relative min-h-screen pt-20 overflow-hidden hero-section"
         style={{
           background: "linear-gradient(135deg, #064e3b 0%, #047857 25%, #059669 50%, #10b981 75%, #34d399 100%)",
         }}
@@ -276,8 +316,8 @@ export default function Homepage() {
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-emerald-300 rounded-full blur-3xl"></div>
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-400 rounded-full blur-3xl"></div>
         </div>
-        
-        <div 
+
+        <div
           className="absolute inset-0 opacity-10"
           style={{
             backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.3) 2px, transparent 2px)",
@@ -286,8 +326,9 @@ export default function Homepage() {
         ></div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-          <div className="lg:grid lg:grid-cols-2 lg:items-center gap-12">
-            <div>
+          <div className="lg:grid lg:grid-cols-2 lg:items-center gap-12 pb-8 sm:pb-10 lg:pb-0">
+            {/* Teks hero - animasi slideLeft */}
+            <div className="hero-text">
               <h1 className="text-4xl lg:text-5xl font-extrabold text-white leading-tight">
                 {t("homepage.hero.title")} <br />
                 <span className="text-emerald-200">{t("homepage.hero.titleHighlight")}</span>
@@ -298,121 +339,67 @@ export default function Homepage() {
               <div className="flex flex-wrap gap-4 mb-8">
                 <button
                   onClick={() => navigate("/login")}
-                  className="bg-white text-emerald-700 font-bold px-8 py-3.5 rounded-xl hover:bg-emerald-50 transition-all shadow-lg flex items-center gap-2 group"
+                  className="bg-white text-emerald-700 font-bold px-8 py-3.5 rounded-xl hover:bg-emerald-50 transition-all shadow-lg flex items-center gap-2 group hover:shadow-xl hover:-translate-y-1"
                 >
                   <FontAwesomeIcon icon={fas.faArrowRightToBracket} className="group-hover:translate-x-1 transition-transform" /> {t("homepage.hero.login")}
                 </button>
                 <button
                   onClick={() => navigate("/register")}
-                  className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold px-8 py-3.5 rounded-xl border-2 border-white/30 hover:from-emerald-600 hover:to-emerald-700 transition-all flex items-center gap-2 shadow-lg group"
+                  className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold px-8 py-3.5 rounded-xl border-2 border-white/30 hover:from-emerald-600 hover:to-emerald-700 transition-all flex items-center gap-2 shadow-lg group hover:shadow-xl hover:-translate-y-1"
                 >
                   <FontAwesomeIcon icon={fas.faUserPlus} /> {t("homepage.hero.register")}
                   <FontAwesomeIcon icon={fas.faArrowRight} className="group-hover:translate-x-1 transition-transform opacity-0 group-hover:opacity-100 -ml-4 group-hover:ml-0" />
                 </button>
               </div>
-              <div className="flex flex-wrap gap-4 pt-4">
-                <div className="flex items-center gap-2 bg-emerald-800/40 backdrop-blur-sm text-white text-sm font-semibold px-4 py-2 rounded-full border border-emerald-500/30">
-                  <FontAwesomeIcon icon={fas.faChild} className="text-emerald-300" />
-                  <span>{t("homepage.hero.badgeAnakTerpantau")}</span>
-                </div>
-                <div className="flex items-center gap-2 bg-emerald-800/40 backdrop-blur-sm text-white text-sm font-semibold px-4 py-2 rounded-full border border-emerald-500/30">
-                  <FontAwesomeIcon icon={fas.faChartLine} className="text-emerald-300" />
-                  <span>{t("homepage.hero.badgeAkurasi")}</span>
-                </div>
-                <div className="flex items-center gap-2 bg-emerald-800/40 backdrop-blur-sm text-white text-sm font-semibold px-4 py-2 rounded-full border border-emerald-500/30">
-                  <FontAwesomeIcon icon={fas.faClock} className="text-emerald-300" />
-                  <span>{t("homepage.hero.badgeAkses")}</span>
-                </div>
-              </div>
             </div>
 
-            <div className="relative mt-12 lg:mt-0">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-emerald-300 rounded-3xl blur-2xl opacity-40 animate-pulse"></div>
-              <div className="relative bg-gradient-to-br from-emerald-800 via-emerald-700 to-emerald-800 rounded-3xl shadow-2xl p-6 border border-emerald-500/50 backdrop-blur-sm">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
-                    <span className="font-bold text-white">{t("homepage.hero.cardTitle")}</span>
-                  </div>
-                  <div className="bg-emerald-500/30 backdrop-blur-sm text-emerald-200 text-xs font-bold px-2 py-1 rounded-full border border-emerald-400/50">
-                    {t("homepage.hero.cardBadge")}
-                  </div>
-                </div>
-                
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-emerald-200 font-medium">{t("homepage.hero.statusNormal")}</span>
-                      <span className="text-emerald-300 font-bold">65%</span>
-                    </div>
-                    <div className="w-full bg-emerald-900/50 rounded-full h-2.5">
-                      <div className="bg-gradient-to-r from-emerald-400 to-emerald-300 h-2.5 rounded-full w-[65%] relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-emerald-200 font-medium">{t("homepage.hero.statusPraStunting")}</span>
-                      <span className="text-amber-300 font-bold">25%</span>
-                    </div>
-                    <div className="w-full bg-emerald-900/50 rounded-full h-2.5">
-                      <div className="bg-gradient-to-r from-amber-400 to-amber-500 h-2.5 rounded-full w-[25%]"></div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-emerald-200 font-medium">{t("homepage.hero.statusStunting")}</span>
-                      <span className="text-red-300 font-bold">10%</span>
-                    </div>
-                    <div className="w-full bg-emerald-900/50 rounded-full h-2.5">
-                      <div className="bg-gradient-to-r from-red-400 to-red-500 h-2.5 rounded-full w-[10%]"></div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-emerald-600/50">
-                  <div className="bg-emerald-800/50 backdrop-blur-sm rounded-xl p-3 text-center border border-emerald-600/50">
-                    <p className="text-xs text-emerald-300 font-medium">{t("homepage.hero.rataBB")}</p>
-                    <p className="font-bold text-white text-lg">12.4 kg</p>
-                  </div>
-                  <div className="bg-emerald-800/50 backdrop-blur-sm rounded-xl p-3 text-center border border-emerald-600/50">
-                    <p className="text-xs text-emerald-300 font-medium">{t("homepage.hero.rataTB")}</p>
-                    <p className="font-bold text-white text-lg">87 cm</p>
-                  </div>
-                </div>
-
-                <div className="absolute -top-3 -right-3 w-16 h-16 bg-emerald-400 rounded-full opacity-20 blur-xl"></div>
-                <div className="absolute -bottom-3 -left-3 w-20 h-20 bg-emerald-300 rounded-full opacity-20 blur-xl"></div>
-              </div>
-
-              <div className="absolute -top-4 -left-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg flex items-center gap-2 animate-bounce border border-white/30">
-                <FontAwesomeIcon icon={fas.faCheckCircle} className="text-white" /> {t("homepage.hero.verifiedBadge")}
-              </div>
-              <div className="absolute -bottom-4 -right-4 bg-emerald-800/95 backdrop-blur-sm text-emerald-200 text-xs font-bold px-4 py-2 rounded-full shadow-lg flex items-center gap-2 border border-emerald-500/50">
-                <FontAwesomeIcon icon={fas.faBell} className="text-emerald-400 animate-pulse" /> {t("homepage.hero.realtimeBadge")}
+            {/* Gambar hero - animasi slideRight */}
+            <div className="relative mt-16 lg:mt-0 flex justify-center lg:justify-end hero-image">
+              <svg
+                className="absolute -z-10 w-[110%] max-w-[560px] h-auto -top-10 -right-6 lg:-right-10 opacity-90"
+                viewBox="0 0 600 600"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <defs>
+                  <linearGradient id="heroBlobGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#34d399" />
+                    <stop offset="55%" stopColor="#059669" />
+                    <stop offset="100%" stopColor="#065f46" />
+                  </linearGradient>
+                </defs>
+                <path
+                  fill="url(#heroBlobGradient)"
+                  d="M427,320Q430,410,350,455Q270,500,190,455Q110,410,95,320Q80,230,150,170Q220,110,310,120Q400,130,420,225Q440,230,427,320Z"
+                />
+              </svg>
+              <div className="absolute inset-0 -z-20 bg-gradient-to-tr from-emerald-300/30 via-transparent to-transparent blur-3xl"></div>
+              <div className="relative w-full max-w-md lg:max-w-lg">
+                <img
+                  src={heroImage}
+                  alt={t("homepage.hero.title")}
+                  className="w-full h-auto object-contain drop-shadow-2xl select-none pointer-events-none"
+                  draggable="false"
+                />
               </div>
             </div>
           </div>
         </div>
 
         <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
-          <svg
-            className="relative block w-full h-12 lg:h-16"
-            viewBox="0 0 1200 120"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
-              fill="#f9fafb"
-              opacity="1"
-            ></path>
+          <svg className="relative block w-full h-12 lg:h-16" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="#f9fafb" opacity="1"></path>
           </svg>
         </div>
       </section>
 
-      {/* SECTION 2: FITUR UTAMA */}
-      <section id="fitur" className="py-16 lg:py-24 bg-gray-50">
+      {/* ===== FITUR UTAMA ===== (fade-up + stagger) */}
+      <section
+        id="fitur"
+        ref={fiturRef}
+        className={`py-16 lg:py-24 bg-gray-50 transition-all duration-700 ease-out ${
+          fiturVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 text-xs font-bold px-4 py-2 rounded-full mb-4">
@@ -429,7 +416,10 @@ export default function Homepage() {
             {fiturData.map((fitur, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
+                className={`bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group ${
+                  fiturVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                }`}
+                style={{ transitionDelay: fiturVisible ? getStaggerDelay(idx, 120) : "0ms" }}
               >
                 <div
                   className={`w-14 h-14 rounded-2xl ${getWarnaStyle(
@@ -450,8 +440,14 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* SECTION 3: STATISTIK NASIONAL */}
-      <section className="py-16 lg:py-24 bg-gradient-to-br from-emerald-600 to-teal-700 relative overflow-hidden">
+      {/* ===== STATISTIK NASIONAL ===== (fade-up + scale) */}
+      <section
+        id="statistik"
+        ref={statistikRef}
+        className={`py-16 lg:py-24 bg-gradient-to-br from-emerald-600 to-teal-700 relative overflow-hidden transition-all duration-700 ease-out ${
+          statistikVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
+        }`}
+      >
         <div className="absolute inset-0 opacity-10">
           <svg className="w-full h-full" viewBox="0 0 1000 1000">
             <circle cx="200" cy="200" r="150" fill="white" />
@@ -473,7 +469,13 @@ export default function Homepage() {
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {statistikData.map((stat, idx) => (
-              <div key={idx} className="bg-white/10 backdrop-blur rounded-2xl p-6 text-white text-center hover:bg-white/20 transition-all duration-300 transform hover:-translate-y-1">
+              <div
+                key={idx}
+                className={`bg-white/10 backdrop-blur rounded-2xl p-6 text-white text-center hover:bg-white/20 transition-all duration-300 transform hover:-translate-y-1 ${
+                  statistikVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+                }`}
+                style={{ transitionDelay: statistikVisible ? getStaggerDelay(idx, 100) : "0ms" }}
+              >
                 <FontAwesomeIcon icon={stat.icon} className="text-3xl mb-3 text-emerald-300" />
                 <p className="text-3xl font-bold">{stat.angka}</p>
                 <p className="text-sm text-emerald-100 mt-1">{t(stat.labelKey)}</p>
@@ -483,8 +485,14 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* SECTION 4: ARTIKEL EDUKASI */}
-      <section id="artikel" className="py-16 lg:py-24 bg-gray-50">
+      {/* ===== ARTIKEL EDUKASI ===== (fade-up + stagger) */}
+      <section
+        id="artikel"
+        ref={artikelRef}
+        className={`py-16 lg:py-24 bg-gray-50 transition-all duration-700 ease-out ${
+          artikelVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
             <div>
@@ -520,15 +528,18 @@ export default function Homepage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Featured Article */}
+            {/* Artikel unggulan (pertama) */}
             {artikelTampil[0] && (
               <div
                 onClick={() => toggleArtikel(artikelTampil[0].id)}
-                className={`group lg:row-span-2 bg-white rounded-2xl border overflow-hidden shadow-sm cursor-pointer transition-all duration-300
-                  ${expandedArtikelId === artikelTampil[0].id
-                    ? 'border-emerald-400 shadow-emerald-100 shadow-lg ring-2 ring-emerald-200'
-                    : 'border-gray-100 hover:shadow-lg hover:border-emerald-200'
-                  } flex flex-col`}
+                className={`group lg:row-span-2 bg-white rounded-2xl border overflow-hidden shadow-sm cursor-pointer transition-all duration-300 ${
+                  expandedArtikelId === artikelTampil[0].id
+                    ? "border-emerald-400 shadow-emerald-100 shadow-lg ring-2 ring-emerald-200"
+                    : "border-gray-100 hover:shadow-lg hover:border-emerald-200"
+                } flex flex-col ${
+                  artikelVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                }`}
+                style={{ transitionDelay: artikelVisible ? "100ms" : "0ms" }}
               >
                 <div className="relative overflow-hidden h-52">
                   <img
@@ -553,7 +564,6 @@ export default function Homepage() {
                     ${expandedArtikelId === artikelTampil[0].id ? 'text-emerald-700' : 'text-gray-900 group-hover:text-emerald-700'}`}>
                     {artikelTampil[0].judul}
                   </h3>
-                  
                   <div className={`card-expansion-panel ${expandedArtikelId === artikelTampil[0].id ? 'expanded' : 'collapsed'}`}>
                     <div className="animate-expandIn pt-0">
                       <p className="text-gray-600 text-sm leading-relaxed mb-4 text-justify">
@@ -571,7 +581,6 @@ export default function Homepage() {
                       </a>
                     </div>
                   </div>
-                  
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
                     <span className={`text-sm font-bold flex items-center gap-1.5 transition-all
                       ${expandedArtikelId === artikelTampil[0].id ? 'text-emerald-600' : 'text-gray-400 group-hover:text-emerald-600'}`}>
@@ -586,17 +595,20 @@ export default function Homepage() {
               </div>
             )}
 
-            {/* Remaining Articles */}
+            {/* Artikel sisanya (grid 2 kolom) */}
             <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {artikelTampil.slice(1).map((artikel) => (
+              {artikelTampil.slice(1).map((artikel, idx) => (
                 <div
                   key={artikel.id}
                   onClick={() => toggleArtikel(artikel.id)}
-                  className={`group flex flex-col bg-white rounded-xl border shadow-sm cursor-pointer transition-all duration-300
-                    ${expandedArtikelId === artikel.id
-                      ? 'border-emerald-400 shadow-emerald-100 shadow-md ring-2 ring-emerald-100'
-                      : 'border-gray-100 hover:shadow-md hover:border-emerald-200 hover:-translate-y-0.5'
-                    }`}
+                  className={`group flex flex-col bg-white rounded-xl border shadow-sm cursor-pointer transition-all duration-300 ${
+                    expandedArtikelId === artikel.id
+                      ? "border-emerald-400 shadow-emerald-100 shadow-md ring-2 ring-emerald-100"
+                      : "border-gray-100 hover:shadow-md hover:border-emerald-200 hover:-translate-y-0.5"
+                  } ${
+                    artikelVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+                  }`}
+                  style={{ transitionDelay: artikelVisible ? getStaggerDelay(idx + 1, 80) : "0ms" }}
                 >
                   <div className="flex gap-4 p-4">
                     <div className="w-24 h-24 shrink-0 rounded-xl overflow-hidden">
@@ -631,7 +643,6 @@ export default function Homepage() {
                       </div>
                     </div>
                   </div>
-                  
                   <div className={`card-expansion-panel ${expandedArtikelId === artikel.id ? 'expanded' : 'collapsed'}`}>
                     <div className="animate-expandIn px-4 pb-4 pt-0">
                       <p className="text-gray-600 text-sm leading-relaxed mb-3 text-justify">
@@ -655,8 +666,14 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* SECTION 5: BERITA KESEHATAN ANAK */}
-      <section id="berita" className="py-16 lg:py-24 bg-white">
+      {/* ===== BERITA KESEHATAN ===== (fade-up + stagger) */}
+      <section
+        id="berita"
+        ref={beritaRef}
+        className={`py-16 lg:py-24 bg-white transition-all duration-700 ease-out ${
+          beritaVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
             <div>
@@ -674,15 +691,18 @@ export default function Homepage() {
 
           <div className="space-y-4">
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-              {/* Featured Berita */}
+              {/* Berita unggulan */}
               {beritaTampil[0] && (
                 <div
                   onClick={() => toggleBerita(beritaTampil[0].id)}
-                  className={`group lg:col-span-2 bg-white rounded-2xl border overflow-hidden shadow-sm cursor-pointer transition-all duration-300 flex flex-col
-                    ${expandedBeritaId === beritaTampil[0].id
-                      ? 'border-emerald-400 shadow-lg shadow-emerald-100 ring-2 ring-emerald-200'
-                      : 'border-gray-100 hover:shadow-lg hover:border-emerald-100'
-                    }`}
+                  className={`group lg:col-span-2 bg-white rounded-2xl border overflow-hidden shadow-sm cursor-pointer transition-all duration-300 flex flex-col ${
+                    expandedBeritaId === beritaTampil[0].id
+                      ? "border-emerald-400 shadow-lg shadow-emerald-100 ring-2 ring-emerald-200"
+                      : "border-gray-100 hover:shadow-lg hover:border-emerald-100"
+                  } ${
+                    beritaVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                  }`}
+                  style={{ transitionDelay: beritaVisible ? "100ms" : "0ms" }}
                 >
                   <div className="relative overflow-hidden h-52">
                     <img
@@ -716,7 +736,6 @@ export default function Homepage() {
                       ${expandedBeritaId === beritaTampil[0].id ? 'text-emerald-700' : 'text-gray-900 group-hover:text-emerald-700'}`}>
                       {beritaTampil[0].judul}
                     </h3>
-                    
                     <div className={`card-expansion-panel ${expandedBeritaId === beritaTampil[0].id ? 'expanded' : 'collapsed'}`}>
                       <div className="animate-expandIn pt-2">
                         <p className="text-gray-600 text-sm leading-relaxed border-t border-gray-100 pt-3 mb-3 text-justify">
@@ -733,7 +752,6 @@ export default function Homepage() {
                         </a>
                       </div>
                     </div>
-                    
                     <span className={`text-sm font-semibold flex items-center gap-1.5 mt-auto pt-3 transition-colors
                       ${expandedBeritaId === beritaTampil[0].id ? 'text-emerald-600' : 'text-gray-400 group-hover:text-emerald-600'}`}>
                       {expandedBeritaId === beritaTampil[0].id ? t("homepage.artikel.close") : t("homepage.berita.readSummary")}
@@ -743,17 +761,20 @@ export default function Homepage() {
                 </div>
               )}
 
-              {/* Grid 2x2 Berita */}
+              {/* Grid 2x2 berita */}
               <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {beritaTampil.slice(1, 5).map((berita) => (
+                {beritaTampil.slice(1, 5).map((berita, idx) => (
                   <div
                     key={berita.id}
                     onClick={() => toggleBerita(berita.id)}
-                    className={`group flex flex-col bg-white rounded-xl border shadow-sm cursor-pointer transition-all duration-300
-                      ${expandedBeritaId === berita.id
-                        ? 'border-emerald-400 shadow-emerald-100 shadow-md ring-1 ring-emerald-200'
-                        : 'border-gray-100 hover:shadow-md hover:border-emerald-100'
-                      }`}
+                    className={`group flex flex-col bg-white rounded-xl border shadow-sm cursor-pointer transition-all duration-300 ${
+                      expandedBeritaId === berita.id
+                        ? "border-emerald-400 shadow-emerald-100 shadow-md ring-1 ring-emerald-200"
+                        : "border-gray-100 hover:shadow-md hover:border-emerald-100"
+                    } ${
+                      beritaVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+                    }`}
+                    style={{ transitionDelay: beritaVisible ? getStaggerDelay(idx + 1, 80) : "0ms" }}
                   >
                     <div className="flex gap-3 p-4">
                       <div className="w-20 h-20 shrink-0 rounded-xl overflow-hidden">
@@ -792,7 +813,6 @@ export default function Homepage() {
                         </div>
                       </div>
                     </div>
-                    
                     <div className={`card-expansion-panel ${expandedBeritaId === berita.id ? 'expanded' : 'collapsed'}`}>
                       <div className="animate-expandIn px-4 pb-4 pt-0">
                         <p className="text-gray-600 text-xs leading-relaxed mb-3 text-justify">{berita.ringkasan}</p>
@@ -812,15 +832,18 @@ export default function Homepage() {
               </div>
             </div>
 
-            {/* Berita ke-6 Full-width */}
+            {/* Berita ke-6 full-width */}
             {beritaTampil[5] && (
               <div
                 onClick={() => toggleBerita(beritaTampil[5].id)}
-                className={`group flex flex-col bg-white rounded-2xl border overflow-hidden shadow-sm cursor-pointer transition-all duration-300
-                  ${expandedBeritaId === beritaTampil[5].id
-                    ? 'border-emerald-400 shadow-emerald-100 shadow-md ring-2 ring-emerald-200'
-                    : 'border-gray-100 hover:shadow-md hover:border-emerald-100'
-                  }`}
+                className={`group flex flex-col bg-white rounded-2xl border overflow-hidden shadow-sm cursor-pointer transition-all duration-300 ${
+                  expandedBeritaId === beritaTampil[5].id
+                    ? "border-emerald-400 shadow-emerald-100 shadow-md ring-2 ring-emerald-200"
+                    : "border-gray-100 hover:shadow-md hover:border-emerald-100"
+                } ${
+                  beritaVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                }`}
+                style={{ transitionDelay: beritaVisible ? "200ms" : "0ms" }}
               >
                 <div className="flex flex-col sm:flex-row">
                   <div className="sm:w-48 h-40 sm:h-auto shrink-0 overflow-hidden">
@@ -849,7 +872,6 @@ export default function Homepage() {
                         ${expandedBeritaId === beritaTampil[5].id ? 'text-emerald-700' : 'text-gray-900 group-hover:text-emerald-700'}`}>
                         {beritaTampil[5].judul}
                       </h3>
-                      
                       <div className={`card-expansion-panel ${expandedBeritaId === beritaTampil[5].id ? 'expanded' : 'collapsed'}`}>
                         <div className="animate-expandIn pt-0">
                           <p className="text-gray-600 text-sm leading-relaxed mt-2 mb-3 text-justify">
@@ -882,8 +904,13 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* SECTION 6: CTA */}
-      <section className="py-16 lg:py-20 bg-gradient-to-r from-emerald-600 to-emerald-700 relative overflow-hidden">
+      {/* ===== CTA ===== (fade-up) */}
+      <section
+        ref={ctaRef}
+        className={`py-16 lg:py-20 bg-gradient-to-r from-emerald-600 to-emerald-700 relative overflow-hidden transition-all duration-700 ease-out ${
+          ctaVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        }`}
+      >
         <div className="absolute inset-0 opacity-10">
           <svg className="w-full h-full" viewBox="0 0 1000 1000">
             <circle cx="100" cy="100" r="80" fill="white" />
@@ -909,15 +936,15 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* FOOTER */}
+      {/* ===== FOOTER ===== (tetap) */}
       <footer className="bg-gray-900 pt-16 pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <img 
-                  src="/logo_footer.png" 
-                  alt="SI-GIZI SIGAP Logo" 
+                <img
+                  src="/logo_footer.png"
+                  alt="SI-GIZI SIGAP Logo"
                   className="h-14 w-auto object-contain brightness-40 invert"
                 />
                 <span className="text-white font-bold text-xl">{t("homepage.footer.brand")}</span>
@@ -1004,22 +1031,25 @@ export default function Homepage() {
         </div>
       </footer>
 
+      {/* ===== STYLE TAMBAHAN UNTUK ANIMASI ===== */}
       <style>{`
-        @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
+        /* Animasi hero saat load */
+        @keyframes slideLeft {
+          0% { opacity: 0; transform: translateX(-40px); }
+          100% { opacity: 1; transform: translateX(0); }
         }
-        .animate-shimmer { animation: shimmer 2s infinite; }
-        @keyframes bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-5px); }
+        @keyframes slideRight {
+          0% { opacity: 0; transform: translateX(40px) scale(0.95); }
+          100% { opacity: 1; transform: translateX(0) scale(1); }
         }
-        .animate-bounce { animation: bounce 2s ease-in-out infinite; }
-        @keyframes pulse {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 0.6; }
+        .hero-text {
+          animation: slideLeft 0.8s ease-out forwards;
         }
-        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .hero-image {
+          animation: slideRight 0.8s ease-out forwards;
+        }
+
+        /* Animasi ekspansi card */
         @keyframes expandIn {
           from { opacity: 0; transform: translateY(-8px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -1027,6 +1057,8 @@ export default function Homepage() {
         .animate-expandIn {
           animation: expandIn 0.25s ease-out forwards;
         }
+
+        /* Panel ekspansi dengan transisi tinggi */
         .card-expansion-panel {
           overflow: hidden;
           transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
@@ -1039,6 +1071,13 @@ export default function Homepage() {
         .card-expansion-panel.collapsed {
           max-height: 0;
           opacity: 0;
+        }
+
+        /* Fallback untuk transisi halus */
+        * {
+          transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+          transition-duration: 200ms;
         }
       `}</style>
     </div>

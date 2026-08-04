@@ -94,6 +94,20 @@ export default {
     menolak: "menolak",
     yakin: "Apakah Anda yakin ingin",
     dataIni: "data ini?",
+    tidakSekolah: "Tidak Sekolah",
+    spesialis: "Spesialis",
+    suksesSimpanDatadiri: "Data diri berhasil disimpan!",
+    suksesSimpanDataanak: "Data anak berhasil ditambahkan!",
+    errorLoadWilayah: "Gagal memuat wilayah:",
+    errorLoadProfile: "Gagal memuat profil:",
+    errorLoadDataOrtu: "Gagal memuat data orang tua:",
+    errorLoadOrtu: "Gagal memuat data orang tua",
+    errorLoadAnak: "Gagal memuat data anak",
+    errorLoadData: "Terjadi kesalahan saat memuat data:",
+    errorSistem: "Terjadi kesalahan sistem",
+    errorSaveDataAnak: "Gagal menambahkan data anak:",
+    errorSaveAnak: "Gagal menambahkan data anak",
+    errorUpdateGrowth: "Gagal mengupdate data pertumbuhan",
 
     // Validasi
     validation: {

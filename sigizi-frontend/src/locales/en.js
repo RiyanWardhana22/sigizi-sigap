@@ -93,6 +93,20 @@ export default {
     menolak: "refuse",
     yakin: "Are you sure you want to",
     dataIni: "this data?",
+    tidakSekolah: "Not Attending School",
+    spesialis: "Specialist",
+    suksesSimpanDatadiri: "Profile saved successfully!",
+    suksesSimpanDataanak: "Child data successfully added!",
+    errorLoadWilayah: "Failed to load region:",
+    errorLoadProfile: "Failed to load profile:",
+    errorLoadDataOrtu: "Failed to load parent data:",
+    errorLoadOrtu: "Failed to load parent data",
+    errorLoadAnak: "Failed to load child data",
+    errorLoadData: "An error occurred while loading data:",
+    errorSistem: "A system error has occurred",
+    errorSaveDataAnak: "Failed to add child data:",
+    errorSaveAnak: "Failed to add child data",
+    errorUpdateGrowth: "Failed to update growth data",
 
     // Validation
     validation: {
